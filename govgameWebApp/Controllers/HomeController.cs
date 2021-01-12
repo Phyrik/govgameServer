@@ -33,9 +33,5 @@ namespace govgameWebApp.Controllers
                 return View();
             }
         }
-        public IActionResult GetMinutesPastEpoch()
-        {
-            return View();
-        }
     }
 }

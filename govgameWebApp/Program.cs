@@ -43,7 +43,7 @@ namespace govgameWebApp
         static void BroadcastNewTime(object source, ElapsedEventArgs elapsedEventArgs)
         {
             Console.WriteLine("Sending clients new time...");
-            TimeManagerHubContext.Clients.All.SendAsync("NewTime", TimeManager.MinutesPastEpoch);
+            TimeManagerHubContext.Clients.All.SendAsync("NewTime", TimeManager.MinutesPastEpoch).Wait();
             Console.WriteLine("Done!");
         }
     }

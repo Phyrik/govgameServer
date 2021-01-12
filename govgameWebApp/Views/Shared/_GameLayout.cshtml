@@ -44,7 +44,10 @@
             </ul>
         </nav>
     </header>
-    <div id="sidebar" style="position: fixed; top: 0; height: 100vh; width: 200px; background-color: #222; margin-right: 20px;"></div>
+    <div id="sidebar" style="position: fixed; top: 0; height: 100vh; width: 200px; background-color: #222; margin-right: 20px; color: white; padding: 10px;">
+        <h3>Time:</h3>
+        <h5 id="time-in-minutes-h5">X minutes</h5>
+    </div>
     <br />
     <main style="margin-left: calc(200px + 10px);">
         @RenderBody()
@@ -57,6 +60,12 @@
     <script>
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip()
+        })
+
+        var connection = new signalR.HubConnectionBuilder().withUrl("/TimeManagerHub").build()
+
+        connection.on("NewTime", function (minutesPastEpoch) {
+            document.getElementById("time-in-minutes-h5").innerHTML = minutesPastEpoch + " minutes"
         })
     </script>
     @RenderSection("Scripts", required: false)

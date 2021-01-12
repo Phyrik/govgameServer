@@ -1,0 +1,103 @@
+﻿@using System.Drawing; 
+@{
+    Layout = "_GameLayout";
+
+    PublicUser publicUser = (PublicUser)ViewData["publicUser"];
+
+    Country country = (Country)ViewData["country"];
+
+    ViewData["Title"] = "Country dashboard";
+    ViewData["PageName"] = "Country dashboard";
+}
+
+<h1>Country overview</h1>
+<div id="map-div">
+    <h2>Map & Key</h2>
+    <div id="inner-map-div">
+        <img id="country-map-img" src="/Image/OwnCountryMapCropped" style="max-width: 75%;" />
+        <p id="loading-country-map-p">Loading map...</p>
+    </div>
+    <div id="map-key-div" style="margin-top: 5px;">
+        <ul class="no-margin-ul" style="list-style: none;">
+            @{
+                Color ownCountryColour = MapColourHelper.Colours.OwnCountry;
+            }
+            <li><div><div class="key-box" style="background-color: rgba(@ownCountryColour.R, @ownCountryColour.G, @ownCountryColour.B, calc(@MapColourHelper.Colours.OverlayAlpha/255));"></div>Your country</div></li>
+        </ul>
+    </div>
+</div>
+<br />
+<br />
+
+<h1>Go to a ministerial dashboard:</h1>
+<br />
+<ul style="list-style: none;">
+    @if (country.PrimeMinisterId == publicUser.UserId)
+    {
+        <li class="ministry-li">
+            <a href="/Game/PrimeMinisterDashboard">
+                <img src="~/images/ministries/office of the prime minister logo.png" height="175" onmouseover="this.src = '/images/ministries/office of the prime minister logo filled.png'" onmouseout="this.src = '/images/ministries/office of the prime minister logo.png'" />
+            </a>
+        </li>
+    }
+    @if (country.InteriorMinisterId == publicUser.UserId || (country.InteriorMinisterId == "none" && publicUser.UserId == country.PrimeMinisterId))
+    {
+        <li class="ministry-li">
+            <a href="/Game/InteriorMinisterDashboard">
+                <img src="~/images/ministries/ministry of the interior.png" height="175" onmouseover="this.src = '/images/ministries/ministry of the interior filled.png'" onmouseout="this.src = '/images/ministries/ministry of the interior.png'" />
+            </a>
+        </li>
+    }
+    @if (country.FinanceAndTradeMinisterId == publicUser.UserId || (country.FinanceAndTradeMinisterId == "none" && publicUser.UserId == country.PrimeMinisterId))
+    {
+        <li class="ministry-li">
+            <a href="/Game/FinanceAndTradeMinisterDashboard">
+                <img src="~/images/ministries/ministry of finance and trade.png" height="175" onmouseover="this.src = '/images/ministries/ministry of finance and trade filled.png'" onmouseout="this.src = '/images/ministries/ministry of finance and trade.png'" />
+            </a>
+        </li>
+    }
+    @if (country.ForeignMinisterId == publicUser.UserId || (country.ForeignMinisterId == "none" && publicUser.UserId == country.PrimeMinisterId))
+    {
+        <li class="ministry-li">
+            <a href="/Game/ForeignMinisterDashboard">
+                <img src="~/images/ministries/ministry of foreign affairs.png" height="175" onmouseover="this.src = '/images/ministries/ministry of foreign affairs filled.png'" onmouseout="this.src = '/images/ministries/ministry of foreign affairs.png'" />
+            </a>
+        </li>
+    }
+    @if (country.DefenceMinisterId == publicUser.UserId || (country.DefenceMinisterId == "none" && publicUser.UserId == country.PrimeMinisterId))
+    {
+        <li class="ministry-li">
+            <a href="/Game/DefenceMinisterDashboard">
+                <img src="~/images/ministries/ministry of defence.png" height="175" onmouseover="this.src = '/images/ministries/ministry of defence filled.png'" onmouseout="this.src = '/images/ministries/ministry of defence.png'" />
+            </a>
+        </li>
+    }
+</ul>
+
+<style>
+    .ministry-li {
+        margin-bottom: 30px;
+    }
+
+        .ministry-li > img:hover {
+            cursor: pointer;
+        }
+
+    .key-box {
+        float: left;
+        height: 20px;
+        width: 20px;
+        margin-bottom: 15px;
+        margin-right: 5px;
+        clear: both;
+    }
+</style>
+
+@section Scripts
+{
+    <script>
+        document.getElementById("country-map-img").addEventListener("load", function () {
+            document.getElementById("loading-country-map-p").remove()
+        })
+    </script>
+}

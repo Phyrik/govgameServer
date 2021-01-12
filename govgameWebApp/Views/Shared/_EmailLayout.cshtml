@@ -1,0 +1,61 @@
+﻿@using govgameWebApp.Helpers;
+@{
+    PublicUser publicUser = (PublicUser)ViewData["publicUser"];
+
+    Country country = (Country)ViewData["country"];
+
+    int unreadEmails = (int)ViewData["unreadEmails"];
+
+    string flagName = CountryGenerationHelper.flagNames[country.FlagId];
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @country.CountryName - Government Game</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+</head>
+<body style="font-family: 'Roboto Slab', serif;">
+    <header style="overflow: hidden;">
+        <a href="/Game/CountryDashboard"><img height="100" src="~/images/flags/@(flagName).png" style="float: left; margin-top: 10px; margin-bottom: 10px; margin-left: 10px;" title="Go to Country Dashboard" /></a>
+        <div style="float: left; display: grid; grid-template-rows: 70px 50px;">
+            <h1 style="margin-left: 10px; margin-top: 10px;" title="Go to Country Dashboard"><a href="/Game/CountryDashboard" class="underline-a">@country.CountryName</a></h1>
+            <h3 style="margin-left: 10px; color: #151515;">Page: @ViewData["PageName"]</h3>
+        </div>
+        <nav>
+            <ul class="nav justify-content-end">
+                <li class="nav-item"><a class="nav-link underline-a" href="/Game/Index">Home</a></li>
+                @if (unreadEmails != 0)
+                {
+                    <li class="nav-item" style="background-color: darkorange;"><a class="nav-link underline-a" href="/Game/Emails">Emails (@unreadEmails)</a></li>
+                }
+                else
+                {
+                    <li class="nav-item"><a class="nav-link underline-a" href="/Game/Emails">Emails</a></li>
+                }
+                <li class="nav-item"><a class="nav-link" data-toggle="tooltip" title="(User ID: @publicUser.UserId)">Signed in as: @publicUser.Username</a></li>
+                <li class="nav-item"><a class="nav-link underline-a" href="/Auth/SignOut">Sign out</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main style="overflow: hidden;">
+        @RenderBody()
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

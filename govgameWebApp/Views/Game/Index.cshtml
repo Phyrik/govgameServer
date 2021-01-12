@@ -1,0 +1,15 @@
+﻿@{
+    Layout = "_GameLayout";
+
+    PublicUser publicUser = (PublicUser)ViewData["publicUser"];
+
+    Country country = (Country)ViewData["country"];
+
+    ViewData["Title"] = "Home";
+    ViewData["PageName"] = "Home";
+}
+
+<button onclick="location.href = '/Game/CountryDashboard'" style="font-size: xx-large">Go to your country dashboard</button>
+<br />
+<br />
+<h1>News</h1>

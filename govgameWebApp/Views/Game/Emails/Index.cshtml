@@ -1,0 +1,146 @@
+﻿@using Ganss.XSS;
+@using Markdig;
+@{
+    Layout = "_EmailLayout";
+
+    PublicUser publicUser = (PublicUser)ViewData["publicUser"];
+
+    Country country = (Country)ViewData["country"];
+
+    ViewData["Title"] = "Emails";
+    ViewData["PageName"] = "Emails";
+
+    Email[] emails = (Email[])ViewData["emails"];
+}
+
+@{
+    HtmlSanitizer sanitiser = new HtmlSanitizer();
+}
+
+<div id="main-header">
+    <br />
+    <h1>Emails</h1>
+    <br />
+</div>
+<div id="email-system-container" style="display: grid; grid-template-columns: 300px auto; column-gap: 20px; grid-template-rows: 50px minmax(0, 100%);">
+    @if (emails.Length == 0)
+    {
+        <h3 style="grid-column-start: 1; grid-column-end: 2; text-align: center;">No emails</h3>
+    }
+    else
+    {
+        <ul class="no-margin-ul" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 3; overflow-y: auto; border-right: 1px solid black;">
+            @foreach (Email email in emails)
+            {
+                PublicUser sender = MongoDBHelper.GetPublicUser(email.SenderId);
+                <li id="email-li-@email.EmailId" class="email-li" onclick="openEmail('@email.EmailId');" style="padding: 5px 0 5px 5px; border-left: 5px solid @if (!email.MarkedAsRead) { <text>darkgrey</text> } else { <text>white</text> };">
+                    <h4>@sender.Username</h4>
+                    <h5>@email.Subject</h5>
+                </li>
+            }
+        </ul>
+    }
+    <div id="actions" style="grid-column-start: 2; grid-column-end: 3; padding: 5px;">
+        <button class="action-button" onclick="window.open('/Game/Emails/NewEmail', 'New email', 'height=800,width=1000,location=no,toolbar=no,menubar=no')">New email</button>
+    </div>
+    <div style="grid-column-start: 2; grid-column-end: 3; background-color: lightgrey; padding: 5px 10px 5px 10px; overflow-y: auto;">
+        <h2 id="from-line">Click on an email to view it here</h2>
+        <h4 id="country-line"></h4>
+        <h5 id="user-id-line"></h5>
+        <hr />
+        <h2 id="subject-line"></h2>
+        <p id="body-line" style="white-space: pre-line;"></p>
+    </div>
+</div>
+
+<style>
+    .email-li:hover {
+        cursor: pointer;
+    }
+
+    .action-button {
+        height: inherit;
+    }
+</style>
+
+@section Scripts
+{
+    <script>
+        var emails = {
+            @foreach (Email email in emails)
+            {
+                PublicUser sender = MongoDBHelper.GetPublicUser(email.SenderId);
+                Country senderCountry = MongoDBHelper.GetCountry(sender.CountryId);
+                <text>
+                "@email.EmailId": {
+                    "fromUsername": "@sender.Username.Replace("`", "\\`")",
+                    "country": "@senderCountry.CountryName.Replace("`", "\\`")",
+                    "userId": "@email.SenderId",
+                    "subject": `@email.Subject.Replace("`", "\\`")`,
+                    "body": `@Html.Raw(sanitiser.Sanitize(Markdown.ToHtml(email.Body)).Replace("`", "\\`").Replace("<p>", "").Replace("</p>", ""))`,
+                    "read": @email.MarkedAsRead.ToString().ToLower()
+                },
+                </text>
+            }
+        }
+
+        var emailSystemContainer = document.getElementById("email-system-container")
+        emailSystemContainer.style.height = window.innerHeight - (document.getElementsByTagName("header")[0].clientHeight + document.getElementById("main-header").clientHeight + document.getElementById("actions").clientHeight) + "px"
+
+        var fromLine = document.getElementById("from-line");
+        var countryLine = document.getElementById("country-line");
+        var userIdLine = document.getElementById("user-id-line");
+        var subjectLine = document.getElementById("subject-line");
+        var bodyLine = document.getElementById("body-line");
+
+        function openEmail(emailId) {
+            var emailLis = document.getElementsByClassName("email-li")
+            for (var i = 0; i < emailLis.length; i++) {
+                emailLis[i].style.backgroundColor = "white"
+                console.log(emailLis[i].id.substring(9))
+                console.log(emails[emailLis[i].id.substring(9)])
+                switch (emails[emailLis[i].id.substring(9)].read) {
+                    case true:
+                        emailLis[i].style.borderLeft = "5px solid white"
+                        break
+
+                    case false:
+                        emailLis[i].style.borderLeft = "5px solid darkgrey"
+                        break
+                        
+                    default:
+                        break
+                }
+            }
+
+            fromLine.innerHTML = ""
+            countryLine.innerHTML = ""
+            userIdLine.innerHTML = ""
+            subjectLine.innerHTML = ""
+            bodyLine.innerHTML = ""
+
+            var emailToOpen = emails[emailId]
+
+            fromLine.innerHTML = "From: " + emailToOpen.fromUsername
+            countryLine.innerHTML = "(Country: " + emailToOpen.country + ")"
+            userIdLine.innerHTML = "(User ID: " + emailToOpen.userId + ")"
+            subjectLine.innerHTML = emailToOpen.subject
+            bodyLine.innerHTML = emailToOpen.body
+
+            var emailLi = document.getElementById("email-li-" + emailId)
+
+            emailLi.style.backgroundColor = "lightgrey"
+
+            emailLi.style.borderLeft = "5px solid lightgrey"
+            if (!emails[emailId].read) {
+                emails[emailId].read = true
+                $.post(`/Game/MarkEmailAsReadUnread?emailId=${emailId}&readOrUnread=read`, function (data, status) {
+                    if (data != "success") {
+                        emailLi.style.borderLeft = "5px solid darkgrey"
+                        emails[emailId].read = false
+                    }
+                })
+            }
+        }
+    </script>
+}

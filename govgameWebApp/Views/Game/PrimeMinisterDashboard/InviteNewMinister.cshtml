@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "_GameLayout";
+
+    ViewData["Title"] = "Invite new minister";
+    ViewData["PageName"] = "Invite new minister";
+
+    Country country = (Country)ViewData["country"];
+
+    Ministry.MinistryCode ministryCode = (Ministry.MinistryCode)ViewData["ministryCode"];
+    PublicUser[] allPublicUsers = (PublicUser[])ViewData["allPublicUsers"];
+
+    string ministryName = Ministry.MinistryCodeToMinistryName(ministryCode);
+    string ministryColour = Ministry.MinistryCodeToMinistryHexColour(ministryCode);
+    Ministry ministry = Ministry.GetMinistry(ministryCode, country.CountryId);
+
+    PublicUser currentPublicUser = (PublicUser)ViewData["publicUser"];
+}
+
+<h1>
+    <span>Invite a new minister to the</span>
+    <span style="text-decoration: underline; text-decoration-color: @ministryColour">@ministryName</span>
+</h1>
+<br />
+<hr />
+<ul class="no-margin-ul">
+    @foreach (PublicUser publicUser in allPublicUsers)
+    {
+        @if (publicUser.UserId == currentPublicUser.UserId) continue;
+        <li style="list-style: none; display: grid; grid-template-columns: auto auto; margin-left: 50px; margin-right: 50px;">
+            <h2 style="grid-column-start: 1; grid-column-end: 2;">@publicUser.Username</h2>
+            <h3 style="grid-column-start: 1; grid-column-end: 2;">(User ID: @publicUser.UserId)</h3>
+            @if (publicUser.IsMinister)
+            {
+                Country publicUserCountry = MongoDBHelper.GetCountry(publicUser.CountryId);
+                <h4 style="color: orangered;">NOTE: This user is already a minister in the country of @publicUserCountry.CountryName</h4>
+                <button style="justify-self: end; grid-row-start: 1; grid-row-end: 4; grid-column-start: 2; grid-column-end: 3; margin-top: 20px; margin-bottom: 20px;">Invite user</button>
+            }
+            else
+            {
+                <button style="justify-self: end; grid-row-start: 1; grid-row-end: 3; grid-column-start: 2; grid-column-end: 3; margin-top: 20px; margin-bottom: 20px;">Invite user</button>
+            }
+        </li>
+        <hr />
+    }
+</ul>

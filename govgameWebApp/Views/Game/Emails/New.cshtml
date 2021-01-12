@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "_EmptyLayout";
+
+    ViewData["Title"] = "New email";
+    ViewData["PageName"] = "New email";
+
+    PublicUser[] allPublicUsers = (PublicUser[])ViewData["allPublicUsers"];
+
+    // window opens to be 1000x1000 pixels
+}
+
+<h1>Compose Email</h1>
+<h5>Use <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">markdown</a> to style your email</h5>
+<hr />
+
+<form id="email-form" action="/Game/SendEmail" method="post">
+    <h3>To:</h3>
+    <ul id="to-ul" class="no-margin-ul" style="list-style: none; margin-bottom: 10px;"></ul>
+    <input id="to-input" type="text" list="users-datalist" />
+    <datalist id="users-datalist">
+        @foreach (PublicUser publicUser in allPublicUsers)
+        {
+            <option value="@publicUser.UserId">@publicUser.Username</option>
+        }
+    </datalist>
+
+    <h3>Subject:</h3>
+    <input name="subject" type="text" style="width: 100%;" />
+
+    <h3>Body:</h3>
+    <textarea name="body" style="width: 100%; height: 300px;"></textarea>
+
+    <button type="button" onclick="formSubmitted()">Send email</button>
+</form>
+
+@section Scripts
+{
+    <script>
+        var users = {
+            @foreach (PublicUser publicUser in allPublicUsers)
+            {
+                <text>
+                "@publicUser.UserId": {
+                    "userId": "@publicUser.UserId",
+                    "username": "@publicUser.Username",
+                },
+                </text>
+            }
+        }
+        var toUsers = []
+
+        var toUl = document.getElementById("to-ul")
+
+        function toInputValueChanged(e) {
+            toInputText = e.target.value
+
+            if (toInputText in users && document.getElementById("to-li-" + toInputText) == null) {
+                var user = users[toInputText]
+                var newToLi = document.createElement("li")
+                newToLi.id = "to-li-" + user.userId
+                newToLi.innerHTML = `<h5>${user.username}</h5 style="grid-column-start: 1; grid-column-end: 3;"><p style="margin-bottom: 0; font-size: small; grid-column-start: 1; grid-column-end: 3;">(User ID: ${user.userId})</p><button onclick="removeToLi(this, '${user.userId}');" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2; height: 20px; font-size: 10px; padding: 0;">X</button>`
+                newToLi.style.display = "inline-grid"
+                newToLi.style.textAlign = "center"
+                newToLi.style.marginRight = "10px"
+                newToLi.style.marginBottom = "10px"
+                newToLi.style.border = "2px solid black"
+                newToLi.style.borderRadius = "10px"
+                newToLi.style.padding = "5px"
+                newToLi.style.gridTemplateColumns = "auto 20px"
+                toUl.appendChild(newToLi)
+                toUsers.push(toInputText)
+            }
+
+            if (toInputText in users) {
+                e.target.value = ""
+            }
+        }
+
+        document.getElementById("to-input").addEventListener("input", toInputValueChanged)
+
+        function removeToLi(ele, userId) {
+            ele.parentElement.remove()
+
+            toUsersIndex = toUsers.indexOf(userId)
+            if (toUsersIndex > -1) {
+                toUsers.splice(toUsersIndex, 1)
+            }
+        }
+
+        function formSubmitted() {
+            var form = document.getElementById("email-form")
+
+            var toInput = document.createElement("input")
+            toInput.setAttribute("name", "to")
+            toInput.setAttribute("type", "text")
+            toInput.style.display = "none"
+            var toInputValueString = ""
+            for (var i = 0; i < toUl.getElementsByTagName("li").length; i++) {
+                var toLis = toUl.getElementsByTagName("li")
+                var userId = toLis[i].id.substring(6)
+                toInputValueString += userId + ","
+            }
+            toInput.setAttribute("value", toInputValueString)
+            form.appendChild(toInput)
+
+            form.submit()
+        }
+    </script>
+}

@@ -1,0 +1,23 @@
+﻿@{ 
+    Layout = "_GameLayout";
+}
+
+<h1>Minutes past epoch:</h1>
+<h2 id="minutes-past-epoch-h2"></h2>
+
+@section Scripts
+{
+    <script>
+        "use strict";
+
+        var connection = new signalR.HubConnectionBuilder().withUrl("https://@MongoDBHelper.ec2MongoAPIUrl/api/TimeManager").build()
+
+        connection.on("NewTime", function (minutesPastEpoch) {
+            document.getElementById("minutes-past-epoch-h2").innerHTML = minutesPastEpoch
+        })
+
+        connection.start().catch(function (error) {
+            return console.error(error.toString())
+        })
+    </script>
+}

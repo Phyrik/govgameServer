@@ -1,4 +1,4 @@
-﻿@using System.Drawing; 
+﻿@using System.Drawing;
 @{
     Layout = "_GameLayout";
 
@@ -16,14 +16,6 @@
     <div id="inner-map-div">
         <img id="country-map-img" src="/Image/OwnCountryMapCropped" style="max-width: 75%;" />
         <p id="loading-country-map-p">Loading map...</p>
-    </div>
-    <div id="map-key-div" style="margin-top: 5px;">
-        <ul class="no-margin-ul" style="list-style: none;">
-            @{
-                Color ownCountryColour = MapColourHelper.Colours.OwnCountry;
-            }
-            <li><div><div class="key-box" style="background-color: rgba(@ownCountryColour.R, @ownCountryColour.G, @ownCountryColour.B, calc(@MapColourHelper.Colours.OverlayAlpha/255));"></div>Your country</div></li>
-        </ul>
     </div>
 </div>
 <br />
@@ -82,15 +74,6 @@
         .ministry-li > img:hover {
             cursor: pointer;
         }
-
-    .key-box {
-        float: left;
-        height: 20px;
-        width: 20px;
-        margin-bottom: 15px;
-        margin-right: 5px;
-        clear: both;
-    }
 </style>
 
 @section Scripts

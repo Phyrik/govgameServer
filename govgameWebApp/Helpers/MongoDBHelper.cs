@@ -9,10 +9,9 @@ namespace govgameWebApp.Helpers
 {
     public class MongoDBHelper
     {
-        public static readonly string ec2MongoAPIUrl = "ec2-35-178-4-240.eu-west-2.compute.amazonaws.com";
         static readonly string username = "ASPNETwebapp";
         static readonly string password = "deUM3YhG9HreNCQN";
-        static readonly MongoClient mongoClient = new MongoClient($"mongodb://{username}:{password}@{ec2MongoAPIUrl}");
+        static readonly MongoClient mongoClient = new MongoClient($"mongodb://{username}:{password}@localhost");
 
         #region Map Database
         static readonly IMongoDatabase mapDatabase = mongoClient.GetDatabase("govgame_map_table");

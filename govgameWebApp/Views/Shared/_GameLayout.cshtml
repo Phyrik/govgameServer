@@ -44,6 +44,7 @@
             </ul>
         </nav>
     </header>
+    <div id="sidebar" style="float: left; width: 200px; background-color: #222; margin-right: 20px;" />
     <br />
     <main>
         @RenderBody()
@@ -57,6 +58,8 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip()
         })
+
+        document.getElementById("sidebar").style.height = document.getElementsByTagName("html")[0].scrollHeight - 120 + "px"
     </script>
     @RenderSection("Scripts", required: false)
 </body>

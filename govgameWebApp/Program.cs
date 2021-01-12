@@ -5,6 +5,7 @@ using govgameWebApp.Hubs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace govgameWebApp
 {
@@ -25,6 +26,8 @@ namespace govgameWebApp
 
             govgameGameServer.Program.StartAllManagers();
             TimeManager.AddGameTimerTickMethod(BroadcastNewTime);
+
+            Console.ReadKey();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

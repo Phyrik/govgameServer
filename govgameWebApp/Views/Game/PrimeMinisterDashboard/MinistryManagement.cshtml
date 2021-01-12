@@ -48,20 +48,24 @@
     }
 </style>
 
-@section Scripts{ 
+@section Scripts{
     <script>
-    function dismissMinister(minister) {
-        var ministryLi = document.getElementById(`ministry-li-${minister}`)
-        ministryLi.getElementsByTagName("h3")[0].innerHTML = "No minister"
-        ministryLi.getElementsByTagName("button")[0].onclick = function () { location.href = `/Game/PrimeMinisterDashboard/InviteNewMinister?minister=${minister}` }
-        ministryLi.getElementsByTagName("button")[0].innerHTML = "Invite new minister"
-        ministryLi.removeChild(ministryLi.getElementsByTagName("h4")[0])
+        function dismissMinister(minister) {
+            var okPressed = confirm("Are you sure you want to dismiss this minister?")
 
-        $.post(`/Game/DismissMinister?minister=${minister}`, function (data, status) {
-            if (data != "success") {
-                location.reload()
-            }
-        })
-    }
+            if (!okPressed) return
+
+            var ministryLi = document.getElementById(`ministry-li-${minister}`)
+            ministryLi.getElementsByTagName("h3")[0].innerHTML = "No minister"
+            ministryLi.getElementsByTagName("button")[0].onclick = function () { location.href = `/Game/PrimeMinisterDashboard/InviteNewMinister?minister=${minister}` }
+            ministryLi.getElementsByTagName("button")[0].innerHTML = "Invite new minister"
+            ministryLi.removeChild(ministryLi.getElementsByTagName("h4")[0])
+
+            $.post(`/Game/DismissMinister?minister=${minister}`, function (data, status) {
+                if (data != "success") {
+                    location.reload()
+                }
+            })
+        }
     </script>
 }

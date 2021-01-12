@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "govgameGameServer", "..\govgameGameServer\govgameGameServer\govgameGameServer.csproj", "{4C26CC1B-A881-4B80-9AE8-B2A51C253B59}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "govgameWebApp", "..\govgameWebApp\govgameWebApp\govgameWebApp.csproj", "{7FB3DFD1-5529-4125-9037-3F402954FE36}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4C26CC1B-A881-4B80-9AE8-B2A51C253B59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C26CC1B-A881-4B80-9AE8-B2A51C253B59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C26CC1B-A881-4B80-9AE8-B2A51C253B59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C26CC1B-A881-4B80-9AE8-B2A51C253B59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FB3DFD1-5529-4125-9037-3F402954FE36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FB3DFD1-5529-4125-9037-3F402954FE36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FB3DFD1-5529-4125-9037-3F402954FE36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FB3DFD1-5529-4125-9037-3F402954FE36}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D05F626A-2E7D-47B7-A955-F46E55201C88}
+	EndGlobalSection
+EndGlobal

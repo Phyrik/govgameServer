@@ -2,6 +2,7 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using govgameGameServer.Managers;
 using govgameWebApp.Hubs;
+using govgameWebApp.Hubs.Server_Only_Hub_Methods;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
@@ -13,8 +14,6 @@ namespace govgameWebApp
 {
     public class Program
     {
-        private static IHubContext<TimeManagerHub> TimeManagerHubContext { get; set; }
-
         public static void Main(string[] args)
         {
             FirebaseApp.Create(new AppOptions()
@@ -23,11 +22,11 @@ namespace govgameWebApp
             });
 
             IHost govgameWebAppIHost = CreateHostBuilder(args).Build();
-            TimeManagerHubContext = (IHubContext<TimeManagerHub>)govgameWebAppIHost.Services.GetService(typeof(IHubContext<TimeManagerHub>));
+            TimeManagerHubServerMethods.TimeManagerHubContext = (IHubContext<TimeManagerHub>)govgameWebAppIHost.Services.GetService(typeof(IHubContext<TimeManagerHub>));
             govgameWebAppIHost.RunAsync();
 
             govgameGameServer.Program.StartAllManagers();
-            TimeManager.GameTimer.Elapsed += BroadcastNewTime;
+            TimeManager.GameTimer.Elapsed += TimeManagerHubServerMethods.BroadcastNewTime;
 
             Console.ReadKey();
         }
@@ -38,10 +37,5 @@ namespace govgameWebApp
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-
-        static void BroadcastNewTime(object source, ElapsedEventArgs elapsedEventArgs)
-        {
-            TimeManagerHubContext.Clients.All.SendAsync("NewTime", TimeManager.MinutesPastEpoch).Wait();
-        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Timers;
 
 namespace govgameGameServer.Managers
@@ -8,8 +7,7 @@ namespace govgameGameServer.Managers
     {
         private static int irlSecondsInGameSecond = 5; // this is essentialy a multiplier. The game time is irlSecondsInGameSecond times faster than real life
         private static int gameTimerInterval = (int)((1 / (decimal)irlSecondsInGameSecond) * 60 * 1000); // every interval, a game minute passes
-        private static Timer GameTimer { get; set; }
-        private static List<Action> GameTimerTickMethods = new List<Action>();
+        public static Timer GameTimer { get; private set; }
 
         public static int MinutesPastEpoch { get; private set; }
 
@@ -28,16 +26,6 @@ namespace govgameGameServer.Managers
             MinutesPastEpoch++;
 
             Console.WriteLine($"Game timer ticked. {MinutesPastEpoch} total minutes elapsed. Sending to clients.");
-
-            foreach (Action action in GameTimerTickMethods)
-            {
-                action();
-            }
-        }
-
-        public static void AddGameTimerTickMethod(Action method)
-        {
-            GameTimerTickMethods.Add(method);
         }
     }
 }

@@ -67,6 +67,10 @@
         connection.on("NewTime", function (minutesPastEpoch) {
             document.getElementById("time-in-minutes-h5").innerHTML = minutesPastEpoch + " minutes"
         })
+
+        connection.start().catch(function (err) {
+            return console.error(err.toString())
+        })
     </script>
     @RenderSection("Scripts", required: false)
 </body>

@@ -26,7 +26,9 @@ namespace govgameWebApp
             govgameWebAppIHost.RunAsync();
 
             govgameGameServer.Program.StartAllManagers();
+            Console.WriteLine("Attaching BroadcastNewTime to GameTimer.Elapsed...");
             TimeManager.GameTimer.Elapsed += BroadcastNewTime;
+            Console.WriteLine("Done!");
 
             Console.ReadKey();
         }
@@ -40,7 +42,9 @@ namespace govgameWebApp
 
         static void BroadcastNewTime(object source, ElapsedEventArgs elapsedEventArgs)
         {
+            Console.WriteLine("Sending clients new time...");
             TimeManagerHubContext.Clients.All.SendAsync("NewTime", TimeManager.MinutesPastEpoch);
+            Console.WriteLine("Done!");
         }
     }
 }

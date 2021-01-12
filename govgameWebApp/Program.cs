@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Threading;
 using System.Timers;
 
 namespace govgameWebApp
@@ -22,13 +23,11 @@ namespace govgameWebApp
             });
 
             IHost govgameWebAppIHost = CreateHostBuilder(args).Build();
-            TimeManagerHubContext = (IHubContext<TimeManagerHub>)govgameWebAppIHost.Services.GetService(typeof(TimeManagerHub));
+            TimeManagerHubContext = (IHubContext<TimeManagerHub>)govgameWebAppIHost.Services.GetService(typeof(IHubContext<TimeManagerHub>));
             govgameWebAppIHost.RunAsync();
 
             govgameGameServer.Program.StartAllManagers();
-            Console.WriteLine("Attaching BroadcastNewTime to GameTimer.Elapsed...");
             TimeManager.GameTimer.Elapsed += BroadcastNewTime;
-            Console.WriteLine("Done!");
 
             Console.ReadKey();
         }

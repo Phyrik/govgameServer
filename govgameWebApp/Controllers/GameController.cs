@@ -56,11 +56,6 @@ namespace govgameWebApp.Controllers
     [GameActionFilter]
     public class GameController : Controller
     {
-        public IActionResult GetMinutesPastEpoch()
-        {
-            return View();
-        }
-
         public IActionResult Index()
         {
             return View();

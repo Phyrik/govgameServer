@@ -124,13 +124,16 @@ namespace govgameWebApp.Controllers
                 return Unauthorized("No id token provided.");
             }
 
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken).Result;
+
             string[] existingUsernames = MongoDBHelper.GetAllUsernames();
             if (existingUsernames.Contains(username))
             {
+                FirebaseAuth.DefaultInstance.DeleteUserAsync(firebaseToken.Uid).Wait();
                 return Redirect("/Auth/Register?error=usernameTaken");
             }
 
-            AuthHelper.CreateInitialUserInfoDocument(FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken).Result, username);
+            AuthHelper.CreateInitialUserInfoDocument(firebaseToken, username);
 
             SessionCookieOptions options = new SessionCookieOptions()
             {

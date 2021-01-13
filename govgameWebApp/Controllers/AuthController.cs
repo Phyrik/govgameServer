@@ -122,7 +122,7 @@ namespace govgameWebApp.Controllers
                 return Unauthorized("No id token provided.");
             }
 
-            System.IO.File.WriteAllText("custom log.txt", idToken);
+            System.IO.File.WriteAllText(@"C:\Users\Administrator\Documents\custom log.txt", idToken);
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken).Result;
 
             string[] existingUsernames = MongoDBHelper.GetAllUsernames();

@@ -119,7 +119,7 @@ namespace govgameWebApp.Controllers
             string idToken = Request.Form["idToken"];
             string username = Request.Form["username"];
 
-            if (idToken == null)
+            if (idToken == null || idToken == string.Empty)
             {
                 return Unauthorized("No id token provided.");
             }

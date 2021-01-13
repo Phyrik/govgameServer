@@ -124,6 +124,12 @@ namespace govgameWebApp.Controllers
                 return Unauthorized("No id token provided.");
             }
 
+            string[] existingUsernames = MongoDBHelper.GetAllUsernames();
+            if (existingUsernames.Contains(username))
+            {
+                return Redirect("/Auth/Register?error=usernameTaken");
+            }
+
             AuthHelper.CreateInitialUserInfoDocument(FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken).Result, username);
 
             SessionCookieOptions options = new SessionCookieOptions()

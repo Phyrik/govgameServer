@@ -42,6 +42,16 @@
         url: "https://govgame.crumble-technologies.co.uk/Auth/EmailVerified"
     }
 
+    const urlParams = new URLSearchParams(location.href)
+    var urlError = urlParams.get("error")
+    switch (urlError) {
+        case "usernameTaken":
+            alert("Sorry. That username is already taken.")
+
+        default:
+            break
+    }
+
     function formSubmitted() {
         if (document.getElementById("password").value != document.getElementById("password-confirm").value) {
             alert("The passwords you entered do not match.")

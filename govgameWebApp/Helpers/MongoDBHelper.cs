@@ -226,6 +226,21 @@ namespace govgameWebApp.Helpers
                 return allPublicUsers;
             }
         }
+
+        public static string[] GetAllUsernames()
+        {
+            FilterDefinition<PublicUser> filter = Builders<PublicUser>.Filter.Empty;
+
+            PublicUser[] users = usersCollection.Find(filter).ToList().ToArray();
+
+            List<string> usernames = new List<string>();
+            foreach (PublicUser user in users)
+            {
+                usernames.Add(user.Username);
+            }
+
+            return usernames.ToArray();
+        }
         #endregion
 
         #region Countries Database

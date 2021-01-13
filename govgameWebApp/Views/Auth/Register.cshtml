@@ -57,7 +57,9 @@
         firebase.auth().createUserWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).then(user => {
             firebase.auth().currentUser.getIdToken().then(idToken => {
                 idTokenInput.setAttribute("value", idToken)
-                document.getElementById("id-token").remove()
+                try {
+                    document.getElementById("id-token").remove()
+                } catch {}
                 form.appendChild(idTokenInput)
 
                 $.post("/Auth/RegisterPOST", $("form#register-form").serialize(), function (data, status) {

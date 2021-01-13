@@ -42,16 +42,6 @@
         url: "https://govgame.crumble-technologies.co.uk/Auth/EmailVerified"
     }
 
-    const urlParams = new URLSearchParams(location.search)
-    var urlError = urlParams.get("error")
-    switch (urlError) {
-        case "usernameTaken":
-            alert("Sorry. That username is already taken.")
-
-        default:
-            break
-    }
-
     function formSubmitted() {
         if (document.getElementById("password").value != document.getElementById("password-confirm").value) {
             alert("The passwords you entered do not match.")
@@ -67,10 +57,17 @@
             firebase.auth().currentUser.getIdToken().then(idToken => {
                 idTokenInput.setAttribute("value", idToken)
                 form.appendChild(idTokenInput)
-                console.log(idToken)
 
-                firebase.auth().currentUser.sendEmailVerification(actionCodeSettings).then(() => {
-                    form.submit()
+                $.post("/Auth/RegisterPOST", $("form#register-form").serialize(), function (data, status) {
+                    if (data == "success") {
+                        firebase.auth().currentUser.sendEmailVerification(actionCodeSettings).then(() => {
+                            location.href = "/Game/CheckVerificationEmail"
+                        })
+                    }
+                    else if (data == "error: username taken")
+                    {
+                        alert("Sorry. That username is already taken.")
+                    }
                 })
             })
         }).catch(error => {

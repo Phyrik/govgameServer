@@ -130,7 +130,7 @@ namespace govgameWebApp.Controllers
             if (existingUsernames.Contains(username))
             {
                 FirebaseAuth.DefaultInstance.DeleteUserAsync(firebaseToken.Uid).Wait();
-                return Redirect("/Auth/Register?error=usernameTaken");
+                return Content("error: username taken");
             }
 
             AuthHelper.CreateInitialUserInfoDocument(firebaseToken, username);
@@ -152,7 +152,7 @@ namespace govgameWebApp.Controllers
                 };
 
                 Response.Cookies.Append("authSession", sessionCookie, cookieOptions);
-                return Redirect("/Auth/CheckVerificationEmail");
+                return Content("success");
             }
             catch (FirebaseAuthException)
             {

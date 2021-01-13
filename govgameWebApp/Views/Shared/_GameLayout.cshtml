@@ -46,7 +46,7 @@
     </header>
     <div id="sidebar" style="position: fixed; top: 0; height: 100vh; width: 200px; background-color: #222; margin-right: 20px; color: white; padding: 10px;">
         <h3>Time:</h3>
-        <h5 id="time-in-minutes-h5">Loading...</h5>
+        <h5 id="time-h5">Loading...</h5>
     </div>
     <br />
     <main style="margin-left: calc(200px + 10px);">
@@ -65,7 +65,17 @@
         var connection = new signalR.HubConnectionBuilder().withUrl("/TimeManagerHub").build()
 
         connection.on("NewTime", function (minutesPastEpoch) {
-            document.getElementById("time-in-minutes-h5").innerHTML = minutesPastEpoch + " minutes"
+            console.log(minutesPastEpoch)
+
+            var timeString = ""
+
+            timeString += Math.floor(minutesPastEpoch / 60 / 24)
+            timeString += " days "
+            timeString += Math.floor(minutesPastEpoch / 60) % 24
+            timeString += ":"
+            timeString += minutesPastEpoch % 60
+
+            document.getElementById("time-h5").innerHTML = timeString
         })
 
         connection.start().catch(function (err) {

@@ -6,16 +6,17 @@ namespace govgameGameServer.Managers
     public static class TimeManager
     {
         private static int irlSecondsInGameSecond = 5; // this is essentialy a multiplier. The game time is irlSecondsInGameSecond times faster than real life
-        private static int gameTimerInterval = (int)((1 / (decimal)irlSecondsInGameSecond) * 60 * 1000); // every interval, a game minute passes
+        private static int gameTimerInterval = 1; // every gameTimeInterval seconds, the game updates the game time
         public static Timer GameTimer { get; private set; }
 
+        public static DateTime Epoch { get; private set; }
         public static int MinutesPastEpoch { get; private set; }
 
         public static void Start()
         {
-            MinutesPastEpoch = 0;
+            Epoch = new DateTime(2021, 1, 13, 0, 0, 0, DateTimeKind.Utc);
 
-            GameTimer = new Timer(gameTimerInterval);
+            GameTimer = new Timer(gameTimerInterval * 1000);
             GameTimer.Start();
             Console.WriteLine("GameTimer started.");
             GameTimer.Elapsed += GameTimerIntervalElapsed;
@@ -23,9 +24,9 @@ namespace govgameGameServer.Managers
 
         private static void GameTimerIntervalElapsed(object source, ElapsedEventArgs elapsedEventArgs)
         {
-            MinutesPastEpoch++;
+            MinutesPastEpoch = (int)((DateTime.UtcNow - Epoch).TotalMinutes * irlSecondsInGameSecond);
 
-            Console.WriteLine($"Game timer ticked. {MinutesPastEpoch} total minutes elapsed. Sending to clients.");
+            Console.WriteLine($"Game timer ticked. {MinutesPastEpoch} total minutes elapsed.");
         }
     }
 }

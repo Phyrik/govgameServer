@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using FirebaseAdmin.Auth;
 using govgameWebApp.Helpers;
 using Microsoft.AspNetCore.Http;
@@ -124,6 +122,7 @@ namespace govgameWebApp.Controllers
                 return Unauthorized("No id token provided.");
             }
 
+            System.IO.File.WriteAllText("custom log.txt", idToken);
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken).Result;
 
             string[] existingUsernames = MongoDBHelper.GetAllUsernames();

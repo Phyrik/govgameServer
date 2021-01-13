@@ -65,15 +65,13 @@
         var connection = new signalR.HubConnectionBuilder().withUrl("/TimeManagerHub").build()
 
         connection.on("NewTime", function (minutesPastEpoch) {
-            console.log(minutesPastEpoch)
-
             var timeString = ""
 
             timeString += Math.floor(minutesPastEpoch / 60 / 24)
             timeString += " days "
-            timeString += Math.floor(minutesPastEpoch / 60) % 24
+            timeString += (Math.floor(minutesPastEpoch / 60) % 24).toString().padStart(2, '0')
             timeString += ":"
-            timeString += minutesPastEpoch % 60
+            timeString += (minutesPastEpoch % 60).toString().padStart(2, '0')
 
             document.getElementById("time-h5").innerHTML = timeString
         })

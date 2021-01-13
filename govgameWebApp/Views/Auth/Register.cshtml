@@ -50,12 +50,14 @@
         var form = document.getElementById("register-form");
 
         var idTokenInput = document.createElement("input")
+        idTokenInput.setAttribute("id", "id-token")
         idTokenInput.setAttribute("name", "idToken")
         idTokenInput.setAttribute("type", "text");
         idTokenInput.style.display = "none"
         firebase.auth().createUserWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).then(user => {
             firebase.auth().currentUser.getIdToken().then(idToken => {
                 idTokenInput.setAttribute("value", idToken)
+                document.getElementById("id-token").remove()
                 form.appendChild(idTokenInput)
 
                 $.post("/Auth/RegisterPOST", $("form#register-form").serialize(), function (data, status) {

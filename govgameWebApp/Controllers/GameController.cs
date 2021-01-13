@@ -29,9 +29,16 @@ namespace govgameWebApp.Controllers
 
                 controller.ViewData["publicUser"] = publicUser;
 
-                Country country = MongoDBHelper.GetCountry(publicUser.CountryId);
+                try
+                {
+                    Country country = MongoDBHelper.GetCountry(publicUser.CountryId);
 
-                controller.ViewData["country"] = country;
+                    controller.ViewData["country"] = country;
+                }
+                catch
+                {
+                    controller.ViewData["country"] = null;
+                }
 
                 int unreadEmails = 0;
                 foreach (Email email in MongoDBHelper.GetUsersReceivedEmails(firebaseUid))

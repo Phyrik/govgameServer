@@ -65,7 +65,7 @@
                 $.post("/Auth/RegisterPOST", $("form#register-form").serialize(), function (data, status) {
                     if (data == "success") {
                         firebase.auth().currentUser.sendEmailVerification(actionCodeSettings).then(() => {
-                            location.href = "/Game/CheckVerificationEmail"
+                            location.href = "/Auth/CheckVerificationEmail"
                         })
                     }
                     else if (data == "error: username taken") {

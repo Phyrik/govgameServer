@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
 </head>
 <body style="font-family: 'Roboto Slab', serif;">
-    <header style="overflow: hidden;">
+    <header style="overflow: hidden; margin-left: 200px;">
         <a href="/Game/CountryDashboard"><img height="100" src="~/images/flags/@(flagName).png" style="float: left; margin-top: 10px; margin-bottom: 10px; margin-left: 10px;" title="Go to Country Dashboard" /></a>
         <div style="float: left; display: grid; grid-template-rows: 70px 50px;">
             <h1 style="margin-left: 10px; margin-top: 10px;" title="Go to Country Dashboard"><a href="/Game/CountryDashboard" class="underline-a">@country.CountryName</a></h1>
@@ -44,6 +44,10 @@
             </ul>
         </nav>
     </header>
+    <div id="sidebar" style="position: fixed; top: 0; height: 100vh; width: 200px; background-color: #222; margin-right: 20px; color: white; padding: 10px;">
+        <h3>Time:</h3>
+        <h5 id="time-h5">Loading...</h5>
+    </div>
     <main style="overflow: hidden;">
         @RenderBody()
     </main>

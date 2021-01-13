@@ -42,7 +42,7 @@
         url: "https://govgame.crumble-technologies.co.uk/Auth/EmailVerified"
     }
 
-    const urlParams = new URLSearchParams(location.href)
+    const urlParams = new URLSearchParams(location.search)
     var urlError = urlParams.get("error")
     switch (urlError) {
         case "usernameTaken":

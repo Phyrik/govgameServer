@@ -68,6 +68,17 @@ namespace govgameWebApp.Controllers
             return View();
         }
 
+        public IActionResult Notifications(string authSessionCookie)
+        {
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
+
+            Notification[] notifications = MongoDBHelper.GetUsersReceivedNotifications(firebaseUid);
+            ViewData["notifications"] = notifications;
+
+            return View();
+        }
+
         public IActionResult Emails(string page, string authSessionCookie)
         {
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;

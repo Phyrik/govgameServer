@@ -33,7 +33,7 @@
             @foreach (Email email in emails)
             {
                 PublicUser sender = MongoDBHelper.GetPublicUser(email.SenderId);
-                <li id="email-li-@email.EmailId" class="email-li" onclick="openEmail('@email.EmailId');" style="padding: 5px 0 5px 5px; border-left: 5px solid @if (!email.MarkedAsRead) { <text>darkgrey</text> } else { <text>white</text> };">
+                <li id="email-li-@email.EmailId" class="email-li" onclick="openEmail('@email.EmailId');" style="padding: 5px 0 5px 5px; border-left: 5px solid @if (email.MarkedAsRead) { <text>lightgrey</text> } else { <text>white</text> };">
                     <h4>@sender.Username</h4>
                     <h5>@email.Subject</h5>
                 </li>
@@ -96,16 +96,13 @@
         function openEmail(emailId) {
             var emailLis = document.getElementsByClassName("email-li")
             for (var i = 0; i < emailLis.length; i++) {
-                emailLis[i].style.backgroundColor = "white"
-                console.log(emailLis[i].id.substring(9))
-                console.log(emails[emailLis[i].id.substring(9)])
                 switch (emails[emailLis[i].id.substring(9)].read) {
                     case true:
-                        emailLis[i].style.borderLeft = "5px solid white"
+                        emailLis[i].style.backgroundColor = "lightgrey"
                         break
 
                     case false:
-                        emailLis[i].style.borderLeft = "5px solid darkgrey"
+                        emailLis[i].style.backgroundColor = "white"
                         break
                         
                     default:
@@ -129,14 +126,13 @@
 
             var emailLi = document.getElementById("email-li-" + emailId)
 
-            emailLi.style.backgroundColor = "lightgrey"
+            emailLi.style.backgroundColor = "darkgrey"
 
-            emailLi.style.borderLeft = "5px solid lightgrey"
             if (!emails[emailId].read) {
                 emails[emailId].read = true
                 $.post(`/Game/MarkEmailAsReadUnread?emailId=${emailId}&readOrUnread=read`, function (data, status) {
                     if (data != "success") {
-                        emailLi.style.borderLeft = "5px solid darkgrey"
+                        console.log("error setting email as read")
                         emails[emailId].read = false
                     }
                 })

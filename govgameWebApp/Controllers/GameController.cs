@@ -59,7 +59,7 @@ namespace govgameWebApp.Controllers
 
                 controller.ViewData["unreadEmails"] = unreadEmails;
                 controller.ViewData["unreadNotifications"] = unreadNotifications;
-                
+
                 base.OnActionExecuting(context);
             }
             else
@@ -340,6 +340,42 @@ namespace govgameWebApp.Controllers
 
                     default:
                         return Content("invalid or missing parameter: readOrUnread");
+                }
+            }
+            else
+            {
+                return Content("error: not logged in");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult MarkNotificationAsRead(string notificationId)
+        {
+            string authSessionCookie = Request.Cookies["authSession"];
+
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+
+            if (userLoggedIn)
+            {
+                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+                string firebaseUid = firebaseToken.Uid;
+
+                Notification notificationToMark = MongoDBHelper.GetNotificationById(notificationId);
+
+                if (notificationToMark.UserId != firebaseUid)
+                {
+                    return StatusCode(401);
+                }
+
+                bool markNotificationAsReadSuccess = MongoDBHelper.MarkNotificationAsRead(notificationId);
+
+                if (markNotificationAsReadSuccess)
+                {
+                    return Content("success");
+                }
+                else
+                {
+                    return Content("error: internal server error");
                 }
             }
             else

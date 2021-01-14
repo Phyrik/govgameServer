@@ -49,7 +49,7 @@ namespace govgameWebApp.Controllers
 
             bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true);
 
-            ViewData["useLoggedIn"] = userLoggedIn;
+            ViewData["userLoggedIn"] = userLoggedIn;
 
             return View();
         }
@@ -60,7 +60,7 @@ namespace govgameWebApp.Controllers
 
             bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true);
 
-            ViewData["useLoggedIn"] = userLoggedIn;
+            ViewData["userLoggedIn"] = userLoggedIn;
 
             return View();
         }
@@ -71,7 +71,7 @@ namespace govgameWebApp.Controllers
 
             bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true);
 
-            ViewData["useLoggedIn"] = userLoggedIn;
+            ViewData["userLoggedIn"] = userLoggedIn;
 
             return View();
         }

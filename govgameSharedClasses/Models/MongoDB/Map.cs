@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace govgameWebApp.Models.MongoDB
+namespace govgameSharedClasses.Models.MongoDB
 {
     public class Map
     {

@@ -1,6 +1,6 @@
 ﻿using FirebaseAdmin.Auth;
 using govgameWebApp.Helpers;
-using govgameWebApp.Models.MongoDB;
+using govgameSharedClasses.Models.MongoDB;
 using govgameWebApp.Models.OtherModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

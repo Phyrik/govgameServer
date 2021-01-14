@@ -1,4 +1,4 @@
-﻿using govgameWebApp.Models.MongoDB;
+﻿using govgameSharedClasses.Models.MongoDB;
 using System;
 using System.Drawing;
 using System.Linq;

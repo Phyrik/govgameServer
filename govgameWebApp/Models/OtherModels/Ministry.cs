@@ -1,5 +1,5 @@
 ﻿using govgameWebApp.Helpers;
-using govgameWebApp.Models.MongoDB;
+using govgameSharedClasses.Models.MongoDB;
 
 namespace govgameWebApp.Models.OtherModels
 {

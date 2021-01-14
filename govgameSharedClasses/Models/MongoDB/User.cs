@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace govgameWebApp.Models.MongoDB
+namespace govgameSharedClasses.Models.MongoDB
 {
     public class PublicUser
     {

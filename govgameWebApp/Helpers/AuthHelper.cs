@@ -1,5 +1,5 @@
 ﻿using FirebaseAdmin.Auth;
-using govgameWebApp.Models.MongoDB;
+using govgameSharedClasses.Models.MongoDB;
 
 namespace govgameWebApp.Helpers
 {

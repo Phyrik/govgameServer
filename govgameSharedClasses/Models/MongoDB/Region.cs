@@ -1,7 +1,7 @@
 ﻿using govgameWebApp.Helpers;
 using System.Collections.Generic;
 
-namespace govgameWebApp.Models.MongoDB
+namespace govgameSharedClasses.Models.MongoDB
 {
     public class Region
     {

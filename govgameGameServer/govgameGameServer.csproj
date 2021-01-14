@@ -13,5 +13,9 @@
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\govgameSharedClasses\govgameSharedClasses.csproj" />
+  </ItemGroup>
 
 </Project>

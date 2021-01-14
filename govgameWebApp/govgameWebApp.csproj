@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\govgameGameServer\govgameGameServer.csproj" />
+    <ProjectReference Include="..\govgameSharedClasses\govgameSharedClasses.csproj" />
   </ItemGroup>
 
 </Project>

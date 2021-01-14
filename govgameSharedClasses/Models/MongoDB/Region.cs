@@ -1,5 +1,4 @@
-﻿using govgameWebApp.Helpers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace govgameSharedClasses.Models.MongoDB
 {
@@ -13,19 +12,19 @@ namespace govgameSharedClasses.Models.MongoDB
             get { return this.Locations.Find(location => location.RegionalX == x && location.RegionalY == y); }
             set
             {
-                int locationIndex = y * MapHelper.worldRegionWidth + x;
+                int locationIndex = y * (2000 / 10) + x;
                 this.Locations[locationIndex] = value;
             }
         }
 
         public int GetRegionX()
         {
-            return MapHelper.worldRegionChars.IndexOf(this.RegionId[1]);
+            return "ABCDEFGHIJ".IndexOf(this.RegionId[1]);
         }
 
         public int GetRegionY()
         {
-            return MapHelper.worldRegionChars.IndexOf(this.RegionId[0]);
+            return "ABCDEFGHIJ".IndexOf(this.RegionId[0]);
         }
     }
 }

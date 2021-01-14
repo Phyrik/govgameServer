@@ -1,5 +1,4 @@
-﻿using govgameWebApp.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,14 +22,6 @@ namespace govgameSharedClasses.Models.MongoDB
 
                 return null;
             }
-        }
-
-        public string GetTopLeftRegionId()
-        {
-            int leftMostRegionX = Regions.Min(region => region.GetRegionX());
-            int topMostRegionY = Regions.Min(region => region.GetRegionY());
-
-            return $"{MapHelper.worldRegionChars[topMostRegionY]}{MapHelper.worldRegionChars[leftMostRegionX]}";
         }
 
         public int GetRegionsHori()

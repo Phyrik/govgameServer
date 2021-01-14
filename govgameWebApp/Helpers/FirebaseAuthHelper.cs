@@ -17,13 +17,20 @@ namespace govgameWebApp.Helpers
 
                 UserRecord firebaseUser = FirebaseAuth.DefaultInstance.GetUserAsync(firebaseToken.Uid).Result;
 
-                if (firebaseUser.EmailVerified || dontCheckEmailVerified)
+                if (!dontCheckEmailVerified)
                 {
-                    return true;
+                    if (firebaseUser.EmailVerified)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                 {
-                    return false;
+                    return true;
                 }
             }
             catch

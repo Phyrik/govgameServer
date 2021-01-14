@@ -13,7 +13,7 @@ namespace govgameWebApp.Controllers
         {
             string authSessionCookie = Request.Cookies["authSession"];
 
-            switch (FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie))
+            switch (FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true))
             {
                 case true:
                     return Redirect("/");
@@ -27,7 +27,7 @@ namespace govgameWebApp.Controllers
         {
             string authSessionCookie = Request.Cookies["authSession"];
 
-            switch (FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie))
+            switch (FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true))
             {
                 case true:
                     return Redirect("/");
@@ -47,7 +47,7 @@ namespace govgameWebApp.Controllers
         {
             string authSessionCookie = Request.Cookies["authSession"];
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true);
 
             ViewData["useLoggedIn"] = userLoggedIn;
 
@@ -58,7 +58,7 @@ namespace govgameWebApp.Controllers
         {
             string authSessionCookie = Request.Cookies["authSession"];
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true);
 
             ViewData["useLoggedIn"] = userLoggedIn;
 
@@ -69,7 +69,7 @@ namespace govgameWebApp.Controllers
         {
             string authSessionCookie = Request.Cookies["authSession"];
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true);
 
             ViewData["useLoggedIn"] = userLoggedIn;
 

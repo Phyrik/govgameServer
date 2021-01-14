@@ -4,7 +4,7 @@ namespace govgameWebApp.Helpers
 {
     public class FirebaseAuthHelper
     {
-        public static bool IsUserLoggedIn(string authSessionCookie)
+        public static bool IsUserLoggedIn(string authSessionCookie, bool dontCheckEmailVerified = false)
         {
             if (string.IsNullOrEmpty(authSessionCookie))
             {
@@ -17,7 +17,7 @@ namespace govgameWebApp.Helpers
 
                 UserRecord firebaseUser = FirebaseAuth.DefaultInstance.GetUserAsync(firebaseToken.Uid).Result;
 
-                if (firebaseUser.EmailVerified)
+                if (firebaseUser.EmailVerified || dontCheckEmailVerified)
                 {
                     return true;
                 }

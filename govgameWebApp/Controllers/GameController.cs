@@ -48,8 +48,17 @@ namespace govgameWebApp.Controllers
                         unreadEmails++;
                     }
                 }
+                int unreadNotifications = 0;
+                foreach (Notification notification in MongoDBHelper.GetUsersReceivedNotifications(firebaseUid))
+                {
+                    if (!notification.MarkedAsRead)
+                    {
+                        unreadNotifications++;
+                    }
+                }
 
                 controller.ViewData["unreadEmails"] = unreadEmails;
+                controller.ViewData["unreadNotifications"] = unreadNotifications;
                 
                 base.OnActionExecuting(context);
             }

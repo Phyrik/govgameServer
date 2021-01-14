@@ -7,3 +7,16 @@
     ViewData["PageName"] = "Notifications";
 }
 
+<h1>Notifications</h1>
+<br />
+<hr />
+<ul>
+    @foreach (Notification notification in notifications)
+    {
+        <li onclick="location.href = '@Html.Raw(notification.Link)'" style="list-style: none; margin-left: 50px; margin-right: 50px;">
+            <h2>@notification.Title</h2>
+            <p>@notification.Content</p>
+        </li>
+        <hr />
+    }
+</ul>

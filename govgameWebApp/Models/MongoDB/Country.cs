@@ -7,7 +7,6 @@ namespace govgameWebApp.Models.MongoDB
         [BsonId]
         public string CountryId { get; set; }
         public string CountryName { get; set; }
-        public string Demonym { get; set; }
         public string CapitalName { get; set; }
         public int FlagId { get; set; }
         public string PrimeMinisterId { get; set; }
@@ -20,7 +19,6 @@ namespace govgameWebApp.Models.MongoDB
     public class CountryUpdate
     {
         public string CountryName { get; set; }
-        public string Demonym { get; set; }
         public string CapitalName { get; set; }
         public int? FlagId { get; set; } = null;
         public string PrimeMinisterId { get; set; }

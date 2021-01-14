@@ -369,7 +369,6 @@ namespace govgameWebApp.Controllers
                     {
                         CountryId = CountryGenerationHelper.GenerateCountryUUID(),
                         CountryName = Request.Form["country-name"],
-                        Demonym = Request.Form["demonym"],
                         CapitalName = Request.Form["capital-name"],
                         FlagId = CountryGenerationHelper.FlagNameToId(Request.Form["flag-name"]),
                         PrimeMinisterId = firebaseUid,

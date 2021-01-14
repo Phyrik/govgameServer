@@ -1,10 +1,13 @@
-﻿@{ 
+﻿@{
     Layout = "_GameLayout";
 
     Notification[] notifications = (Notification[])ViewData["notifications"];
 
     ViewData["Title"] = "Notifications";
     ViewData["PageName"] = "Notifications";
+
+    string readNotOpenedColour = "lightgrey";
+    string unreadNotOpenedColour = "white";
 }
 
 <h1>Notifications</h1>
@@ -13,10 +16,10 @@
 <ul class="no-margin-ul">
     @foreach (Notification notification in notifications)
     {
-        <li onclick="location.href = '@Html.Raw(notification.Link)'" style="list-style: none; margin-left: 50px; margin-right: 50px;">
-            <h2>@notification.Title</h2>
-            <p>@notification.Content</p>
-        </li>
+    <li onclick="markNotificationAsRead('@notification.NotificationId'); location.href = '@Html.Raw(notification.Link)'" style="list-style: none; margin-left: 50px; margin-right: 50px; background-color: @if (notification.MarkedAsRead) { @readNotOpenedColour } else { @unreadNotOpenedColour };">
+        <h2>@notification.Title</h2>
+        <p>@notification.Content</p>
+    </li>
         <hr />
     }
 </ul>
@@ -26,3 +29,18 @@
         cursor: pointer;
     }
 </style>
+
+@section Scripts {
+    <script>
+        function markNotificationAsRead(notificationId) {
+            emailLi.style.backgroundColor = "@readNotOpenedColour"
+
+            $.post(`/Game/MarkNotificationAsRead?notificationId=${notificationId}`, function (data, status) {
+                if (data != "success") {
+                    console.log("error setting notification as read")
+                    emailLi.style.backgroundColor = "@unreadNotOpenedColour"
+                }
+            })
+        }
+    </script>
+}

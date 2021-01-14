@@ -37,7 +37,7 @@
             @foreach (Email email in emails)
             {
                 PublicUser sender = MongoDBHelper.GetPublicUser(email.SenderId);
-                <li id="email-li-@email.EmailId" class="email-li" onclick="openEmail('@email.EmailId');" style="padding: 5px 0 5px 5px; border-left: 5px solid @if (email.MarkedAsRead) { @unreadNotOpenedColour } else { @readNotOpenedColour };">
+                <li id="email-li-@email.EmailId" class="email-li" onclick="openEmail('@email.EmailId');" style="padding: 5px 0 5px 5px; background-color: @if (email.MarkedAsRead) { @unreadNotOpenedColour } else { @readNotOpenedColour };">
                     <h4>@sender.Username</h4>
                     <h5>@email.Subject</h5>
                 </li>

@@ -153,7 +153,7 @@ namespace govgameWebApp.Helpers
                 case MinistryCode.ForeignAffairs:
                     return "ministry of foreign affairs.png";
                 case MinistryCode.Defence:
-                    return "ministry of defence.pn";
+                    return "ministry of defence.png";
                 default:
                     return null;
             }

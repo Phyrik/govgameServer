@@ -1,19 +1,18 @@
 ﻿@{
     Layout = "_GameLayout";
 
-    ViewData["Title"] = "Invite new minister";
-    ViewData["PageName"] = "Invite new minister";
-
     Country country = (Country)ViewData["country"];
 
-    Ministry.MinistryCode ministryCode = (Ministry.MinistryCode)ViewData["ministryCode"];
+    MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)ViewData["ministryCode"];
     PublicUser[] allPublicUsers = (PublicUser[])ViewData["allPublicUsers"];
 
-    string ministryName = Ministry.MinistryCodeToMinistryName(ministryCode);
-    string ministryColour = Ministry.MinistryCodeToMinistryHexColour(ministryCode);
-    Ministry ministry = Ministry.GetMinistry(ministryCode, country.CountryId);
+    string ministryName = MinistryHelper.MinistryCodeToMinistryName(ministryCode);
+    string ministryColour = MinistryHelper.MinistryCodeToMinistryHexColour(ministryCode);
 
     PublicUser currentPublicUser = (PublicUser)ViewData["publicUser"];
+
+    ViewData["Title"] = "Invite new minister";
+    ViewData["PageName"] = "Invite new minister";
 }
 
 <h1>

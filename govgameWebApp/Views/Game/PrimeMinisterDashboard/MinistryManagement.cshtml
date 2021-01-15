@@ -5,31 +5,37 @@
 
     ViewData["Title"] = "Ministry management";
     ViewData["PageName"] = "Ministry management";
-
-    Ministry[] ministries = (Ministry[])ViewData["ministries"];
 }
 
 <h1>Ministries</h1>
 <br />
 <hr />
 <ul style="list-style: none;" class="no-margin-ul">
-    @foreach (Ministry ministry in ministries)
+    @foreach (MinistryHelper.MinistryCode ministryCode in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
     {
-        @if (ministry.Code == Ministry.MinistryCode.PrimeMinister) continue;
-        @if (ministry.MinisterPublicUser != null)
+        @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister) continue;
+        @if (MinistryHelper.GetPublicUserForCountryByMinistryCode(country.CountryId, ministryCode) != null)
         {
-            <li class="ministry-li" id="ministry-li-@ministry.Code.ToString("g")">
-                <img src="~/images/ministries/@(ministry.ImageFileName)" height="175" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 5;" />
-                <h3 style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2; margin-left: 20px;">Minister: @ministry.MinisterPublicUser.Username</h3>
-                <button onclick="dismissMinister('@ministry.Code.ToString("g")')" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4; margin-left: calc(20px + 50px); margin-top: 20px; width: 200px;">Dismiss minister</button>
+            <li class="ministry-li" id="ministry-li-@ministryCode.ToString("g")">
+                <img src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="175" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 5;" />
+                <h3 style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2; margin-left: 20px;">Minister: @MinistryHelper.GetPublicUserForCountryByMinistryCode(country.CountryId, ministryCode).Username</h3>
+                <button onclick="dismissMinister('@ministryCode.ToString("g")')" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4; margin-left: calc(20px + 50px); margin-top: 20px; width: 200px;">Dismiss minister</button>
+            </li>
+        }
+        else if (MinistryHelper.GetPublicUserForCountryByMinistryCode(country.CountryId, ministryCode) == null && country.InvitedInteriorMinisterId != "none")
+        {
+            <li class="ministry-li" id="ministry-li-@ministryCode.ToString("g")">
+                <img src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="175" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 5;" />
+                <h3 style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2; margin-left: 20px;">Invitation sent to @MinistryHelper.GetInvitedPublicUserForCountryByMinistryCode(country.CountryId, ministryCode).Username</h3>
+                <button onclick="dismissMinister('@ministryCode.ToString("g")')" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4; margin-left: calc(20px + 50px); margin-top: 20px; width: 200px;">Dismiss minister</button>
             </li>
         }
         else
         {
-            <li class="ministry-li" id="ministry-li-@ministry.Code.ToString("g")">
-                <img src="~/images/ministries/@(ministry.ImageFileName)" height="175" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 5;" />
+            <li class="ministry-li" id="ministry-li-@ministryCode.ToString("g")">
+                <img src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="175" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 5;" />
                 <h3 style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2; margin-left: 20px;">No minister</h3>
-                <button onclick="location.href = '/Game/PrimeMinisterDashboard/InviteNewMinister?minister=@(ministry.Code.ToString("g"))'" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4; margin-left: calc(20px + 50px); margin-top: 20px; width: 200px;">Invite new minister</button>
+                <button onclick="location.href = '/Game/PrimeMinisterDashboard/InviteNewMinister?minister=@(ministryCode.ToString("g"))'" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4; margin-left: calc(20px + 50px); margin-top: 20px; width: 200px;">Invite new minister</button>
             </li>
         }
         <hr />

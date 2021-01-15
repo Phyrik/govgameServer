@@ -339,7 +339,7 @@ namespace govgameWebApp.Controllers
                         case Ministry.MinistryCode.Defence:
 
                         default:
-                            break;
+                            return null;
                     }
                 }
                 else

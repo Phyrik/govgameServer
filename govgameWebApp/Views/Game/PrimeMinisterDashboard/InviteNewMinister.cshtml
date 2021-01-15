@@ -28,7 +28,6 @@
         @if (publicUser.UserId == currentPublicUser.UserId) continue;
         <li style="list-style: none; display: grid; grid-template-columns: auto auto; margin-left: 50px; margin-right: 50px;">
             <h2 style="grid-column-start: 1; grid-column-end: 2;">@publicUser.Username</h2>
-            <h3 style="grid-column-start: 1; grid-column-end: 2;">(User ID: @publicUser.UserId)</h3>
             @if (publicUser.IsMinister)
             {
                 Country publicUserCountry = MongoDBHelper.GetCountry(publicUser.CountryId);

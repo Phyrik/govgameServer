@@ -129,6 +129,9 @@ namespace govgameWebApp.Controllers
                     ViewData["ministry"] = (Ministry.MinistryCode)Enum.Parse(typeof(Ministry.MinistryCode), ministry);
 
                     return View("./Invite/Minister");
+
+                default:
+                    return null;
             }
         }
 

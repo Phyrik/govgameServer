@@ -43,7 +43,11 @@
 @section Scripts {
     <script>
         function inviteMinister(userId) {
-
+            $.post(`/Game/InviteMinister?ministry=@ministryCode.ToString("g")&invitedUserId=${userId}`, function (data, status) {
+                if (data == "success") {
+                    location.href = "/Game/PrimeMinisterDashboard/MinistryManagement"
+                }
+            })
         }
     </script>
 }

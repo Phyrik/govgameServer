@@ -11,7 +11,11 @@ namespace govgameWebApp.Helpers
     {
         static readonly string username = "ASPNETwebapp";
         static readonly string password = "deUM3YhG9HreNCQN";
+#if DEBUG
         static readonly MongoClient mongoClient = new MongoClient($"mongodb://{username}:{password}@localhost");
+#else
+        static readonly MongoClient mongoClient = new MongoClient($"mongodb://{username}:{password}@ec2-35-178-4-240.eu-west-2.compute.amazonaws.com");
+#endif
 
         #region Map Database
         static readonly IMongoDatabase mapDatabase = mongoClient.GetDatabase("govgame_map_table");
@@ -207,7 +211,7 @@ namespace govgameWebApp.Helpers
             FilterDefinition<PublicUser> filter = Builders<PublicUser>.Filter.Empty;
 
             PublicUser[] allPublicUsers = usersCollection.Find(filter).ToList().ToArray();
-            
+
             if (excludeMinisters)
             {
                 List<PublicUser> allPublicUsersNotMinisters = new List<PublicUser>();

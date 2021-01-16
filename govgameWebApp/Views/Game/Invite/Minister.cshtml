@@ -1,6 +1,10 @@
 ﻿@{
     Layout = "_GameLayout";
 
+    Country oldCountry = (Country)ViewData["country"];
+    Country newCountry = (Country)ViewData["newCountry"];
+    PublicUser newPrimeMinister = (PublicUser)ViewData["newPrimeMinisterUser"];
+
     ViewData["Title"] = "Invitiation to ministry";
     ViewData["PageName"] = "Invitiation to ministry";
 }

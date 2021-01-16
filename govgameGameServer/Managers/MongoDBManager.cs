@@ -7,7 +7,11 @@ namespace govgameGameServer.Managers
     {
         static readonly string username = "ASPNETwebapp";
         static readonly string password = "deUM3YhG9HreNCQN";
+#if DEBUG
         static readonly MongoClient mongoClient = new MongoClient($"mongodb://{username}:{password}@localhost");
+#else
+        static readonly MongoClient mongoClient = new MongoClient($"mongodb://{username}:{password}@ec2-35-178-4-240.eu-west-2.compute.amazonaws.com");
+#endif
 
         #region Notification Database
         static readonly IMongoDatabase notificationsDatabase = mongoClient.GetDatabase("govgame_notifications_table");

@@ -4,7 +4,24 @@
     Country oldCountry = (Country)ViewData["country"];
     Country newCountry = (Country)ViewData["newCountry"];
     PublicUser newPrimeMinister = (PublicUser)ViewData["newPrimeMinisterUser"];
+    MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)ViewData["ministryCode"];
 
     ViewData["Title"] = "Invitiation to ministry";
     ViewData["PageName"] = "Invitiation to ministry";
 }
+
+<div id="grid" style="display: grid; grid-template-columns: auto auto auto; text-align: center;">
+    <div id="old-country-div" style="grid-column-start: 1; grid-column-end: 2;">
+        <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[oldCountry.FlagId]).png" style="margin-left: auto; margin-right: auto;"/>
+        <br />
+        <br />
+        <h2>@oldCountry.CountryName</h2>
+    </div>
+    <img width="100" style="grid-column-start: 2; grid-column-end: 3; margin: auto;" src="~/images/arrow right.svg"/>
+    <div id="new-country-div" style="grid-column-start: 3; grid-column-end: 4;">
+        <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[newCountry.FlagId]).png" style="margin-left: auto; margin-right: auto;"/>
+        <br />
+        <br />
+        <h2>@newCountry.CountryName</h2>
+    </div>
+</div>

@@ -116,6 +116,8 @@ namespace govgameWebApp.Controllers
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
 
+            PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+
             switch (page)
             {
                 case "Minister":
@@ -125,7 +127,46 @@ namespace govgameWebApp.Controllers
                     PublicUser newPrimeMinisterUser = MongoDBHelper.GetPublicUser(newCountry.PrimeMinisterId);
                     ViewData["newPrimeMinisterUser"] = newPrimeMinisterUser;
 
-                    ViewData["ministry"] = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+                    MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+                    ViewData["ministryCode"] = ministryCode;
+
+                    switch (ministryCode)
+                    {
+                        case MinistryHelper.MinistryCode.Interior:
+                            if (newCountry.InvitedInteriorMinisterId != publicUser.UserId)
+                            {
+                                return Content("error: invalid invite link");
+                            }
+
+                            break;
+
+                        case MinistryHelper.MinistryCode.FinanceAndTrade:
+                            if (newCountry.InvitedFinanceAndTradeMinisterId != publicUser.UserId)
+                            {
+                                return Content("error: invalid invite link");
+                            }
+
+                            break;
+
+                        case MinistryHelper.MinistryCode.ForeignAffairs:
+                            if (newCountry.InvitedForeignMinisterId != publicUser.UserId)
+                            {
+                                return Content("error: invalid invite link");
+                            }
+
+                            break;
+
+                        case MinistryHelper.MinistryCode.Defence:
+                            if (newCountry.InvitedDefenceMinisterId != publicUser.UserId)
+                            {
+                                return Content("error: invalid invite link");
+                            }
+
+                            break;
+
+                        default:
+                            return Content("error: invalid invite link");
+                    }
 
                     return View("./Invite/Minister");
 

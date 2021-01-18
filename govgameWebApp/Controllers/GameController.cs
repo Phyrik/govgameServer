@@ -118,9 +118,14 @@ namespace govgameWebApp.Controllers
 
             PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
 
+            Country oldCountry = MongoDBHelper.GetCountry(publicUser.CountryId);
+
             switch (page)
             {
                 case "Minister":
+                    PublicUser oldPrimeMinisterUser = MongoDBHelper.GetPublicUser(oldCountry.PrimeMinisterId);
+                    ViewData["oldPrimeMinisterUser"] = oldPrimeMinisterUser;
+
                     Country newCountry = MongoDBHelper.GetCountry(countryId);
                     ViewData["newCountry"] = newCountry;
 

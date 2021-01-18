@@ -3,6 +3,7 @@
 
     Country oldCountry = (Country)ViewData["country"];
     Country newCountry = (Country)ViewData["newCountry"];
+    PublicUser oldPrimeMinister = (PublicUser)ViewData["oldPrimeMinisterUser"];
     PublicUser newPrimeMinister = (PublicUser)ViewData["newPrimeMinisterUser"];
     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)ViewData["ministryCode"];
 
@@ -16,12 +17,14 @@
         <br />
         <br />
         <h2>@oldCountry.CountryName</h2>
+        <h3>Prime Minister: @oldPrimeMinister.Username</h3>
     </div>
-    <img width="100" style="grid-column-start: 2; grid-column-end: 3; margin: auto;" src="~/images/arrow right.svg"/>
+    <img width="150" style="grid-column-start: 2; grid-column-end: 3; margin: auto;" src="~/images/arrow right.svg"/>
     <div id="new-country-div" style="grid-column-start: 3; grid-column-end: 4;">
-        <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[newCountry.FlagId]).png" style="margin-left: auto; margin-right: auto;"/>
+        <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[newCountry.FlagId]).png" style="margin-left: auto; margin-right: auto;" />
         <br />
         <br />
         <h2>@newCountry.CountryName</h2>
+        <h3>Prime Minister: @newPrimeMinister.Username</h3>
     </div>
 </div>

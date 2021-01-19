@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using govgameSharedClasses.Helpers;
+using System.Linq;
 
 namespace govgameWebApp.Controllers
 {
@@ -582,6 +583,12 @@ namespace govgameWebApp.Controllers
                         ForeignMinisterId = "none",
                         DefenceMinisterId = "none"
                     };
+
+                    string[] existingCountryNames = MongoDBHelper.GetAllCountryNames();
+                    if (existingCountryNames.Contains(country.CountryName))
+                    {
+                        return Content("error: country name taken");
+                    }
 
                     GlobalLocationIdentifier globalLocationIdentifier = new GlobalLocationIdentifier(int.Parse(Request.Form["locationX"]) - 50, int.Parse(Request.Form["locationY"]) - 50);
 

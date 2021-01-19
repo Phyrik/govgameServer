@@ -313,6 +313,21 @@ namespace govgameSharedClasses.Helpers
 
             return countryIds.ToArray();
         }
+
+        public static string[] GetAllCountryNames()
+        {
+            FilterDefinition<Country> filter = Builders<Country>.Filter.Empty;
+
+            Country[] countries = countriesCollection.Find(filter).ToList().ToArray();
+
+            List<string> countryNames = new List<string>();
+            foreach (Country country in countries)
+            {
+                countryNames.Add(country.CountryName);
+            }
+
+            return countryNames.ToArray();
+        }
         #endregion
 
         #region Emails Database

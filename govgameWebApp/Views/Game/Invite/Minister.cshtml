@@ -11,20 +11,49 @@
     ViewData["PageName"] = "Invitiation to ministry";
 }
 
-<div id="grid" style="display: grid; grid-template-columns: auto auto auto; text-align: center;">
-    <div id="old-country-div" style="grid-column-start: 1; grid-column-end: 2;">
-        <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[oldCountry.FlagId]).png" style="margin-left: auto; margin-right: auto;"/>
+<div id="grid" style="display: grid; grid-template-columns: auto auto auto; grid-template-rows: auto 100px auto; text-align: center;">
+    <div id="old-country-div" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2;">
+        <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[oldCountry.FlagId]).png" style="margin-left: auto; margin-right: auto;" />
         <br />
         <br />
         <h2>@oldCountry.CountryName</h2>
         <h3>Prime Minister: @oldPrimeMinister.Username</h3>
     </div>
-    <img width="150" style="grid-column-start: 2; grid-column-end: 3; margin: auto;" src="~/images/arrow right.svg"/>
-    <div id="new-country-div" style="grid-column-start: 3; grid-column-end: 4;">
+    <img width="150" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2; margin: auto;" src="~/images/arrow right.svg" />
+    <div id="new-country-div" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 1; grid-row-end: 2;">
         <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[newCountry.FlagId]).png" style="margin-left: auto; margin-right: auto;" />
         <br />
         <br />
         <h2>@newCountry.CountryName</h2>
         <h3>Prime Minister: @newPrimeMinister.Username</h3>
     </div>
+    <div id="buttons-div" style="grid-column-start: 1; grid-column-end: 4; grid-row-start: 2; grid-row-end: 3; text-align: center; margin: auto;">
+        <button onclick="accept()">Accept</button>
+        <button onclick="decline()">Decline</button>
+    </div>
+    <div id="pm-ministry-choice-div" style="grid-column-start: 1; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4;">
+        <!--TODO: let user choose who replaces them as PM-->
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        function accept() {
+            $.post(`/Game/AcceptMinistryInvite?ministry=@ministryCode&newCountryId=@newCountry.CountryId`, function (data, status) {
+                if (data == "success") {
+                    alert("Successfully accepted invite")
+                    location.href = "/Game/CountryDashboard"
+                }
+            })
+        }
+
+        function decline() {
+            $.post(`/Game/DeclineMinistryInvite?ministry=@ministryCode&newCountryId=@newCountry.CountryId`, function (data, status) {
+                if (data == "success") {
+                    alert("Successfully declined invite")
+                    location.href = "/Game/CountryDashboard"
+                }
+            })
+        }
+    </script>
+}

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace govgameWebApp.Helpers
+namespace govgameSharedClasses.Helpers
 {
     public class CountryGenerationHelper
     {

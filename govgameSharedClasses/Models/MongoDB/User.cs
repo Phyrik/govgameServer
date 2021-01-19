@@ -9,6 +9,10 @@ namespace govgameSharedClasses.Models.MongoDB
         public string Username { get; set; }
         public bool OwnsCountry { get; set; }
         public bool IsMinister { get; set; }
+        /// <summary>
+        /// This integer represents a value from the MinistryHelper.MinistryCode enum
+        /// </summary>
+        public int Ministry { get; set; }
         public string CountryId { get; set; }
     }
 
@@ -17,6 +21,10 @@ namespace govgameSharedClasses.Models.MongoDB
         public string Username { get; set; }
         public bool OwnsCountry { get; set; }
         public bool IsMinister { get; set; }
+        /// <summary>
+        /// This integer represents a value from the MinistryHelper.MinistryCode enum
+        /// </summary>
+        public int Ministry { get; set; }
         public string CountryId { get; set; }
     }
 }

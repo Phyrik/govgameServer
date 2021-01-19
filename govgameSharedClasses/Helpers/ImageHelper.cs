@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace govgameWebApp.Helpers
+namespace govgameSharedClasses.Helpers
 {
     public class ImageHelper
     {

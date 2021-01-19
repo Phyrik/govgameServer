@@ -1,9 +1,9 @@
 ﻿using FirebaseAdmin.Auth;
-using govgameWebApp.Helpers;
 using govgameSharedClasses.Models.MongoDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
+using govgameSharedClasses.Helpers;
 
 namespace govgameWebApp.Controllers
 {
@@ -135,42 +135,9 @@ namespace govgameWebApp.Controllers
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
                     ViewData["ministryCode"] = ministryCode;
 
-                    switch (ministryCode)
+                    if (newCountry.GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
                     {
-                        case MinistryHelper.MinistryCode.Interior:
-                            if (newCountry.InvitedInteriorMinisterId != publicUser.UserId)
-                            {
-                                return Content("error: invalid invite link");
-                            }
-
-                            break;
-
-                        case MinistryHelper.MinistryCode.FinanceAndTrade:
-                            if (newCountry.InvitedFinanceAndTradeMinisterId != publicUser.UserId)
-                            {
-                                return Content("error: invalid invite link");
-                            }
-
-                            break;
-
-                        case MinistryHelper.MinistryCode.ForeignAffairs:
-                            if (newCountry.InvitedForeignMinisterId != publicUser.UserId)
-                            {
-                                return Content("error: invalid invite link");
-                            }
-
-                            break;
-
-                        case MinistryHelper.MinistryCode.Defence:
-                            if (newCountry.InvitedDefenceMinisterId != publicUser.UserId)
-                            {
-                                return Content("error: invalid invite link");
-                            }
-
-                            break;
-
-                        default:
-                            return Content("error: invalid invite link");
+                        return Content("error: invalid invite link");
                     }
 
                     return View("./Invite/Minister");
@@ -253,59 +220,16 @@ namespace govgameWebApp.Controllers
                 {
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), minister);
 
-                    CountryUpdate countryUpdate;
-                    switch (ministryCode)
+                    CountryUpdate countryUpdate = new CountryUpdate();
+                    countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
+
+                    if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate))
                     {
-                        case MinistryHelper.MinistryCode.Interior:
-                            countryUpdate = new CountryUpdate { InteriorMinisterId = "none" };
-
-                            if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate))
-                            {
-                                return Content("success");
-                            }
-                            else
-                            {
-                                return Content("error: internal server error");
-                            }
-
-                        case MinistryHelper.MinistryCode.FinanceAndTrade:
-                            countryUpdate = new CountryUpdate { FinanceAndTradeMinisterId = "none" };
-
-                            if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate))
-                            {
-                                return Content("success");
-                            }
-                            else
-                            {
-                                return Content("error: internal server error");
-                            }
-
-                        case MinistryHelper.MinistryCode.ForeignAffairs:
-                            countryUpdate = new CountryUpdate { ForeignMinisterId = "none" };
-
-                            if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate))
-                            {
-                                return Content("success");
-                            }
-                            else
-                            {
-                                return Content("error: internal server error");
-                            }
-
-                        case MinistryHelper.MinistryCode.Defence:
-                            countryUpdate = new CountryUpdate { DefenceMinisterId = "none" };
-
-                            if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate))
-                            {
-                                return Content("success");
-                            }
-                            else
-                            {
-                                return Content("error: internal server error");
-                            }
-
-                        default:
-                            return Content("error: invalid minister");
+                        return Content("success");
+                    }
+                    else
+                    {
+                        return Content("error: internal server error");
                     }
                 }
                 else
@@ -339,165 +263,136 @@ namespace govgameWebApp.Controllers
                 {
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
 
-                    CountryUpdate countryUpdate;
-                    NotificationSendRequest notificationSendRequest;
-                    switch (ministryCode)
+                    if (country.GetMinisterIdByCode(ministryCode) != "none")
                     {
-                        case MinistryHelper.MinistryCode.Interior:
-                            if (country.InteriorMinisterId != "none")
-                            {
-                                return Content("error: ministry occupied");
-                            }
-
-                            if (country.InvitedInteriorMinisterId != "none")
-                            {
-                                return Content("error: a user is already invited to ministry");
-                            }
-
-                            countryUpdate = new CountryUpdate { InvitedInteriorMinisterId = invitedUserId };
-
-                            if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate))
-                            {
-                                notificationSendRequest = new NotificationSendRequest
-                                {
-                                    UserId = invitedUserId,
-                                    Title = $"Invitation to become a minister at {country.CountryName}",
-                                    Content = $"You have been invited to be the Interior Minister in the country of {country.CountryName} by their Prime Minister, {publicUser.Username}. Click this notification to review the invitation.",
-                                    Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
-                                };
-
-                                if (govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
-                                {
-                                    return Content("success");
-                                }
-                                else
-                                {
-                                    return Content("error: internal server error");
-                                }
-                            }
-                            else
-                            {
-                                return Content("error: internal server error");
-                            }
-
-                        case MinistryHelper.MinistryCode.FinanceAndTrade:
-                            if (country.FinanceAndTradeMinisterId != "none")
-                            {
-                                return Content("error: ministry occupied");
-                            }
-
-                            if (country.InvitedFinanceAndTradeMinisterId != "none")
-                            {
-                                return Content("error: a user is already invited to ministry");
-                            }
-
-                            countryUpdate = new CountryUpdate { InvitedFinanceAndTradeMinisterId = invitedUserId };
-
-                            if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate))
-                            {
-                                notificationSendRequest = new NotificationSendRequest
-                                {
-                                    UserId = invitedUserId,
-                                    Title = $"Invitation to become a minister at {country.CountryName}",
-                                    Content = $"You have been invited to be the Finance and Trade Minister in the country of {country.CountryName} by their Prime Minister, {publicUser.Username}. Click this notification to review the invitation.",
-                                    Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
-                                };
-
-                                if (govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
-                                {
-                                    return Content("success");
-                                }
-                                else
-                                {
-                                    return Content("error: internal server error");
-                                }
-                            }
-                            else
-                            {
-                                return Content("error: internal server error");
-                            }
-
-                        case MinistryHelper.MinistryCode.ForeignAffairs:
-                            if (country.ForeignMinisterId != "none")
-                            {
-                                return Content("error: ministry occupied");
-                            }
-
-                            if (country.InvitedForeignMinisterId != "none")
-                            {
-                                return Content("error: a user is already invited to ministry");
-                            }
-
-                            countryUpdate = new CountryUpdate { InvitedForeignMinisterId = invitedUserId };
-
-                            if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate))
-                            {
-                                notificationSendRequest = new NotificationSendRequest
-                                {
-                                    UserId = invitedUserId,
-                                    Title = $"Invitation to become a minister at {country.CountryName}",
-                                    Content = $"You have been invited to be the Foreign Minister in the country of {country.CountryName} by their Prime Minister, {publicUser.Username}. Click this notification to review the invitation.",
-                                    Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
-                                };
-
-                                if (govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
-                                {
-                                    return Content("success");
-                                }
-                                else
-                                {
-                                    return Content("error: internal server error");
-                                }
-                            }
-                            else
-                            {
-                                return Content("error: internal server error");
-                            }
-
-                        case MinistryHelper.MinistryCode.Defence:
-                            if (country.DefenceMinisterId != "none")
-                            {
-                                return Content("error: ministry occupied");
-                            }
-
-                            if (country.InvitedDefenceMinisterId != "none")
-                            {
-                                return Content("error: a user is already invited to ministry");
-                            }
-
-                            countryUpdate = new CountryUpdate { InvitedDefenceMinisterId = invitedUserId };
-
-                            if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate))
-                            {
-                                notificationSendRequest = new NotificationSendRequest
-                                {
-                                    UserId = invitedUserId,
-                                    Title = $"Invitation to become a minister at {country.CountryName}",
-                                    Content = $"You have been invited to be the Defence Minister in the country of {country.CountryName} by their Prime Minister, {publicUser.Username}. Click this notification to review the invitation.",
-                                    Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
-                                };
-
-                                if (govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
-                                {
-                                    return Content("success");
-                                }
-                                else
-                                {
-                                    return Content("error: internal server error");
-                                }
-                            }
-                            else
-                            {
-                                return Content("error: internal server error");
-                            }
-
-                        default:
-                            return null;
+                        return Content("error: ministry occupied");
                     }
+
+                    if (country.GetInvitedMinisterIdByCode(ministryCode) != "none")
+                    {
+                        return Content("error: a user is already invited to ministry");
+                    }
+
+                    CountryUpdate countryUpdate = new CountryUpdate();
+                    countryUpdate.SetInvitedMinisterIdByCode(ministryCode, invitedUserId);
+
+                    NotificationSendRequest notificationSendRequest = new NotificationSendRequest
+                    {
+                        UserId = invitedUserId,
+                        Title = $"Invitation to become a minister at {country.CountryName}",
+                        Content = $"You have been invited to be the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} in the country of {country.CountryName} by their Prime Minister, {publicUser.Username}. Click this notification to review the invitation.",
+                        Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
+                    };
+
+                    if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate) && govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                    {
+                        return Content("success");
+                    }
+                    else
+                    {
+                        return Content("error: internal server error");
+                    }
+
                 }
                 else
                 {
                     return StatusCode(401);
+                }
+            }
+            else
+            {
+                return Content("error: not logged in");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AcceptMinistryInvite(string ministry, string newCountryId, string ministryToReplacePM = null)
+        {
+            string authSessionCookie = Request.Cookies["authSession"];
+
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+
+            if (userLoggedIn)
+            {
+                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+                string firebaseUid = firebaseToken.Uid;
+
+                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+
+                MinistryHelper.MinistryCode newMinistryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+
+                Country oldCountry = MongoDBHelper.GetCountry(publicUser.CountryId);
+
+                if (MongoDBHelper.GetCountry(newCountryId).GetInvitedMinisterIdByCode(newMinistryCode) != publicUser.UserId)
+                {
+                    return StatusCode(401);
+                }
+
+                CountryUpdate newCountryUpdate = new CountryUpdate();
+                newCountryUpdate.SetMinisterIdByCode(newMinistryCode, publicUser.UserId);
+                newCountryUpdate.SetInvitedMinisterIdByCode(newMinistryCode, "none");
+
+                UserUpdate userUpdate = new UserUpdate { CountryId = newCountryId, Ministry = (int)newMinistryCode };
+
+                CountryUpdate oldCountryUpdate = new CountryUpdate();
+                oldCountryUpdate.SetMinisterIdByCode((MinistryHelper.MinistryCode)publicUser.Ministry, "none");
+
+                if (publicUser.OwnsCountry)
+                {
+                    userUpdate.OwnsCountry = false;
+
+                    MinistryHelper.MinistryCode ministryToReplacePMCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministryToReplacePM);
+
+                    oldCountryUpdate.SetMinisterIdByCode(MinistryHelper.MinistryCode.PrimeMinister, oldCountry.GetMinisterIdByCode(ministryToReplacePMCode));
+                    oldCountryUpdate.SetMinisterIdByCode(ministryToReplacePMCode, "none");
+                }
+
+                if (MongoDBHelper.UpdateCountry(oldCountry.CountryId, oldCountryUpdate) && MongoDBHelper.UpdateCountry(newCountryId, newCountryUpdate) && MongoDBHelper.UpdateUser(publicUser.UserId, userUpdate))
+                {
+                    return Content("success");
+                }
+                else
+                {
+                    return Content("error: internal server error");
+                }
+            }
+            else
+            {
+                return Content("error: not logged in");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeclineMinistryInvite(string ministry, string newCountryId)
+        {
+            string authSessionCookie = Request.Cookies["authSession"];
+
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+
+            if (userLoggedIn)
+            {
+                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+                string firebaseUid = firebaseToken.Uid;
+
+                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+
+                MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+
+                if (MongoDBHelper.GetCountry(newCountryId).GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
+                {
+                    return StatusCode(401);
+                }
+
+                CountryUpdate countryUpdate = new CountryUpdate();
+                countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
+
+                if (MongoDBHelper.UpdateCountry(newCountryId, countryUpdate))
+                {
+                    return Content("success");
+                }
+                else
+                {
+                    return Content("error: internal server error");
                 }
             }
             else
@@ -711,6 +606,7 @@ namespace govgameWebApp.Controllers
                         {
                             OwnsCountry = true,
                             IsMinister = true,
+                            Ministry = (int)MinistryHelper.MinistryCode.PrimeMinister,
                             CountryId = country.CountryId
                         });
 

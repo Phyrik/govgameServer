@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace govgameWebApp.Helpers
+namespace govgameSharedClasses.Helpers
 {
     public class MongoDBHelper
     {

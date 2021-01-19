@@ -1,6 +1,6 @@
 ﻿using FirebaseAdmin.Auth;
 
-namespace govgameWebApp.Helpers
+namespace govgameSharedClasses.Helpers
 {
     public class FirebaseAuthHelper
     {

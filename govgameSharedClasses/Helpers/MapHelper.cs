@@ -3,7 +3,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 
-namespace govgameWebApp.Helpers
+namespace govgameSharedClasses.Helpers
 {
     public class MapHelper
     {

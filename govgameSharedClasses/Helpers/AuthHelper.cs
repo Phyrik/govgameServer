@@ -1,7 +1,7 @@
 ﻿using FirebaseAdmin.Auth;
 using govgameSharedClasses.Models.MongoDB;
 
-namespace govgameWebApp.Helpers
+namespace govgameSharedClasses.Helpers
 {
     public class AuthHelper
     {

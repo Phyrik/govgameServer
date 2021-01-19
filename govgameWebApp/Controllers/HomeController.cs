@@ -1,7 +1,7 @@
 ﻿using FirebaseAdmin.Auth;
-using govgameWebApp.Helpers;
 using govgameSharedClasses.Models.MongoDB;
 using Microsoft.AspNetCore.Mvc;
+using govgameSharedClasses.Helpers;
 
 namespace govgameWebApp.Controllers
 {

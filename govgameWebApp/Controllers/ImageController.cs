@@ -30,11 +30,11 @@ namespace govgameWebApp.Controllers
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
                 string firebaseUid = firebaseToken.Uid;
 
-                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
                 Bitmap worldMap = new Bitmap(Path.Combine(env.WebRootPath, "images", "maps", "world map.png"));
 
-                Location[] countryLocations = MongoDBHelper.GetCountrysLocations(publicUser.CountryId);
+                Location[] countryLocations = MongoDBHelper.MapDatabase.GetCountrysLocations(publicUser.CountryId);
                 GlobalLocationIdentifier[] countryGlobalLocationIdentifiers = LocationHelper.GetGLIsFromLocations(countryLocations);
 
                 Bitmap countryMap = (Bitmap)worldMap.Clone();
@@ -71,11 +71,11 @@ namespace govgameWebApp.Controllers
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
                 string firebaseUid = firebaseToken.Uid;
 
-                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
                 Bitmap worldMap = new Bitmap(Path.Combine(env.WebRootPath, "images", "maps", "world map.png"));
 
-                Location[] countryLocations = MongoDBHelper.GetCountrysLocations(publicUser.CountryId);
+                Location[] countryLocations = MongoDBHelper.MapDatabase.GetCountrysLocations(publicUser.CountryId);
                 GlobalLocationIdentifier[] countryGlobalLocationIdentifiers = LocationHelper.GetGLIsFromLocations(countryLocations);
                 LocationsDimensions countryLocationsDimensions = LocationHelper.GetDimensionsOfLocations(countryGlobalLocationIdentifiers);
 

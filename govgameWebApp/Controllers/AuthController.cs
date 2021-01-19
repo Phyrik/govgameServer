@@ -124,7 +124,7 @@ namespace govgameWebApp.Controllers
 
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken).Result;
 
-            string[] existingUsernames = MongoDBHelper.GetAllUsernames();
+            string[] existingUsernames = MongoDBHelper.UsersDatabase.GetAllUsernames();
             if (existingUsernames.Contains(username))
             {
                 FirebaseAuth.DefaultInstance.DeleteUserAsync(firebaseToken.Uid).Wait();

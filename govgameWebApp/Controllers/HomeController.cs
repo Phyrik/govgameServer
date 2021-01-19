@@ -17,7 +17,7 @@ namespace govgameWebApp.Controllers
             {
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
 
-                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseToken.Uid);
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseToken.Uid);
 
                 if (!publicUser.OwnsCountry && !publicUser.IsMinister)
                 {

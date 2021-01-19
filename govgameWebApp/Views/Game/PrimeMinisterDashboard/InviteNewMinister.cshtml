@@ -29,7 +29,7 @@
             <h2 style="grid-column-start: 1; grid-column-end: 2;">@publicUser.Username</h2>
             @if (publicUser.IsMinister)
             {
-                Country publicUserCountry = MongoDBHelper.GetCountry(publicUser.CountryId);
+                Country publicUserCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
                 <h4 style="color: orangered;">NOTE: This user is already a minister in the country of @publicUserCountry.CountryName</h4>
             }
             <button onclick="inviteMinister('@publicUser.UserId')" style="justify-self: end; grid-row-start: 1; grid-row-end: 3; grid-column-start: 2; grid-column-end: 3; margin-top: 20px; margin-bottom: 20px;">Invite user</button>

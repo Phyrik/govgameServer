@@ -16,9 +16,9 @@ namespace govgameSharedClasses.Helpers
                 CountryId = "none"
             };
 
-            if (MongoDBHelper.NewUser(publicUser))
+            if (MongoDBHelper.UsersDatabase.NewUser(publicUser))
             {
-                return MongoDBHelper.GetPublicUser(firebaseToken.Uid);
+                return MongoDBHelper.UsersDatabase.GetPublicUser(firebaseToken.Uid);
             }
             else
             {

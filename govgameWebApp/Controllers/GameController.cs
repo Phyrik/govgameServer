@@ -25,13 +25,13 @@ namespace govgameWebApp.Controllers
 
                 context.ActionArguments.Add("authSessionCookie", authSessionCookie);
 
-                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
                 controller.ViewData["publicUser"] = publicUser;
 
                 try
                 {
-                    Country country = MongoDBHelper.GetCountry(publicUser.CountryId);
+                    Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
 
                     controller.ViewData["country"] = country;
                 }
@@ -41,7 +41,7 @@ namespace govgameWebApp.Controllers
                 }
 
                 int unreadEmails = 0;
-                foreach (Email email in MongoDBHelper.GetUsersReceivedEmails(firebaseUid))
+                foreach (Email email in MongoDBHelper.EmailsDatabase.GetUsersReceivedEmails(firebaseUid))
                 {
                     if (!email.MarkedAsRead)
                     {
@@ -49,7 +49,7 @@ namespace govgameWebApp.Controllers
                     }
                 }
                 int unreadNotifications = 0;
-                foreach (Notification notification in MongoDBHelper.GetUsersReceivedNotifications(firebaseUid))
+                foreach (Notification notification in MongoDBHelper.NotificationsDatabase.GetUsersReceivedNotifications(firebaseUid))
                 {
                     if (!notification.MarkedAsRead)
                     {
@@ -82,7 +82,7 @@ namespace govgameWebApp.Controllers
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
 
-            Notification[] notifications = MongoDBHelper.GetUsersReceivedNotifications(firebaseUid);
+            Notification[] notifications = MongoDBHelper.NotificationsDatabase.GetUsersReceivedNotifications(firebaseUid);
             ViewData["notifications"] = notifications;
 
             return View();
@@ -96,13 +96,13 @@ namespace govgameWebApp.Controllers
             switch (page)
             {
                 case null:
-                    Email[] emails = MongoDBHelper.GetUsersReceivedEmails(firebaseUid);
+                    Email[] emails = MongoDBHelper.EmailsDatabase.GetUsersReceivedEmails(firebaseUid);
                     ViewData["emails"] = emails;
 
                     return View("./Emails/Index");
 
                 case "NewEmail":
-                    PublicUser[] allPublicUsers = MongoDBHelper.GetAllPublicUsers();
+                    PublicUser[] allPublicUsers = MongoDBHelper.UsersDatabase.GetAllPublicUsers();
                     ViewData["allPublicUsers"] = allPublicUsers;
 
                     return View("./Emails/New");
@@ -117,20 +117,20 @@ namespace govgameWebApp.Controllers
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
 
-            PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-            Country oldCountry = MongoDBHelper.GetCountry(publicUser.CountryId);
+            Country oldCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
 
             switch (page)
             {
                 case "Minister":
-                    PublicUser oldPrimeMinisterUser = MongoDBHelper.GetPublicUser(oldCountry.PrimeMinisterId);
+                    PublicUser oldPrimeMinisterUser = MongoDBHelper.UsersDatabase.GetPublicUser(oldCountry.PrimeMinisterId);
                     ViewData["oldPrimeMinisterUser"] = oldPrimeMinisterUser;
 
-                    Country newCountry = MongoDBHelper.GetCountry(countryId);
+                    Country newCountry = MongoDBHelper.CountriesDatabase.GetCountry(countryId);
                     ViewData["newCountry"] = newCountry;
 
-                    PublicUser newPrimeMinisterUser = MongoDBHelper.GetPublicUser(newCountry.PrimeMinisterId);
+                    PublicUser newPrimeMinisterUser = MongoDBHelper.UsersDatabase.GetPublicUser(newCountry.PrimeMinisterId);
                     ViewData["newPrimeMinisterUser"] = newPrimeMinisterUser;
 
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
@@ -165,11 +165,11 @@ namespace govgameWebApp.Controllers
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
 
-            PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
             ViewData["publicUser"] = publicUser;
 
-            Country country = MongoDBHelper.GetCountry(publicUser.CountryId);
+            Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
 
             ViewData["country"] = country;
 
@@ -190,7 +190,7 @@ namespace govgameWebApp.Controllers
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["minister"]);
                     ViewData["ministryCode"] = ministryCode;
 
-                    PublicUser[] allPublicUsers = MongoDBHelper.GetAllPublicUsers();
+                    PublicUser[] allPublicUsers = MongoDBHelper.UsersDatabase.GetAllPublicUsers();
                     ViewData["allPublicUsers"] = allPublicUsers;
 
                     return View("./PrimeMinisterDashboard/InviteNewMinister");
@@ -213,9 +213,9 @@ namespace govgameWebApp.Controllers
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
                 string firebaseUid = firebaseToken.Uid;
 
-                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-                Country country = MongoDBHelper.GetCountry(publicUser.CountryId);
+                Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
 
                 if (country.PrimeMinisterId == publicUser.UserId)
                 {
@@ -224,7 +224,7 @@ namespace govgameWebApp.Controllers
                     CountryUpdate countryUpdate = new CountryUpdate();
                     countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
 
-                    if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate))
+                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate))
                     {
                         return Content("success");
                     }
@@ -256,9 +256,9 @@ namespace govgameWebApp.Controllers
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
                 string firebaseUid = firebaseToken.Uid;
 
-                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-                Country country = MongoDBHelper.GetCountry(publicUser.CountryId);
+                Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
 
                 if (country.PrimeMinisterId == publicUser.UserId)
                 {
@@ -285,7 +285,7 @@ namespace govgameWebApp.Controllers
                         Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
                     };
 
-                    if (MongoDBHelper.UpdateCountry(country.CountryId, countryUpdate) && govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) && govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
                     {
                         return Content("success");
                     }
@@ -318,13 +318,13 @@ namespace govgameWebApp.Controllers
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
                 string firebaseUid = firebaseToken.Uid;
 
-                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
                 MinistryHelper.MinistryCode newMinistryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
 
-                Country oldCountry = MongoDBHelper.GetCountry(publicUser.CountryId);
+                Country oldCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
 
-                if (MongoDBHelper.GetCountry(newCountryId).GetInvitedMinisterIdByCode(newMinistryCode) != publicUser.UserId)
+                if (MongoDBHelper.CountriesDatabase.GetCountry(newCountryId).GetInvitedMinisterIdByCode(newMinistryCode) != publicUser.UserId)
                 {
                     return StatusCode(401);
                 }
@@ -348,7 +348,7 @@ namespace govgameWebApp.Controllers
                     oldCountryUpdate.SetMinisterIdByCode(ministryToReplacePMCode, "none");
                 }
 
-                if (MongoDBHelper.UpdateCountry(oldCountry.CountryId, oldCountryUpdate) && MongoDBHelper.UpdateCountry(newCountryId, newCountryUpdate) && MongoDBHelper.UpdateUser(publicUser.UserId, userUpdate))
+                if (MongoDBHelper.CountriesDatabase.UpdateCountry(oldCountry.CountryId, oldCountryUpdate) && MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, newCountryUpdate) && MongoDBHelper.UsersDatabase.UpdateUser(publicUser.UserId, userUpdate))
                 {
                     return Content("success");
                 }
@@ -375,11 +375,11 @@ namespace govgameWebApp.Controllers
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
                 string firebaseUid = firebaseToken.Uid;
 
-                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
                 MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
 
-                if (MongoDBHelper.GetCountry(newCountryId).GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
+                if (MongoDBHelper.CountriesDatabase.GetCountry(newCountryId).GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
                 {
                     return StatusCode(401);
                 }
@@ -387,7 +387,7 @@ namespace govgameWebApp.Controllers
                 CountryUpdate countryUpdate = new CountryUpdate();
                 countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
 
-                if (MongoDBHelper.UpdateCountry(newCountryId, countryUpdate))
+                if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, countryUpdate))
                 {
                     return Content("success");
                 }
@@ -418,9 +418,9 @@ namespace govgameWebApp.Controllers
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
                 string firebaseUid = firebaseToken.Uid;
 
-                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-                bool sendEmailSuccess = MongoDBHelper.SendEmail(new EmailSendRequest
+                bool sendEmailSuccess = MongoDBHelper.EmailsDatabase.SendEmail(new EmailSendRequest
                 {
                     SenderId = publicUser.UserId,
                     RecipientIds = toUserIds,
@@ -455,7 +455,7 @@ namespace govgameWebApp.Controllers
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
                 string firebaseUid = firebaseToken.Uid;
 
-                Email emailToMark = MongoDBHelper.GetEmailById(emailId);
+                Email emailToMark = MongoDBHelper.EmailsDatabase.GetEmailById(emailId);
 
                 if (emailToMark.RecipientId != firebaseUid)
                 {
@@ -465,7 +465,7 @@ namespace govgameWebApp.Controllers
                 switch (readOrUnread)
                 {
                     case "read":
-                        bool markEmailAsReadSuccess = MongoDBHelper.MarkEmailAsRead(emailId);
+                        bool markEmailAsReadSuccess = MongoDBHelper.EmailsDatabase.MarkEmailAsRead(emailId);
 
                         if (markEmailAsReadSuccess)
                         {
@@ -477,7 +477,7 @@ namespace govgameWebApp.Controllers
                         }
 
                     case "unread":
-                        bool markEmailAsUnreadSuccess = MongoDBHelper.MarkEmailAsUnread(emailId);
+                        bool markEmailAsUnreadSuccess = MongoDBHelper.EmailsDatabase.MarkEmailAsUnread(emailId);
 
                         if (markEmailAsUnreadSuccess)
                         {
@@ -510,14 +510,14 @@ namespace govgameWebApp.Controllers
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
                 string firebaseUid = firebaseToken.Uid;
 
-                Notification notificationToMark = MongoDBHelper.GetNotificationById(notificationId);
+                Notification notificationToMark = MongoDBHelper.NotificationsDatabase.GetNotificationById(notificationId);
 
                 if (notificationToMark.UserId != firebaseUid)
                 {
                     return StatusCode(401);
                 }
 
-                bool markNotificationAsReadSuccess = MongoDBHelper.MarkNotificationAsRead(notificationId);
+                bool markNotificationAsReadSuccess = MongoDBHelper.NotificationsDatabase.MarkNotificationAsRead(notificationId);
 
                 if (markNotificationAsReadSuccess)
                 {
@@ -543,7 +543,7 @@ namespace govgameWebApp.Controllers
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
 
-            PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
             if (!publicUser.OwnsCountry && !publicUser.IsMinister)
             {
@@ -567,7 +567,7 @@ namespace govgameWebApp.Controllers
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
                 string firebaseUid = firebaseToken.Uid;
 
-                PublicUser publicUser = MongoDBHelper.GetPublicUser(firebaseUid);
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
                 if (!publicUser.OwnsCountry && !publicUser.IsMinister)
                 {
@@ -584,7 +584,7 @@ namespace govgameWebApp.Controllers
                         DefenceMinisterId = "none"
                     };
 
-                    string[] existingCountryNames = MongoDBHelper.GetAllCountryNames();
+                    string[] existingCountryNames = MongoDBHelper.CountriesDatabase.GetAllCountryNames();
                     if (existingCountryNames.Contains(country.CountryName))
                     {
                         return Content("error: country name taken");
@@ -592,7 +592,7 @@ namespace govgameWebApp.Controllers
 
                     GlobalLocationIdentifier globalLocationIdentifier = new GlobalLocationIdentifier(int.Parse(Request.Form["locationX"]) - 50, int.Parse(Request.Form["locationY"]) - 50);
 
-                    Location[] locations = MongoDBHelper.GetLocations(globalLocationIdentifier, 100, 100);
+                    Location[] locations = MongoDBHelper.MapDatabase.GetLocations(globalLocationIdentifier, 100, 100);
                     foreach (Location location in locations)
                     {
                         if (location.Owner != "none")
@@ -605,11 +605,11 @@ namespace govgameWebApp.Controllers
                     {
                         Owner = country.CountryId
                     };
-                    if (MongoDBHelper.UpdateLocations(globalLocationIdentifier, 100, 100, locationUpdate))
+                    if (MongoDBHelper.MapDatabase.UpdateLocations(globalLocationIdentifier, 100, 100, locationUpdate))
                     {
-                        MongoDBHelper.NewCountry(country);
+                        MongoDBHelper.CountriesDatabase.NewCountry(country);
 
-                        MongoDBHelper.UpdateUser(firebaseUid, new UserUpdate
+                        MongoDBHelper.UsersDatabase.UpdateUser(firebaseUid, new UserUpdate
                         {
                             OwnsCountry = true,
                             IsMinister = true,

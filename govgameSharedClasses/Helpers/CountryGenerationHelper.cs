@@ -9,7 +9,7 @@ namespace govgameSharedClasses.Helpers
 
         public static string GenerateCountryUUID()
         {
-            string[] existingUUIDs = MongoDBHelper.GetAllCountryIds();
+            string[] existingUUIDs = MongoDBHelper.CountriesDatabase.GetAllCountryIds();
 
             int uuidLength = 10;
             string uuid = GenerateUUID(uuidLength);

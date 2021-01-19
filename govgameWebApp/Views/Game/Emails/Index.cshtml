@@ -36,7 +36,7 @@
         <ul class="no-margin-ul" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 3; overflow-y: auto; border-right: 1px solid black;">
             @foreach (Email email in emails)
             {
-                PublicUser sender = MongoDBHelper.GetPublicUser(email.SenderId);
+                PublicUser sender = MongoDBHelper.UsersDatabase.GetPublicUser(email.SenderId);
                 <li id="email-li-@email.EmailId" class="email-li" onclick="openEmail('@email.EmailId');" style="padding: 5px 0 5px 5px; background-color: @if (email.MarkedAsRead) { @readNotOpenedColour } else { @unreadNotOpenedColour };">
                     <h4>@sender.Username</h4>
                     <h5>@email.Subject</h5>
@@ -73,8 +73,8 @@
         var emails = {
             @foreach (Email email in emails)
             {
-                PublicUser sender = MongoDBHelper.GetPublicUser(email.SenderId);
-                Country senderCountry = MongoDBHelper.GetCountry(sender.CountryId);
+                PublicUser sender = MongoDBHelper.UsersDatabase.GetPublicUser(email.SenderId);
+                Country senderCountry = MongoDBHelper.CountriesDatabase.GetCountry(sender.CountryId);
                 <text>
                 "@email.EmailId": {
                     "fromUsername": "@sender.Username.Replace("`", "\\`")",

@@ -14,7 +14,7 @@
     @foreach (MinistryHelper.MinistryCode ministryCode in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
     {
         @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister) continue;
-        @if (country.GetMinisterIdByCode(ministryCode) != null)
+        @if (country.GetMinisterIdByCode(ministryCode) != "none")
         {
             <li class="ministry-li" id="ministry-li-@ministryCode.ToString("g")">
                 <img src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="175" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 5;" />

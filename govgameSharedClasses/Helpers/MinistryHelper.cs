@@ -4,14 +4,15 @@
     {
         public enum MinistryCode
         {
-            PrimeMinister,
-            Interior,
-            FinanceAndTrade,
-            ForeignAffairs,
-            Defence
+            None = -1,
+            PrimeMinister = 0,
+            Interior = 1,
+            FinanceAndTrade = 2,
+            ForeignAffairs = 3,
+            Defence = 4
         }
 
-        /// <returns>Ministry of blank, Office of blank</returns>
+        /// <returns>Ministry of example, Office of example</returns>
         public static string MinistryCodeToMinistryName(MinistryCode ministryCode)
         {
             switch (ministryCode)
@@ -31,7 +32,7 @@
             }
         }
 
-        /// <returns>Blank Minister</returns>
+        /// <returns>Example Minister</returns>
         public static string MinistryCodeToMinisterName(MinistryCode ministryCode)
         {
             switch (ministryCode)

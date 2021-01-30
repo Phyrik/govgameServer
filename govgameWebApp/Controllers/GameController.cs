@@ -222,9 +222,12 @@ namespace govgameWebApp.Controllers
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), minister);
 
                     CountryUpdate countryUpdate = new CountryUpdate();
-                    countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
+                    countryUpdate.SetMinisterIdByCode(ministryCode, "none");
 
-                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate))
+                    UserUpdate userUpdate = new UserUpdate { IsMinister = false, Ministry = (int)MinistryHelper.MinistryCode.None, CountryId = "none" };
+
+                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
+                        MongoDBHelper.UsersDatabase.UpdateUser(country.GetMinisterIdByCode(ministryCode), userUpdate))
                     {
                         return Content("success");
                     }
@@ -235,7 +238,7 @@ namespace govgameWebApp.Controllers
                 }
                 else
                 {
-                    return StatusCode(401);
+                    return StatusCode(403);
                 }
             }
             else
@@ -264,28 +267,10 @@ namespace govgameWebApp.Controllers
                 {
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
 
-                    if (country.GetMinisterIdByCode(ministryCode) != "none")
-                    {
-                        return Content("error: ministry occupied");
-                    }
-
-                    if (country.GetInvitedMinisterIdByCode(ministryCode) != "none")
-                    {
-                        return Content("error: a user is already invited to ministry");
-                    }
-
                     CountryUpdate countryUpdate = new CountryUpdate();
                     countryUpdate.SetInvitedMinisterIdByCode(ministryCode, invitedUserId);
 
-                    NotificationSendRequest notificationSendRequest = new NotificationSendRequest
-                    {
-                        UserId = invitedUserId,
-                        Title = $"Invitation to become a minister at {country.CountryName}",
-                        Content = $"You have been invited to be the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} in the country of {country.CountryName} by their Prime Minister, {publicUser.Username}. Click this notification to review the invitation.",
-                        Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
-                    };
-
-                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) && govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate))
                     {
                         return Content("success");
                     }
@@ -293,11 +278,10 @@ namespace govgameWebApp.Controllers
                     {
                         return Content("error: internal server error");
                     }
-
                 }
                 else
                 {
-                    return StatusCode(401);
+                    return StatusCode(403);
                 }
             }
             else
@@ -320,41 +304,57 @@ namespace govgameWebApp.Controllers
 
                 PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-                MinistryHelper.MinistryCode newMinistryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+                Country newCountry = MongoDBHelper.CountriesDatabase.GetCountry(newCountryId);
 
-                Country oldCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+                MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
 
-                if (MongoDBHelper.CountriesDatabase.GetCountry(newCountryId).GetInvitedMinisterIdByCode(newMinistryCode) != publicUser.UserId)
+                if (publicUser.UserId == newCountry.GetInvitedMinisterIdByCode(ministryCode))
                 {
-                    return StatusCode(401);
-                }
+                    CountryUpdate newCountryUpdate = new CountryUpdate();
+                    newCountryUpdate.SetMinisterIdByCode(ministryCode, publicUser.UserId);
+                    newCountryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
 
-                CountryUpdate newCountryUpdate = new CountryUpdate();
-                newCountryUpdate.SetMinisterIdByCode(newMinistryCode, publicUser.UserId);
-                newCountryUpdate.SetInvitedMinisterIdByCode(newMinistryCode, "none");
+                    UserUpdate userUpdate = new UserUpdate { Ministry = (int)ministryCode, CountryId = newCountry.CountryId };
 
-                UserUpdate userUpdate = new UserUpdate { CountryId = newCountryId, Ministry = (int)newMinistryCode };
+                    if (publicUser.IsMinister)
+                    {
+                        Country oldCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
 
-                CountryUpdate oldCountryUpdate = new CountryUpdate();
-                oldCountryUpdate.SetMinisterIdByCode((MinistryHelper.MinistryCode)publicUser.Ministry, "none");
+                        CountryUpdate oldCountryUpdate = new CountryUpdate();
+                        oldCountryUpdate.SetMinisterIdByCode((MinistryHelper.MinistryCode)publicUser.Ministry, "none");
 
-                if (publicUser.OwnsCountry)
-                {
-                    userUpdate.OwnsCountry = false;
+                        if (publicUser.OwnsCountry)
+                        {
+                            MinistryHelper.MinistryCode ministryToReplacePMCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministryToReplacePM);
 
-                    MinistryHelper.MinistryCode ministryToReplacePMCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministryToReplacePM);
+                            oldCountryUpdate.SetMinisterIdByCode(MinistryHelper.MinistryCode.PrimeMinister, oldCountry.GetMinisterIdByCode(ministryToReplacePMCode));
+                            oldCountryUpdate.SetMinisterIdByCode(ministryToReplacePMCode, "none");
+                            userUpdate.OwnsCountry = false;
+                        }
 
-                    oldCountryUpdate.SetMinisterIdByCode(MinistryHelper.MinistryCode.PrimeMinister, oldCountry.GetMinisterIdByCode(ministryToReplacePMCode));
-                    oldCountryUpdate.SetMinisterIdByCode(ministryToReplacePMCode, "none");
-                }
+                        if (!MongoDBHelper.CountriesDatabase.UpdateCountry(oldCountry.CountryId, oldCountryUpdate))
+                        {
+                            return Content("error: internal server error");
+                        }
+                    }
+                    else
+                    {
+                        userUpdate.IsMinister = true;
+                    }
 
-                if (MongoDBHelper.CountriesDatabase.UpdateCountry(oldCountry.CountryId, oldCountryUpdate) && MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, newCountryUpdate) && MongoDBHelper.UsersDatabase.UpdateUser(publicUser.UserId, userUpdate))
-                {
-                    return Content("success");
+                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountry.CountryId, newCountryUpdate) &&
+                        MongoDBHelper.UsersDatabase.UpdateUser(publicUser.UserId, userUpdate))
+                    {
+                        return Content("success");
+                    }
+                    else
+                    {
+                        return Content("error: internal server error");
+                    }
                 }
                 else
                 {
-                    return Content("error: internal server error");
+                    return StatusCode(403);
                 }
             }
             else
@@ -377,23 +377,27 @@ namespace govgameWebApp.Controllers
 
                 PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
+                Country newCountry = MongoDBHelper.CountriesDatabase.GetCountry(newCountryId);
+
                 MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
 
-                if (MongoDBHelper.CountriesDatabase.GetCountry(newCountryId).GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
+                if (publicUser.UserId == newCountry.GetInvitedMinisterIdByCode(ministryCode))
                 {
-                    return StatusCode(401);
-                }
+                    CountryUpdate countryUpdate = new CountryUpdate();
+                    countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
 
-                CountryUpdate countryUpdate = new CountryUpdate();
-                countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
-
-                if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, countryUpdate))
-                {
-                    return Content("success");
+                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, countryUpdate))
+                    {
+                        return Content("success");
+                    }
+                    else
+                    {
+                        return Content("error: internal server error");
+                    }
                 }
                 else
                 {
-                    return Content("error: internal server error");
+                    return StatusCode(403);
                 }
             }
             else
@@ -459,7 +463,7 @@ namespace govgameWebApp.Controllers
 
                 if (emailToMark.RecipientId != firebaseUid)
                 {
-                    return StatusCode(401);
+                    return StatusCode(403);
                 }
 
                 switch (readOrUnread)
@@ -514,7 +518,7 @@ namespace govgameWebApp.Controllers
 
                 if (notificationToMark.UserId != firebaseUid)
                 {
-                    return StatusCode(401);
+                    return StatusCode(403);
                 }
 
                 bool markNotificationAsReadSuccess = MongoDBHelper.NotificationsDatabase.MarkNotificationAsRead(notificationId);

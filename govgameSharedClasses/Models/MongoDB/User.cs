@@ -12,6 +12,7 @@ namespace govgameSharedClasses.Models.MongoDB
         /// <summary>
         /// This integer represents a value from the MinistryHelper.MinistryCode enum
         /// </summary>
+        [BsonDefaultValue(-1)]
         public int Ministry { get; set; }
         public string CountryId { get; set; }
     }

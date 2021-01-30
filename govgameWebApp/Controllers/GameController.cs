@@ -224,6 +224,11 @@ namespace govgameWebApp.Controllers
                 {
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), minister);
 
+                    if (country.GetMinisterIdByCode(ministryCode) == "none")
+                    {
+                        return Content("error: no minister for ministry");
+                    }
+
                     CountryUpdate countryUpdate = new CountryUpdate();
                     countryUpdate.SetMinisterIdByCode(ministryCode, "none");
 
@@ -269,6 +274,16 @@ namespace govgameWebApp.Controllers
                 if (country.PrimeMinisterId == publicUser.UserId)
                 {
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+
+                    if (country.GetMinisterIdByCode(ministryCode) != "none")
+                    {
+                        return Content("error: ministry occupied");
+                    }
+
+                    if (country.GetInvitedMinisterIdByCode(ministryCode) != "none")
+                    {
+                        return Content("error: user already being invited to ministry");
+                    }
 
                     CountryUpdate countryUpdate = new CountryUpdate();
                     countryUpdate.SetInvitedMinisterIdByCode(ministryCode, invitedUserId);

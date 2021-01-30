@@ -136,6 +136,9 @@ namespace govgameWebApp.Controllers
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
                     ViewData["ministryCode"] = ministryCode;
 
+                    bool isPrimeMinister = publicUser.OwnsCountry;
+                    ViewData["isPrimeMinister"] = isPrimeMinister;
+
                     if (newCountry.GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
                     {
                         return Content("error: invalid invite link");

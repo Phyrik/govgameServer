@@ -7,11 +7,13 @@
     PublicUser newPrimeMinister = (PublicUser)ViewData["newPrimeMinisterUser"];
     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)ViewData["ministryCode"];
 
+    bool isPrimeMinister = (bool)ViewData["isPrimeMinister"];
+
     ViewData["Title"] = "Invitiation to ministry";
     ViewData["PageName"] = "Invitiation to ministry";
 }
 
-<div id="grid" style="display: grid; grid-template-columns: auto auto auto; grid-template-rows: auto 100px auto; text-align: center;">
+<div id="grid" style="display: grid; grid-template-columns: auto auto auto; grid-template-rows: auto 100px auto auto; text-align: center;">
     <div id="old-country-div" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2;">
         <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[oldCountry.FlagId]).png" style="margin-left: auto; margin-right: auto;" />
         <br />
@@ -28,17 +30,54 @@
         <h3>Prime Minister: @newPrimeMinister.Username</h3>
     </div>
     <div id="buttons-div" style="grid-column-start: 1; grid-column-end: 4; grid-row-start: 2; grid-row-end: 3; text-align: center; margin: auto;">
-        <button onclick="accept()">Accept</button>
+        <button onclick="accept(null)">Accept</button>
         <button onclick="decline()">Decline</button>
     </div>
-    <div id="pm-ministry-choice-div" style="grid-column-start: 1; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4;">
+    <div id="pm-ministry-choice-div" style="grid-column-start: 1; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4; display: none;">
         <h2>Choose a minister to replace you as Prime Minister:</h2>
+        <ul id="pm-ministry-choice-ul" class="no-margin-ul" style="list-style: none;">
+            @foreach (MinistryHelper.MinistryCode ministryCodeLoop in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
+            {
+                @if (ministryCodeLoop == MinistryHelper.MinistryCode.PrimeMinister || ministryCodeLoop == MinistryHelper.MinistryCode.None) continue;
+                <li style="display: inline; margin-right: 20px;">
+                    <img class="ministry-image" onclick="accept('@ministryCodeLoop.ToString("g")')" width="300" src="~/images/ministries/@MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCodeLoop)" />
+                </li>
+            }
+        </ul>
     </div>
+    <br />
+    <h4 id="please-wait-h4" style="grid-column-start: 1; grid-column-end: 4; grid-row-start: 4; grid-row-end: 5; display: none;">Please wait...</h4>
 </div>
+
+<style>
+    .ministry-image:hover {
+        cursor: pointer;
+    }
+</style>
 
 @section Scripts {
     <script>
-        function accept() {
+        function accept(ministerToReplacePM) {
+            if (@isPrimeMinister.ToString().ToLower()) {
+                if (ministerToReplacePM === null) {
+                    document.getElementById("pm-ministry-choice-div").style.display = ""
+                    return;
+                }
+
+                document.getElementById("please-wait-h4").style.display = ""
+
+                $.post(`/Game/AcceptMinistryInvite?ministry=@ministryCode&newCountryId=@newCountry.CountryId&ministryToReplacePM=${ministerToReplacePM}`, function (data, status) {
+                    if (data == "success") {
+                        alert("Successfully accepted invite")
+                        location.href = "/Game/CountryDashboard"
+                    }
+                })
+
+                return;
+            }
+
+            document.getElementById("please-wait-h4").style.display = ""
+
             $.post(`/Game/AcceptMinistryInvite?ministry=@ministryCode&newCountryId=@newCountry.CountryId`, function (data, status) {
                 if (data == "success") {
                     alert("Successfully accepted invite")

@@ -20,8 +20,8 @@ namespace govgameSharedClasses.Models.MongoDB
     public class UserUpdate
     {
         public string Username { get; set; }
-        public bool OwnsCountry { get; set; }
-        public bool IsMinister { get; set; }
+        public bool? OwnsCountry { get; set; } = null;
+        public bool? IsMinister { get; set; } = null;
         /// <summary>
         /// This integer represents a value from the MinistryHelper.MinistryCode enum
         /// </summary>

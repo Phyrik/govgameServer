@@ -13,7 +13,7 @@
 <ul style="list-style: none;" class="no-margin-ul">
     @foreach (MinistryHelper.MinistryCode ministryCode in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
     {
-        @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister) continue;
+        @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister || ministryCode == MinistryHelper.MinistryCode.None) continue;
         @if (country.GetMinisterIdByCode(ministryCode) != "none")
         {
             <li class="ministry-li" id="ministry-li-@ministryCode.ToString("g")">

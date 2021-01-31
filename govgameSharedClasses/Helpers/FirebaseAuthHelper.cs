@@ -6,6 +6,10 @@ namespace govgameSharedClasses.Helpers
     {
         public static bool IsUserLoggedIn(string authSessionCookie, bool dontCheckEmailVerified = false)
         {
+#if DEBUG
+            dontCheckEmailVerified = true;
+#endif
+
             if (string.IsNullOrEmpty(authSessionCookie))
             {
                 return false;

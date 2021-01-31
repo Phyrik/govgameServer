@@ -1,9 +1,9 @@
 ﻿using FirebaseAdmin.Auth;
+using govgameSharedClasses.Helpers;
 using govgameSharedClasses.Models.MongoDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
-using govgameSharedClasses.Helpers;
 using System.Linq;
 
 namespace govgameWebApp.Controllers
@@ -234,8 +234,16 @@ namespace govgameWebApp.Controllers
 
                     UserUpdate userUpdate = new UserUpdate { IsMinister = false, Ministry = (int)MinistryHelper.MinistryCode.None, CountryId = "none" };
 
+                    NotificationSendRequest notificationSendRequest = new NotificationSendRequest
+                    {
+                        UserId = country.GetMinisterIdByCode(ministryCode),
+                        Title = $"Dismissal from your ministerial role at {country.CountryName}",
+                        Content = $"{publicUser.Username} has dismissed you from your position as {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of {country.CountryName}.",
+                    };
+
                     if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
-                        MongoDBHelper.UsersDatabase.UpdateUser(country.GetMinisterIdByCode(ministryCode), userUpdate))
+                        MongoDBHelper.UsersDatabase.UpdateUser(country.GetMinisterIdByCode(ministryCode), userUpdate) &&
+                        govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
                     {
                         return Content("success");
                     }
@@ -288,7 +296,16 @@ namespace govgameWebApp.Controllers
                     CountryUpdate countryUpdate = new CountryUpdate();
                     countryUpdate.SetInvitedMinisterIdByCode(ministryCode, invitedUserId);
 
-                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate))
+                    NotificationSendRequest notificationSendRequest = new NotificationSendRequest
+                    {
+                        UserId = invitedUserId,
+                        Title = $"Invitation to ministerial role at {country.CountryName}",
+                        Content = $"{publicUser.Username} has invited you to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of {country.CountryName}",
+                        Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
+                    };
+
+                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
+                        govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
                     {
                         return Content("success");
                     }
@@ -360,8 +377,17 @@ namespace govgameWebApp.Controllers
                         userUpdate.IsMinister = true;
                     }
 
+                    PublicUser newPrimeMinister = MongoDBHelper.UsersDatabase.GetPublicUser(newCountry.PrimeMinisterId);
+                    NotificationSendRequest notificationSendRequest = new NotificationSendRequest
+                    {
+                        UserId = newPrimeMinister.UserId,
+                        Title = $"{publicUser.Username} has accepted your ministerial invite",
+                        Content = $"{publicUser.Username} has accepted your invite to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
+                    };
+
                     if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountry.CountryId, newCountryUpdate) &&
-                        MongoDBHelper.UsersDatabase.UpdateUser(publicUser.UserId, userUpdate))
+                        MongoDBHelper.UsersDatabase.UpdateUser(publicUser.UserId, userUpdate) &&
+                        govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
                     {
                         return Content("success");
                     }
@@ -403,8 +429,17 @@ namespace govgameWebApp.Controllers
                 {
                     CountryUpdate countryUpdate = new CountryUpdate();
                     countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
+                    
+                    PublicUser newPrimeMinister = MongoDBHelper.UsersDatabase.GetPublicUser(newCountry.PrimeMinisterId);
+                    NotificationSendRequest notificationSendRequest = new NotificationSendRequest
+                    {
+                        UserId = newPrimeMinister.UserId,
+                        Title = $"{publicUser.Username} has declined your ministerial invite",
+                        Content = $"{publicUser.Username} has declined your invite to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
+                    };
 
-                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, countryUpdate))
+                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, countryUpdate) &&
+                        govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
                     {
                         return Content("success");
                     }

@@ -63,7 +63,6 @@
             ministryLi.getElementsByTagName("h3")[0].innerHTML = "No minister"
             ministryLi.getElementsByTagName("button")[0].onclick = function () { location.href = `/Game/PrimeMinisterDashboard/InviteNewMinister?minister=${minister}` }
             ministryLi.getElementsByTagName("button")[0].innerHTML = "Invite new minister"
-            ministryLi.removeChild(ministryLi.getElementsByTagName("h4")[0])
 
             $.post(`/Game/DismissMinister?minister=${minister}`, function (data, status) {
                 if (data != "success") {

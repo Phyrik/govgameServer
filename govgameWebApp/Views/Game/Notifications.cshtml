@@ -16,9 +16,12 @@
 <ul class="no-margin-ul">
     @foreach (Notification notification in notifications)
     {
-        <li id="notification-li-@notification.NotificationId" onclick="markNotificationAsRead('@notification.NotificationId'); location.href = '@Html.Raw(notification.Link)'" style="list-style: none; margin-left: 50px; margin-right: 50px; background-color: @if (notification.MarkedAsRead) { @readNotOpenedColour } else { @unreadNotOpenedColour }; padding: 10px;">
-            <h2>@notification.Title</h2>
-            <p>@notification.Content</p>
+        <li id="notification-li-@notification.NotificationId" style="list-style: none; margin-left: 50px; margin-right: 50px; background-color: @if (notification.MarkedAsRead) { @readNotOpenedColour } else { @unreadNotOpenedColour }; padding: 10px; display: grid; grid-template-columns: auto 120px;">
+            <div style="grid-row-start: 1; grid-row-end: 3; grid-column-start: 1; grid-column-end: 2;" @if (notification.Link != null) { <text>onclick="markNotificationAsRead('@notification.NotificationId'); location.href = '@Html.Raw(notification.Link)'"</text> }>
+                <h2>@notification.Title</h2>
+                <p>@notification.Content</p>
+            </div>
+            <button style="grid-row-start: 1; grid-row-end: 3; grid-column-start: 2; grid-column-end: 3; height: 75px; width: 100px; margin: auto;" onclick="markNotificationAsRead('@notification.NotificationId');">Mark as read</button>
         </li>
         <hr />
     }

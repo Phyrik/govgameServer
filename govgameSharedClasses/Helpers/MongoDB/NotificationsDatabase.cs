@@ -29,7 +29,9 @@ namespace govgameSharedClasses.Helpers
             {
                 FilterDefinition<Notification> filter = Builders<Notification>.Filter.Eq("UserId", userId);
 
-                return notificationsCollection.Find(filter).ToList().ToArray();
+                SortDefinition<Notification> sort = Builders<Notification>.Sort.Descending("NotificationId");
+
+                return notificationsCollection.Find(filter).Sort(sort).ToList().ToArray();
             }
 
             public static bool MarkNotificationAsRead(ObjectId notificationId)

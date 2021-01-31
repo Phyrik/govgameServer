@@ -87,6 +87,8 @@
         }
 
         function decline() {
+            document.getElementById("please-wait-h4").style.display = ""
+
             $.post(`/Game/DeclineMinistryInvite?ministry=@ministryCode&newCountryId=@newCountry.CountryId`, function (data, status) {
                 if (data == "success") {
                     alert("Successfully declined invite")

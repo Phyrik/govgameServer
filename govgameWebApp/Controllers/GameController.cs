@@ -108,7 +108,7 @@ namespace govgameWebApp.Controllers
                     return View("./Emails/New");
 
                 default:
-                    return Content("Error 404: Whoops...you shouldn't be here.");
+                    return View("404");
             }
         }
 
@@ -147,7 +147,7 @@ namespace govgameWebApp.Controllers
                     return View("./Invite/Minister");
 
                 default:
-                    return Content("Error 404: Whoops...you shouldn't be here.");
+                    return View("404");
             }
         }
 
@@ -159,7 +159,7 @@ namespace govgameWebApp.Controllers
                     return View();
 
                 default:
-                    return Content("Error 404: Whoops...you shouldn't be here.");
+                    return View("404");
             }
         }
 
@@ -199,7 +199,7 @@ namespace govgameWebApp.Controllers
                     return View("./PrimeMinisterDashboard/InviteNewMinister");
 
                 default:
-                    return Content("Error 404: Whoops...you shouldn't be here.");
+                    return View("404");
             }
         }
 

@@ -92,7 +92,6 @@
 
         var fromLine = document.getElementById("from-line");
         var countryLine = document.getElementById("country-line");
-        var userIdLine = document.getElementById("user-id-line");
         var subjectLine = document.getElementById("subject-line");
         var bodyLine = document.getElementById("body-line");
 
@@ -115,7 +114,6 @@
 
             fromLine.innerHTML = ""
             countryLine.innerHTML = ""
-            userIdLine.innerHTML = ""
             subjectLine.innerHTML = ""
             bodyLine.innerHTML = ""
 
@@ -123,7 +121,6 @@
 
             fromLine.innerHTML = "From: " + emailToOpen.fromUsername
             countryLine.innerHTML = "(Country: " + emailToOpen.country + ")"
-            userIdLine.innerHTML = "(User ID: " + emailToOpen.userId + ")"
             subjectLine.innerHTML = emailToOpen.subject
             bodyLine.innerHTML = emailToOpen.body
 

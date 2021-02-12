@@ -387,7 +387,7 @@ namespace govgameWebApp.Controllers
                     {
                         UserId = newPrimeMinister.UserId,
                         Title = $"{publicUser.Username} has accepted your ministerial invite",
-                        Content = $"{publicUser.Username} has accepted your invite to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
+                        Content = $"{publicUser.Username} has accepted your invitation to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
                     };
 
                     if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountry.CountryId, newCountryUpdate) &&
@@ -440,7 +440,7 @@ namespace govgameWebApp.Controllers
                     {
                         UserId = newPrimeMinister.UserId,
                         Title = $"{publicUser.Username} has declined your ministerial invite",
-                        Content = $"{publicUser.Username} has declined your invite to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
+                        Content = $"{publicUser.Username} has declined your invitation to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
                     };
 
                     if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, countryUpdate) &&

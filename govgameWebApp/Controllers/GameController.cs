@@ -74,6 +74,11 @@ namespace govgameWebApp.Controllers
     {
         public IActionResult Index()
         {
+            return Redirect("/Game/Home");
+        }
+
+        public IActionResult Home()
+        {
             return View();
         }
 
@@ -178,7 +183,7 @@ namespace govgameWebApp.Controllers
 
             if (country.PrimeMinisterId != publicUser.UserId)
             {
-                return Content("error: you are not authorised to see this page");
+                return Content("403");
             }
 
             switch (page)

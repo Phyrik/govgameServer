@@ -8,6 +8,7 @@
     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)ViewData["ministryCode"];
 
     bool isPrimeMinister = (bool)ViewData["isPrimeMinister"];
+    bool noMinistersToReplace = (bool)ViewData["noMinistersToReplace"];
 
     ViewData["Title"] = "Invitiation to ministry";
     ViewData["PageName"] = "Invitiation to ministry";
@@ -39,6 +40,7 @@
             @foreach (MinistryHelper.MinistryCode ministryCodeLoop in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
             {
                 @if (ministryCodeLoop == MinistryHelper.MinistryCode.PrimeMinister || ministryCodeLoop == MinistryHelper.MinistryCode.None) continue;
+                @if (oldCountry.GetMinisterIdByCode(ministryCodeLoop) == "none") continue;
                 <li style="display: inline; margin-right: 20px;">
                     <img class="ministry-image" onclick="accept('@ministryCodeLoop.ToString("g")')" width="300" src="~/images/ministries/@MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCodeLoop)" />
                 </li>
@@ -58,7 +60,7 @@
 @section Scripts {
     <script>
         function accept(ministerToReplacePM) {
-            if (@isPrimeMinister.ToString().ToLower()) {
+            if (@isPrimeMinister.ToString().ToLower() && !@noMinistersToReplace.ToString().ToLower()) {
                 if (ministerToReplacePM === null) {
                     document.getElementById("pm-ministry-choice-div").style.display = ""
                     return;
@@ -74,6 +76,12 @@
                 })
 
                 return;
+            }
+
+            if (@noMinistersToReplace.ToString().ToLower()) {
+                if (!confirm("Are you sure you want to leave your old country? It will be deleted if you choose to do so.")) {
+                    return
+                }
             }
 
             document.getElementById("please-wait-h4").style.display = ""

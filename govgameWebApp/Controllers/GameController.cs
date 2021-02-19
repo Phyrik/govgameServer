@@ -144,6 +144,14 @@ namespace govgameWebApp.Controllers
                     bool isPrimeMinister = publicUser.IsAPrimeMinister();
                     ViewData["isPrimeMinister"] = isPrimeMinister;
 
+                    bool noMinistersToReplace = true;
+                    foreach (MinistryHelper.MinistryCode ministryCodeLoop in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
+                    {
+                        if (ministryCodeLoop == MinistryHelper.MinistryCode.PrimeMinister || ministryCodeLoop == MinistryHelper.MinistryCode.None) continue;
+                        if (oldCountry.GetMinisterIdByCode(ministryCodeLoop) != "none") noMinistersToReplace = false;
+                    }
+                    ViewData["noMinistersToReplace"] = noMinistersToReplace;
+
                     if (newCountry.GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
                     {
                         return Content("error: invalid invite link");
@@ -365,10 +373,26 @@ namespace govgameWebApp.Controllers
 
                         if (publicUser.IsAPrimeMinister())
                         {
-                            MinistryHelper.MinistryCode ministryToReplacePMCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministryToReplacePM);
+                            bool stillMinisters = false;
+                            foreach (MinistryHelper.MinistryCode ministryCodeLoop in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
+                            {
+                                if (ministryCodeLoop == MinistryHelper.MinistryCode.PrimeMinister || ministryCodeLoop == MinistryHelper.MinistryCode.None) continue;
+                                if (oldCountry.GetMinisterIdByCode(ministryCodeLoop) != "none") stillMinisters = true;
+                            }
+                            if (!stillMinisters) oldCountryUpdate.DeleteCountry = true;
 
-                            oldCountryUpdate.SetMinisterIdByCode(MinistryHelper.MinistryCode.PrimeMinister, oldCountry.GetMinisterIdByCode(ministryToReplacePMCode));
-                            oldCountryUpdate.SetMinisterIdByCode(ministryToReplacePMCode, "none");
+                            if (stillMinisters)
+                            {
+                                MinistryHelper.MinistryCode ministryToReplacePMCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministryToReplacePM);
+
+                                if (oldCountry.GetMinisterIdByCode(ministryToReplacePMCode) == "none")
+                                {
+                                    return Content("error: invalid replacement ministry as there is no minister occupying it");
+                                }
+
+                                oldCountryUpdate.SetMinisterIdByCode(MinistryHelper.MinistryCode.PrimeMinister, oldCountry.GetMinisterIdByCode(ministryToReplacePMCode));
+                                oldCountryUpdate.SetMinisterIdByCode(ministryToReplacePMCode, "none");
+                            }
                         }
 
                         if (!MongoDBHelper.CountriesDatabase.UpdateCountry(oldCountry.CountryId, oldCountryUpdate))

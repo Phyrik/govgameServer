@@ -76,6 +76,8 @@ namespace govgameSharedClasses.Models.MongoDB
         public string DefenceMinisterId { get; set; }
         public string InvitedDefenceMinisterId { get; set; }
 
+        public bool? DeleteCountry { get; set; } = null;
+
         public void SetMinisterIdByCode(MinistryHelper.MinistryCode ministryCode, string ministerId)
         {
             switch (ministryCode)

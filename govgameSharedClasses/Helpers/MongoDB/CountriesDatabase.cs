@@ -23,6 +23,20 @@ namespace govgameSharedClasses.Helpers
             {
                 FilterDefinition<Country> filter = Builders<Country>.Filter.Eq("CountryId", countryId);
 
+                if (countryUpdate.DeleteCountry.HasValue && countryUpdate.DeleteCountry.Value == true)
+                {
+                    try
+                    {
+                        countriesCollection.DeleteOne(filter);
+
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+
                 UpdateDefinitionBuilder<Country> updateBuilder = Builders<Country>.Update;
                 List<UpdateDefinition<Country>> updates = new List<UpdateDefinition<Country>>();
                 PropertyInfo[] properties = typeof(CountryUpdate).GetProperties();

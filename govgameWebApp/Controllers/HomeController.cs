@@ -19,7 +19,7 @@ namespace govgameWebApp.Controllers
 
                 PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseToken.Uid);
 
-                if (!publicUser.OwnsCountry && !publicUser.IsMinister)
+                if (!publicUser.IsAMinister())
                 {
                     return Redirect("/Auth/NextSteps");
                 }

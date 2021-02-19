@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using govgameSharedClasses.Helpers;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace govgameSharedClasses.Models.MongoDB
 {
@@ -7,25 +9,44 @@ namespace govgameSharedClasses.Models.MongoDB
         [BsonId]
         public string UserId { get; set; }
         public string Username { get; set; }
-        public bool OwnsCountry { get; set; }
-        public bool IsMinister { get; set; }
-        /// <summary>
-        /// This integer represents a value from the MinistryHelper.MinistryCode enum
-        /// </summary>
-        [BsonDefaultValue(-1)]
-        public int Ministry { get; set; }
         public string CountryId { get; set; }
+
+        public bool IsAMinister()
+        {
+            if (this.CountryId == "none") return false;
+
+            return true;
+        }
+
+        public bool IsAPrimeMinister()
+        {
+            if (this.CountryId == "none") return false;
+
+            Country country = MongoDBHelper.CountriesDatabase.GetCountry(this.CountryId);
+
+            if (country.GetMinisterIdByCode(MinistryHelper.MinistryCode.PrimeMinister) == this.UserId) return true;
+
+            return false;
+        }
+
+        public MinistryHelper.MinistryCode GetMinistry()
+        {
+            if (this.CountryId == "none") return MinistryHelper.MinistryCode.None;
+
+            Country country = MongoDBHelper.CountriesDatabase.GetCountry(this.CountryId);
+
+            foreach (MinistryHelper.MinistryCode ministryCode in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
+            {
+                if (country.GetMinisterIdByCode(ministryCode) == this.UserId) return ministryCode;
+            }
+
+            return MinistryHelper.MinistryCode.None;
+        }
     }
 
     public class UserUpdate
     {
         public string Username { get; set; }
-        public bool? OwnsCountry { get; set; } = null;
-        public bool? IsMinister { get; set; } = null;
-        /// <summary>
-        /// This integer represents a value from the MinistryHelper.MinistryCode enum
-        /// </summary>
-        public int Ministry { get; set; }
         public string CountryId { get; set; }
     }
 }

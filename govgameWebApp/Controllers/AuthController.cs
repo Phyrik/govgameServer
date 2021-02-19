@@ -2,6 +2,7 @@
 using System.Linq;
 using FirebaseAdmin.Auth;
 using govgameSharedClasses.Helpers;
+using govgameSharedClasses.Models.MongoDB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -131,7 +132,18 @@ namespace govgameWebApp.Controllers
                 return Content("error: username taken");
             }
 
-            AuthHelper.CreateInitialUserInfoDocument(firebaseToken, username);
+            PublicUser publicUser = new PublicUser
+            {
+                UserId = firebaseToken.Uid,
+                Username = username,
+                CountryId = "none"
+            };
+
+            if (!MongoDBHelper.UsersDatabase.NewUser(publicUser))
+            {
+                FirebaseAuth.DefaultInstance.DeleteUserAsync(firebaseToken.Uid).Wait();
+                return Content("error: internal server error");
+            }
 
             SessionCookieOptions options = new SessionCookieOptions()
             {

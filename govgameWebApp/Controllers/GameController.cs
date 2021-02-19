@@ -141,7 +141,7 @@ namespace govgameWebApp.Controllers
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
                     ViewData["ministryCode"] = ministryCode;
 
-                    bool isPrimeMinister = publicUser.OwnsCountry;
+                    bool isPrimeMinister = publicUser.IsAPrimeMinister();
                     ViewData["isPrimeMinister"] = isPrimeMinister;
 
                     if (newCountry.GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
@@ -237,7 +237,7 @@ namespace govgameWebApp.Controllers
                     CountryUpdate countryUpdate = new CountryUpdate();
                     countryUpdate.SetMinisterIdByCode(ministryCode, "none");
 
-                    UserUpdate userUpdate = new UserUpdate { IsMinister = false, Ministry = (int)MinistryHelper.MinistryCode.None, CountryId = "none" };
+                    UserUpdate userUpdate = new UserUpdate { CountryId = "none" };
 
                     NotificationSendRequest notificationSendRequest = new NotificationSendRequest
                     {
@@ -354,32 +354,27 @@ namespace govgameWebApp.Controllers
                     newCountryUpdate.SetMinisterIdByCode(ministryCode, publicUser.UserId);
                     newCountryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
 
-                    UserUpdate userUpdate = new UserUpdate { Ministry = (int)ministryCode, CountryId = newCountry.CountryId };
+                    UserUpdate userUpdate = new UserUpdate { CountryId = newCountry.CountryId };
 
-                    if (publicUser.IsMinister)
+                    if (publicUser.IsAMinister())
                     {
                         Country oldCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
 
                         CountryUpdate oldCountryUpdate = new CountryUpdate();
-                        oldCountryUpdate.SetMinisterIdByCode((MinistryHelper.MinistryCode)publicUser.Ministry, "none");
+                        oldCountryUpdate.SetMinisterIdByCode(publicUser.GetMinistry(), "none");
 
-                        if (publicUser.OwnsCountry)
+                        if (publicUser.IsAPrimeMinister())
                         {
                             MinistryHelper.MinistryCode ministryToReplacePMCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministryToReplacePM);
 
                             oldCountryUpdate.SetMinisterIdByCode(MinistryHelper.MinistryCode.PrimeMinister, oldCountry.GetMinisterIdByCode(ministryToReplacePMCode));
                             oldCountryUpdate.SetMinisterIdByCode(ministryToReplacePMCode, "none");
-                            userUpdate.OwnsCountry = false;
                         }
 
                         if (!MongoDBHelper.CountriesDatabase.UpdateCountry(oldCountry.CountryId, oldCountryUpdate))
                         {
                             return Content("error: internal server error");
                         }
-                    }
-                    else
-                    {
-                        userUpdate.IsMinister = true;
                     }
 
                     PublicUser newPrimeMinister = MongoDBHelper.UsersDatabase.GetPublicUser(newCountry.PrimeMinisterId);
@@ -607,7 +602,7 @@ namespace govgameWebApp.Controllers
 
             PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-            if (!publicUser.OwnsCountry && !publicUser.IsMinister)
+            if (!publicUser.IsAMinister())
             {
                 return View();
             }
@@ -631,7 +626,7 @@ namespace govgameWebApp.Controllers
 
                 PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-                if (!publicUser.OwnsCountry && !publicUser.IsMinister)
+                if (!publicUser.IsAMinister())
                 {
                     Country country = new Country
                     {
@@ -673,9 +668,6 @@ namespace govgameWebApp.Controllers
 
                         MongoDBHelper.UsersDatabase.UpdateUser(firebaseUid, new UserUpdate
                         {
-                            OwnsCountry = true,
-                            IsMinister = true,
-                            Ministry = (int)MinistryHelper.MinistryCode.PrimeMinister,
                             CountryId = country.CountryId
                         });
 

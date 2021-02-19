@@ -71,7 +71,7 @@ namespace govgameSharedClasses.Helpers
                     List<PublicUser> allPublicUsersNotMinisters = new List<PublicUser>();
                     foreach (PublicUser publicUser in allPublicUsers)
                     {
-                        if (!publicUser.OwnsCountry && !publicUser.IsMinister)
+                        if (!publicUser.IsAMinister())
                         {
                             allPublicUsersNotMinisters.Add(publicUser);
                         }

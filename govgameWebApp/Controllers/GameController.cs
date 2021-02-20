@@ -23,6 +23,8 @@ namespace govgameWebApp.Controllers
 
                 Controller controller = (Controller)context.Controller;
 
+                controller.ViewData["userLoggedIn"] = userLoggedIn;
+
                 context.ActionArguments.Add("authSessionCookie", authSessionCookie);
 
                 PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);

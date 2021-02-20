@@ -484,6 +484,49 @@ namespace govgameWebApp.Controllers
         }
 
         [HttpPost]
+        public IActionResult CancelMinistryInvite(string ministry)
+        {
+            string authSessionCookie = Request.Cookies["authSession"];
+
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+
+            if (userLoggedIn)
+            {
+                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+                string firebaseUid = firebaseToken.Uid;
+
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+                Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+
+                MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+
+                if (country.PrimeMinisterId == publicUser.UserId)
+                {
+                    CountryUpdate countryUpdate = new CountryUpdate();
+                    countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
+
+                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate))
+                    {
+                        return Content("success");
+                    }
+                    else
+                    {
+                        return Content("error: internal server error");
+                    }
+                }
+                else
+                {
+                    return StatusCode(403);
+                }
+            }
+            else
+            {
+                return Content("error: not logged in");
+            }
+        }
+
+        [HttpPost]
         public IActionResult SendEmail()
         {
             string authSessionCookie = Request.Cookies["authSession"];

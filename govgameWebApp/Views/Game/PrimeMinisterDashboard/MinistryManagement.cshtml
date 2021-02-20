@@ -27,6 +27,7 @@
             <li class="ministry-li" id="ministry-li-@ministryCode.ToString("g")">
                 <img src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="175" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 5;" />
                 <h3 style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2; margin-left: 20px;">Invitation sent to @MongoDBHelper.UsersDatabase.GetPublicUser(country.GetInvitedMinisterIdByCode(ministryCode)).Username</h3>
+                <button onclick="cancelMinistryInvite('@ministryCode.ToString("g")')" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4; margin-left: calc(20px + 50px); margin-top: 20px; width: 200px;">Cancel invite</button>
             </li>
         }
         else
@@ -65,6 +66,19 @@
             ministryLi.getElementsByTagName("button")[0].innerHTML = "Invite new minister"
 
             $.post(`/Game/DismissMinister?minister=${minister}`, function (data, status) {
+                if (data != "success") {
+                    location.reload()
+                }
+            })
+        }
+
+        function cancelMinistryInvite(ministry) {
+            var ministryLi = document.getElementById(`ministry-li-${ministry}`)
+            ministryLi.getElementsByTagName("h3")[0].innerHTML = "No minister"
+            ministryLi.getElementsByTagName("button")[0].onclick = function () { location.href = `/Game/PrimeMinisterDashboard/InviteNewMinister?minister=${ministry}` }
+            ministryLi.getElementsByTagName("button")[0].innerHTML = "Invite new minister"
+
+            $.post(`/Game/CancelMinistryInvite?ministry=${ministry}`, function (data, status) {
                 if (data != "success") {
                     location.reload()
                 }

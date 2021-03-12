@@ -21,52 +21,18 @@ namespace govgameSharedClasses.Helpers
                 return filter;
             }
 
-            public static FilterDefinition<Location> GetDBFilterForLocationIdentifier(RegionalLocationIdentifier regionalLocationIdentifier)
-            {
-                FilterDefinitionBuilder<Location> builder = Builders<Location>.Filter;
-                FilterDefinition<Location> filter = builder.And(builder.Eq("RegionId", regionalLocationIdentifier.RegionId), builder.Eq("RegionalX", regionalLocationIdentifier.RegionalX), builder.Eq("RegionalY", regionalLocationIdentifier.RegionalY));
-
-                return filter;
-            }
-
             public static Map GetWorldMap()
             {
                 Map worldMap = new Map();
-                worldMap.Regions = new List<Region>();
-                foreach (char regionChar1 in MapHelper.worldRegionChars)
-                {
-                    foreach (char regionChar2 in MapHelper.worldRegionChars)
-                    {
-                        worldMap.Regions.Add(GetRegion($"{regionChar1}{regionChar2}"));
-                    }
-                }
+
+                worldMap.Locations = locationsCollection.Find(Builders<Location>.Filter.Empty).ToList();
 
                 return worldMap;
-            }
-
-            public static Region GetRegion(string regionId)
-            {
-                FilterDefinition<Location> filter = Builders<Location>.Filter.Eq("RegionId", regionId);
-
-                List<Location> locations = locationsCollection.Find(filter).ToList();
-
-                return new Region
-                {
-                    RegionId = regionId,
-                    Locations = locations
-                };
             }
 
             public static Location GetLocation(GlobalLocationIdentifier globalLocationIdentifier)
             {
                 FilterDefinition<Location> filter = GetDBFilterForLocationIdentifier(globalLocationIdentifier);
-
-                return locationsCollection.Find(filter).First();
-            }
-
-            public static Location GetLocation(RegionalLocationIdentifier regionalLocationIdentifier)
-            {
-                FilterDefinition<Location> filter = GetDBFilterForLocationIdentifier(regionalLocationIdentifier);
 
                 return locationsCollection.Find(filter).First();
             }
@@ -88,12 +54,6 @@ namespace govgameSharedClasses.Helpers
 
             /// <summary>Not implemented yet</summary>
             public static Location[] GetLocations(GlobalLocationIdentifier[] globalLocationIdentifiers)
-            {
-                throw new NotImplementedException();
-            }
-
-            /// <summary>Not implemented yet</summary>
-            public static Location[] GetLocations(RegionalLocationIdentifier[] regionalLocationIdentifiers)
             {
                 throw new NotImplementedException();
             }
@@ -128,12 +88,6 @@ namespace govgameSharedClasses.Helpers
 
             /// <summary>Not implemented yet</summary>
             public static bool UpdateLocations(GlobalLocationIdentifier[] globalLocationIdentifiers, LocationUpdate locationUpdate)
-            {
-                throw new NotImplementedException();
-            }
-
-            /// <summary>Not implemented yet</summary>
-            public static bool UpdateLocations(RegionalLocationIdentifier[] regionalLocationIdentifiers, LocationUpdate locationUpdate)
             {
                 throw new NotImplementedException();
             }

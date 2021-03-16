@@ -34,7 +34,7 @@ namespace govgameWebApp.Controllers
 
                 Bitmap worldMap = new Bitmap(Path.Combine(env.WebRootPath, "images", "maps", "world map.png"));
 
-                Location[] countryLocations = MongoDBHelper.MapDatabase.GetCountrysLocations(publicUser.CountryId);
+                Location[] countryLocations = MongoDBHelper.LocationsDatabase.GetCountrysLocations(publicUser.CountryId);
                 GlobalLocationIdentifier[] countryGlobalLocationIdentifiers = LocationHelper.GetGLIsFromLocations(countryLocations);
 
                 Bitmap countryMap = (Bitmap)worldMap.Clone();
@@ -75,7 +75,7 @@ namespace govgameWebApp.Controllers
 
                 Bitmap worldMap = new Bitmap(Path.Combine(env.WebRootPath, "images", "maps", "world map.png"));
 
-                Location[] countryLocations = MongoDBHelper.MapDatabase.GetCountrysLocations(publicUser.CountryId);
+                Location[] countryLocations = MongoDBHelper.LocationsDatabase.GetCountrysLocations(publicUser.CountryId);
                 GlobalLocationIdentifier[] countryGlobalLocationIdentifiers = LocationHelper.GetGLIsFromLocations(countryLocations);
                 LocationsDimensions countryLocationsDimensions = LocationHelper.GetDimensionsOfLocations(countryGlobalLocationIdentifiers);
 

@@ -8,10 +8,10 @@ namespace govgameSharedClasses.Helpers
 {
     public partial class MongoDBHelper
     {
-        public class MapDatabase
+        public class LocationsDatabase
         {
-            static readonly IMongoDatabase mapDatabase = mongoClient.GetDatabase("govgame_map_table");
-            static readonly IMongoCollection<Location> locationsCollection = mapDatabase.GetCollection<Location>("locations");
+            static readonly IMongoDatabase locationsDatabase = mongoClient.GetDatabase("govgame_locations_table");
+            static readonly IMongoCollection<Location> locationsCollection = locationsDatabase.GetCollection<Location>("locations");
 
             public static FilterDefinition<Location> GetDBFilterForLocationIdentifier(GlobalLocationIdentifier globalLocationIdentifier)
             {

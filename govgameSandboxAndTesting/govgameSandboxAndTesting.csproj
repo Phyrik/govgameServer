@@ -14,10 +14,4 @@
     <ProjectReference Include="..\govgameSharedClasses\govgameSharedClasses.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Köppen-Geiger_Climate_Classification_Map_%281980–2016%29_no_borders.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

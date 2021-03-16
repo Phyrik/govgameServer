@@ -9,7 +9,6 @@ namespace govgameSharedClasses.Models.MongoDB
         public ObjectId LocationId { get; set; }
         public int GlobalX { get; set; }
         public int GlobalY { get; set; }
-        public string Climate { get; set; }
         public string Owner { get; set; }
     }
 

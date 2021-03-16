@@ -718,7 +718,7 @@ namespace govgameWebApp.Controllers
 
                     GlobalLocationIdentifier globalLocationIdentifier = new GlobalLocationIdentifier(int.Parse(Request.Form["locationX"]) - 50, int.Parse(Request.Form["locationY"]) - 50);
 
-                    Location[] locations = MongoDBHelper.MapDatabase.GetLocations(globalLocationIdentifier, 100, 100);
+                    Location[] locations = MongoDBHelper.LocationsDatabase.GetLocations(globalLocationIdentifier, 100, 100);
                     foreach (Location location in locations)
                     {
                         if (location.Owner != "none")
@@ -731,7 +731,7 @@ namespace govgameWebApp.Controllers
                     {
                         Owner = country.CountryId
                     };
-                    if (MongoDBHelper.MapDatabase.UpdateLocations(globalLocationIdentifier, 100, 100, locationUpdate))
+                    if (MongoDBHelper.LocationsDatabase.UpdateLocations(globalLocationIdentifier, 100, 100, locationUpdate))
                     {
                         MongoDBHelper.CountriesDatabase.NewCountry(country);
 

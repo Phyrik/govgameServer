@@ -1,6 +1,7 @@
 ﻿using govgameSharedClasses.Models.MongoDB;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 using System.Drawing;
 
 namespace govgameSandboxAndTesting
@@ -66,6 +67,8 @@ namespace govgameSandboxAndTesting
 
                     locationsCollection.InsertOne(location);
                 }
+
+                Console.WriteLine($"{x}/{map.Width} columns completed. ({(double)x/map.Width}%)");
             }
         }
     }

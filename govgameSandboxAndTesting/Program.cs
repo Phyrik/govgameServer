@@ -36,7 +36,7 @@ namespace govgameSandboxAndTesting
 
                     if (pixelColour.ToArgb() == deepWater.ToArgb())
                     {
-                        biome = "deep water"
+                        biome = "deep water";
                     }
                     if (pixelColour.ToArgb() == shallowWater.ToArgb())
                     {

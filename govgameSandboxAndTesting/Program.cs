@@ -1,82 +1,72 @@
-﻿using System.Collections.Generic;
+﻿using govgameSharedClasses.Models.MongoDB;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Drawing;
 
 namespace govgameSandboxAndTesting
 {
     class Program
     {
-        /* details:
-         * 
-         * map.png - seed = 1, scale = 1, size = 100x100, grey
-         * map1.png - seed = 1, scale = 0.5, size = 100x100, grey
-         * map2.png - seed = 1, scale = 0.1, size = 100x100, grey
-         * map3.png - seed = 1, scale = 0.05, size = 100x100, grey
-         * map4.png - seed = 1, scale = 0.01, size = 100x100, grey
-         * map5.png - seed = 1, scale = 0.01, size = 500x500, grey
-         * map6.png - seed = 1, scale = 0.002, size = 500x500, grey
-         * map7.png - seed = 1, scale = 0.002, size = 500x500, map colour gradient
-         * map8.png - seed = 1, scale = 0.002, size = 2000x2000, map colour gradient
-         * map9.png - seed = 1, scales = 0.002 + 0.01, size = 2000x2000, weights = 2 + 1, map colour gradient
-         * map10.png - seed = 1, scales = 0.002 + 0.01 + 0.1, size = 2000x2000, weights = 3 + 2 + 1, map colour gradient
-         * map11.png - seed = 1, scales = 0.002 + 0.01 + 0.1, size = 2000x2000, weights = 4 + 2 + 1, map colour gradient
-         * map12.png - seeds = 1x3 + 2, scales = 0.002 + 0.01 + 0.1 + 0.0075, size = 2000x2000, weights = 4 + 3 + 2 + 1, map colour gradient
-         */
+        static readonly string username = "ASPNETwebapp";
+        static readonly string password = "deUM3YhG9HreNCQN";
+        static readonly MongoClient mongoClient = new MongoClient($"mongodb://{username}:{password}@ec2-35-178-4-240.eu-west-2.compute.amazonaws.com");
 
-        static Bitmap mapColourGradientBar;
+        static readonly IMongoDatabase locationsDatabase = mongoClient.GetDatabase("govgame_locations_table");
+        static readonly IMongoCollection<Location> locationsCollection = locationsDatabase.GetCollection<Location>("locations");
 
         static void Main(string[] args)
         {
-            mapColourGradientBar = (Bitmap)Image.FromFile("map colour gradient bar.png");
+            // biomes: "deep water" = rgb(0, 19, 127), "shallow water" = rgb(0, 38, 255), "coast" = rgb(0, 255, 25), "grass" = rgb(0, 163, 16), "mountain" = rgb(64, 64, 64)
 
-            int[] seeds = new int[] { 1, 1, 1, 2 };
-            float[] scales = new float[] { 0.002f, 0.01f, 0.1f, 0.0075f };
-            int[] weights = new int[] { 4, 3, 2, 1 };
-            int width = 2000;
-            int height = 2000;
+            Color deepWater = Color.FromArgb(0, 19, 127);
+            Color shallowWater = Color.FromArgb(0, 38, 255);
+            Color coast = Color.FromArgb(0, 255, 25);
+            Color grass = Color.FromArgb(0, 163, 16);
+            Color mountain = Color.FromArgb(64, 64, 64);
 
-            List<int[,]> layers = new List<int[,]>();
+            Bitmap map = (Bitmap)Image.FromFile("map.png");
 
-            for (int i = 0; i < 4; i++)
+            for (int x = 0; x < map.Width; x++)
             {
-                int[,] layer = new int[width, height];
-                SimplexNoise.Noise.Seed = seeds[i];
-                for (int x = 0; x < width; x++)
+                for (int y = 0; y < map.Height; y++)
                 {
-                    for (int y = 0; y < height; y++)
+                    string biome = "unknown";
+
+                    Color pixelColour = map.GetPixel(x, y);
+
+                    if (pixelColour.ToArgb() == deepWater.ToArgb())
                     {
-                        int simplexValue = (int)SimplexNoise.Noise.CalcPixel2D(x, y, scales[i]);
-                        layer[x, y] = simplexValue;
+                        biome = "deep water"
                     }
-                }
-                layers.Add(layer);
-            }
-
-            int[,] finalLayer = new int[width, height];
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    int top = 0;
-                    int bottom = 0;
-                    for (int i = 0; i < layers.Count; i++)
+                    if (pixelColour.ToArgb() == shallowWater.ToArgb())
                     {
-                        top += weights[i] * layers[i][x, y];
-                        bottom += weights[i];
+                        biome = "shallow water";
+                    }
+                    if (pixelColour.ToArgb() == coast.ToArgb())
+                    {
+                        biome = "coast";
+                    }
+                    if (pixelColour.ToArgb() == grass.ToArgb())
+                    {
+                        biome = "grass";
+                    }
+                    if (pixelColour.ToArgb() == mountain.ToArgb())
+                    {
+                        biome = "mountain";
                     }
 
-                    finalLayer[x, y] = top / bottom;
-                }
-            }
+                    Location location = new Location
+                    {
+                        LocationId = new ObjectId(),
+                        GlobalX = x,
+                        GlobalY = y,
+                        Owner = "none",
+                        Biome = biome
+                    };
 
-            Bitmap finalMapImage = new Bitmap(width, height);
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    finalMapImage.SetPixel(x, y, mapColourGradientBar.GetPixel(0, finalLayer[x, y]));
+                    locationsCollection.InsertOne(location);
                 }
             }
-            finalMapImage.Save("map12.png", System.Drawing.Imaging.ImageFormat.Png);
         }
     }
 }

@@ -10,6 +10,8 @@ namespace govgameSharedClasses.Models.MongoDB
         public int GlobalX { get; set; }
         public int GlobalY { get; set; }
         public string Owner { get; set; }
+        // "deep water", "shallow water", "coast", "grass", "mountain"
+        public string Biome { get; set; }
     }
 
     public class GlobalLocationIdentifier

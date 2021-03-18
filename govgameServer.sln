@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "govgameWebApp", "govgameWeb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "govgameSharedClasses", "govgameSharedClasses\govgameSharedClasses.csproj", "{5367E1DA-A6BF-4E18-857C-2851EB159D28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "govgameSandboxAndTesting", "govgameSandboxAndTesting\govgameSandboxAndTesting.csproj", "{8E7E245E-BA33-4527-8CC1-6E6F70A817D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "govgameSandboxAndTesting", "govgameSandboxAndTesting\govgameSandboxAndTesting.csproj", "{8E7E245E-BA33-4527-8CC1-6E6F70A817D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "govgameMapCreator", "govgameMapCreator\govgameMapCreator.csproj", "{75984EE2-E386-45D2-ACED-3F51378B4E3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8E7E245E-BA33-4527-8CC1-6E6F70A817D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E7E245E-BA33-4527-8CC1-6E6F70A817D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E7E245E-BA33-4527-8CC1-6E6F70A817D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75984EE2-E386-45D2-ACED-3F51378B4E3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75984EE2-E386-45D2-ACED-3F51378B4E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75984EE2-E386-45D2-ACED-3F51378B4E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75984EE2-E386-45D2-ACED-3F51378B4E3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

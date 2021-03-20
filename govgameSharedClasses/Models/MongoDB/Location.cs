@@ -13,7 +13,7 @@ namespace govgameSharedClasses.Models.MongoDB
         // "deep water", "shallow water", "coast", "grass", "mountain"
         public string Biome { get; set; }
         public int Coal { get; set; }
-        public int Hydrocarbons { get; set; } // oil and gas
+        public int Hydrocarbons { get; set; }
         public int Iron { get; set; }
     }
 

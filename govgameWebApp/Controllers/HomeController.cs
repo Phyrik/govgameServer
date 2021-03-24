@@ -33,5 +33,16 @@ namespace govgameWebApp.Controllers
                 return View();
             }
         }
+
+        public IActionResult PrivacyPolicy()
+        {
+            string authSessionCookie = Request.Cookies["authSession"];
+
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+
+            ViewData["userLoggedIn"] = userLoggedIn;
+
+            return View();
+        }
     }
 }

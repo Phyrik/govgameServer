@@ -38,7 +38,7 @@ namespace govgameWebApp.Controllers
             }
         }
 
-        public IActionResult SignOut()
+        public IActionResult LogOut()
         {
             Response.Cookies.Delete("authSession");
             return Redirect("/");

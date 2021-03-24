@@ -21,9 +21,10 @@
     <header>
         <nav>
             <ul class="nav justify-content-end">
+                <li class="nav-item"><a class="nav-link underline-a" href="/Home/PrivacyPolicy">Privacy policy</a></li>
                 @if ((bool)ViewData["userLoggedIn"])
                 {
-                    <li class="nav-item"><a class="nav-link underline-a" href="/Auth/SignOut">Log out</a></li>
+                    <li class="nav-item"><a class="nav-link underline-a" href="/Auth/LogOut">Log out</a></li>
                 }
                 else
                 {

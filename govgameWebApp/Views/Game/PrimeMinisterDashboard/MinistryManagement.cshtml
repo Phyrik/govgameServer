@@ -67,10 +67,8 @@
 
             $.post(`/Game/DismissMinister?minister=${minister}`, function (data, status) {
                 if (data != "success") {
-                    location.reload()
-                }
-                else {
                     alert(data)
+                    location.reload()
                 }
             })
         }

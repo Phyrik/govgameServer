@@ -156,7 +156,8 @@ namespace govgameWebApp.Controllers
 
                     if (newCountry.GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
                     {
-                        return Content("error: invalid invite link");
+                        ViewData["errorMessage"] = "Invalid invite link. The person who invited you may have cancelled the invitation.";
+                        return View("/Error/TextError.cshtml");
                     }
 
                     return View("./Invite/Minister");
@@ -241,7 +242,7 @@ namespace govgameWebApp.Controllers
 
                     if (country.GetMinisterIdByCode(ministryCode) == "none")
                     {
-                        return Content("error: no minister for ministry");
+                        return Content("Error: There is no minister to dismiss!");
                     }
 
                     CountryUpdate countryUpdate = new CountryUpdate();
@@ -264,7 +265,7 @@ namespace govgameWebApp.Controllers
                     }
                     else
                     {
-                        return Content("error: internal server error");
+                        return Content("Error: Internal server error.");
                     }
                 }
                 else
@@ -274,7 +275,7 @@ namespace govgameWebApp.Controllers
             }
             else
             {
-                return Content("error: not logged in");
+                return Content("Error: You are not logged in.");
             }
         }
 
@@ -300,12 +301,12 @@ namespace govgameWebApp.Controllers
 
                     if (country.GetMinisterIdByCode(ministryCode) != "none")
                     {
-                        return Content("error: ministry occupied");
+                        return Content("Error: There is already a minister in that ministry. Dismiss them before inviting a new one.");
                     }
 
                     if (country.GetInvitedMinisterIdByCode(ministryCode) != "none")
                     {
-                        return Content("error: user already being invited to ministry");
+                        return Content("Error: This user is already being invited to this ministry. Wait until they accept or decline the invitation.");
                     }
 
                     CountryUpdate countryUpdate = new CountryUpdate();
@@ -326,7 +327,7 @@ namespace govgameWebApp.Controllers
                     }
                     else
                     {
-                        return Content("error: internal server error");
+                        return Content("Error: Internal server error.");
                     }
                 }
                 else
@@ -336,7 +337,7 @@ namespace govgameWebApp.Controllers
             }
             else
             {
-                return Content("error: not logged in");
+                return Content("Error: You are not logged in.");
             }
         }
 
@@ -389,7 +390,7 @@ namespace govgameWebApp.Controllers
 
                                 if (oldCountry.GetMinisterIdByCode(ministryToReplacePMCode) == "none")
                                 {
-                                    return Content("error: invalid replacement ministry as there is no minister occupying it");
+                                    return Content("Error: The minister you are trying to set as Prime Minister doesn't exist.");
                                 }
 
                                 oldCountryUpdate.SetMinisterIdByCode(MinistryHelper.MinistryCode.PrimeMinister, oldCountry.GetMinisterIdByCode(ministryToReplacePMCode));
@@ -399,7 +400,7 @@ namespace govgameWebApp.Controllers
 
                         if (!MongoDBHelper.CountriesDatabase.UpdateCountry(oldCountry.CountryId, oldCountryUpdate))
                         {
-                            return Content("error: internal server error");
+                            return Content("Error: Internal server error.");
                         }
                     }
 
@@ -419,7 +420,7 @@ namespace govgameWebApp.Controllers
                     }
                     else
                     {
-                        return Content("error: internal server error");
+                        return Content("Error: Internal server error.");
                     }
                 }
                 else
@@ -429,7 +430,7 @@ namespace govgameWebApp.Controllers
             }
             else
             {
-                return Content("error: not logged in");
+                return Content("Error: You are not logged in.");
             }
         }
 
@@ -471,7 +472,7 @@ namespace govgameWebApp.Controllers
                     }
                     else
                     {
-                        return Content("error: internal server error");
+                        return Content("Error: Internal server error.");
                     }
                 }
                 else
@@ -481,7 +482,7 @@ namespace govgameWebApp.Controllers
             }
             else
             {
-                return Content("error: not logged in");
+                return Content("Error: You are not logged in.");
             }
         }
 
@@ -514,7 +515,7 @@ namespace govgameWebApp.Controllers
                     }
                     else
                     {
-                        return Content("error: internal server error");
+                        return Content("Error: Internal server error.");
                     }
                 }
                 else
@@ -524,7 +525,7 @@ namespace govgameWebApp.Controllers
             }
             else
             {
-                return Content("error: not logged in");
+                return Content("Error: You are not logged in.");
             }
         }
 
@@ -560,12 +561,14 @@ namespace govgameWebApp.Controllers
                 }
                 else
                 {
-                    return Content("error: internal server error");
+                    ViewData["errorMessage"] = "Internal server error.";
+                    return View("/Error/TextError.cshtml");
                 }
             }
             else
             {
-                return Content("error: not logged in");
+                ViewData["errorMessage"] = "You are not logged in.";
+                return View("/Error/TextError.cshtml");
             }
         }
 
@@ -599,7 +602,7 @@ namespace govgameWebApp.Controllers
                         }
                         else
                         {
-                            return Content("error: internal server error");
+                            return Content("Error: Internal server error.");
                         }
 
                     case "unread":
@@ -611,7 +614,7 @@ namespace govgameWebApp.Controllers
                         }
                         else
                         {
-                            return Content("error: internal server error");
+                            return Content("Error: Internal server error.");
                         }
 
                     default:
@@ -620,7 +623,7 @@ namespace govgameWebApp.Controllers
             }
             else
             {
-                return Content("error: not logged in");
+                return Content("Error: You are not logged in.");
             }
         }
 
@@ -651,12 +654,12 @@ namespace govgameWebApp.Controllers
                 }
                 else
                 {
-                    return Content("error: internal server error");
+                    return Content("Error: Internal server error.");
                 }
             }
             else
             {
-                return Content("error: not logged in");
+                return Content("Error: You are not logged in.");
             }
         }
         #endregion
@@ -713,7 +716,8 @@ namespace govgameWebApp.Controllers
                     string[] existingCountryNames = MongoDBHelper.CountriesDatabase.GetAllCountryNames();
                     if (existingCountryNames.Contains(country.CountryName))
                     {
-                        return Content("error: country name taken");
+                        ViewData["errorMessage"] = "There is another country with that name, and we don't allow duplicate names. Sorry!";
+                        return View("/Error/TextError.cshtml");
                     }
 
                     GlobalLocationIdentifier globalLocationIdentifier = new GlobalLocationIdentifier(int.Parse(Request.Form["locationX"]) - 50, int.Parse(Request.Form["locationY"]) - 50);
@@ -723,7 +727,8 @@ namespace govgameWebApp.Controllers
                     {
                         if (location.Owner != "none")
                         {
-                            return Content("error: locations already owned by another country");
+                            ViewData["errorMessage"] = "Some or all of the land that you chose is owned by another country. Sorry!";
+                            return View("/Error/TextError.cshtml");
                         }
                     }
 
@@ -744,17 +749,20 @@ namespace govgameWebApp.Controllers
                     }
                     else
                     {
-                        return Content("error: could not request locations");
+                        ViewData["errorMessage"] = "Internal server error.";
+                        return View("/Error/TextError.cshtml");
                     }
                 }
                 else
                 {
-                    return Content("error: you already own a country or are a minister in another");
+                    ViewData["errorMessage"] = "You are already a minister in another country.";
+                    return View("/Error/TextError.cshtml");
                 }
             }
             else
             {
-                return Redirect("error: you are not logged in");
+                ViewData["errorMessage"] = "You are not logged in.";
+                return View("/Error/TextError.cshtml");
             }
         }
         #endregion

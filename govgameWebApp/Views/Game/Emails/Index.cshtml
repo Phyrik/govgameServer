@@ -132,6 +132,7 @@
                 emails[emailId].read = true
                 $.post(`/Game/MarkEmailAsReadUnread?emailId=${emailId}&readOrUnread=read`, function (data, status) {
                     if (data != "success") {
+                        alert(data)
                         console.log("error setting email as read")
                         emails[emailId].read = false
                     }

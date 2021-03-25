@@ -43,7 +43,8 @@
             $.post(`/Game/MarkNotificationAsRead?notificationId=${notificationId}`, function (data, status) {
                 if (data != "success") {
                     console.log("error setting notification as read")
-                    emailLi.style.backgroundColor = "@unreadNotOpenedColour"
+                    alert(data)
+                    notificationLi.style.backgroundColor = "@unreadNotOpenedColour"
                 }
             })
         }

@@ -73,6 +73,9 @@
                         alert("Successfully accepted invite")
                         location.href = "/Game/CountryDashboard"
                     }
+                    else {
+                        alert(data)
+                    }
                 })
 
                 return;
@@ -101,6 +104,9 @@
                 if (data == "success") {
                     alert("Successfully declined invite")
                     location.href = "/Game/CountryDashboard"
+                }
+                else {
+                    alert(data)
                 }
             })
         }

@@ -1,6 +1,7 @@
 ﻿using govgameSharedClasses.Helpers;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Collections.Generic;
 
 namespace govgameSharedClasses.Models.MongoDB
 {
@@ -10,6 +11,8 @@ namespace govgameSharedClasses.Models.MongoDB
         public string UserId { get; set; }
         public string Username { get; set; }
         public string CountryId { get; set; }
+        [BsonDefaultValue(new string[0])]
+        public string[] BlockedUsers { get; set; }
 
         public bool IsAMinister()
         {
@@ -48,5 +51,6 @@ namespace govgameSharedClasses.Models.MongoDB
     {
         public string Username { get; set; }
         public string CountryId { get; set; }
+        public string[] BlockedUsers { get; set; }
     }
 }

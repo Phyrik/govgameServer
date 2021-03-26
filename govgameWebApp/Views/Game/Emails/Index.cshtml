@@ -46,9 +46,11 @@
     }
     <div id="actions" style="grid-column-start: 2; grid-column-end: 3; padding: 5px;">
         <button class="action-button" onclick="window.open('/Game/Emails/NewEmail', 'New email', 'height=800,width=1000,location=no,toolbar=no,menubar=no')">New email</button>
+        <button class="action-button" id="block-button" onclick="blockCurrentEmailUser()" disabled>Block emails from this user</button>
     </div>
     <div style="grid-column-start: 2; grid-column-end: 3; background-color: lightgrey; padding: 5px 10px 5px 10px; overflow-y: auto;">
         <h2 id="from-line">Click on an email to view it here</h2>
+        <h6 id="to-line"></h6>
         <h4 id="country-line"></h4>
         <hr />
         <h2 id="subject-line"></h2>
@@ -81,19 +83,29 @@
                     "userId": "@email.SenderId",
                     "subject": `@email.Subject.Replace("`", "\\`")`,
                     "body": `@Html.Raw(sanitiser.Sanitize(Markdown.ToHtml(email.Body)).Replace("`", "\\`").Replace("<p>", "").Replace("</p>", ""))`,
-                    "read": @email.MarkedAsRead.ToString().ToLower()
+                    "read": @email.MarkedAsRead.ToString().ToLower(),
+                    "toList":
+                    [
+                    @foreach (string toUserId in email.RecipientIds)
+                    {
+                        <text>"@MongoDBHelper.UsersDatabase.GetPublicUser(toUserId).Username",</text>
+                    }
+                    ]
                 },
                 </text>
-            }
+    }
         }
 
         var emailSystemContainer = document.getElementById("email-system-container")
         emailSystemContainer.style.height = window.innerHeight - (document.getElementsByTagName("header")[0].clientHeight + document.getElementById("main-header").clientHeight + document.getElementById("actions").clientHeight) + "px"
 
         var fromLine = document.getElementById("from-line");
+        var toLine = document.getElementById("to-line");
         var countryLine = document.getElementById("country-line");
         var subjectLine = document.getElementById("subject-line");
         var bodyLine = document.getElementById("body-line");
+
+        var currentlyOpenedEmailId
 
         function openEmail(emailId) {
             var emailLis = document.getElementsByClassName("email-li")
@@ -113,6 +125,7 @@
             }
 
             fromLine.innerHTML = ""
+            toLine.innerHTML = ""
             countryLine.innerHTML = ""
             subjectLine.innerHTML = ""
             bodyLine.innerHTML = ""
@@ -120,6 +133,12 @@
             var emailToOpen = emails[emailId]
 
             fromLine.innerHTML = "From: " + emailToOpen.fromUsername
+            var toListString = ""
+            for (var i = 0; i < emailToOpen.toList.length; i++) {
+                toListString += emailToOpen.toList[i] + ", "
+            }
+            toListString = toListString.substring(0, toListString.length - 2)
+            toLine.innerHTML = "To: " + toListString
             countryLine.innerHTML = "(Country: " + emailToOpen.country + ")"
             subjectLine.innerHTML = emailToOpen.subject
             bodyLine.innerHTML = emailToOpen.body
@@ -138,6 +157,24 @@
                     }
                 })
             }
+
+            currentlyOpenedEmailId = emailId
+            document.getElementById("block-button").disabled = false
+        }
+
+        function blockCurrentEmailUser() {
+            if (!confirm("Are you sure you want to block " + emails[currentlyOpenedEmailId].fromUsername + "? This action is (currently) irreversible.")) {
+                return
+            }
+
+            $.post(`/Game/BlockEmailsFromUser?blockUserId=${emails[currentlyOpenedEmailId].userId}&readOrUnread=read`, function (data, status) {
+                if (data == "success") {
+                    location.reload()
+                }
+                else {
+                    alert(data)
+                }
+            })
         }
     </script>
 }

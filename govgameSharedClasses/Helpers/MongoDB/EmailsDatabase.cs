@@ -27,11 +27,17 @@ namespace govgameSharedClasses.Helpers
                 return GetEmailById(emailId);
             }
 
-            public static Email[] GetUsersReceivedEmails(string userId)
+            public static Email[] GetUsersReceivedEmails(string userId, bool includeBlocked = false)
             {
-                FilterDefinition<Email> filter = Builders<Email>.Filter.Eq("RecipientId", userId);
+                FilterDefinitionBuilder<Email> filterBuilder = Builders<Email>.Filter;
 
-                return emailsCollection.Find(filter).ToList().ToArray();
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(userId);
+
+                FilterDefinition<Email> filter = filterBuilder.And(filterBuilder.Eq("RecipientId", userId), filterBuilder.Nin("SenderId", publicUser.BlockedUsers));
+
+                SortDefinition<Email> sort = Builders<Email>.Sort.Descending("EmailId");
+
+                return emailsCollection.Find(filter).Sort(sort).ToList().ToArray();
             }
 
             public static bool SendEmail(EmailSendRequest emailSendRequest)

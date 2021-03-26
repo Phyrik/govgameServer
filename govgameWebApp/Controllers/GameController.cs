@@ -4,6 +4,7 @@ using govgameSharedClasses.Models.MongoDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace govgameWebApp.Controllers
@@ -619,6 +620,45 @@ namespace govgameWebApp.Controllers
 
                     default:
                         return Content("invalid or missing parameter: readOrUnread");
+                }
+            }
+            else
+            {
+                return Content("Error: You are not logged in.");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult BlockEmailsFromUser(string blockUserId)
+        {
+            string authSessionCookie = Request.Cookies["authSession"];
+
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+
+            if (userLoggedIn)
+            {
+                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+                string firebaseUid = firebaseToken.Uid;
+
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+                List<string> newBlockedUsersList = new List<string>(publicUser.BlockedUsers);
+                newBlockedUsersList.Add(blockUserId);
+
+                UserUpdate userUpdate = new UserUpdate
+                {
+                    BlockedUsers = newBlockedUsersList.ToArray()
+                };
+
+                bool blockUserSuccess = MongoDBHelper.UsersDatabase.UpdateUser(firebaseUid, userUpdate);
+
+                if (blockUserSuccess)
+                {
+                    return Content("success");
+                }
+                else
+                {
+                    return Content("Error: Internal server error.");
                 }
             }
             else

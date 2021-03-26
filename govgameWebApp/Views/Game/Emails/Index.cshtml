@@ -80,11 +80,22 @@
             @foreach (Email email in emails)
             {
                 PublicUser sender = MongoDBHelper.UsersDatabase.GetPublicUser(email.SenderId);
-                Country senderCountry = MongoDBHelper.CountriesDatabase.GetCountry(sender.CountryId);
+                Country senderCountry = null;
+                if (sender.IsAMinister())
+                {
+                    senderCountry = MongoDBHelper.CountriesDatabase.GetCountry(sender.CountryId);
+                }
                 <text>
                 "@email.EmailId": {
-                    "fromUsername": "@sender.Username.Replace("`", "\\`")",
-                    "country": "@senderCountry.CountryName.Replace("`", "\\`")",
+                "fromUsername": "@sender.Username.Replace("`", "\\`")",
+                    @if (sender.IsAMinister())
+                    {
+                        <text>"country": "@senderCountry.CountryName.Replace("`", "\\`")",</text>
+                    }
+                    else
+                    {
+                        <text>"country": false</text>
+                    }
                     "userId": "@email.SenderId",
                     "subject": `@email.Subject.Replace("`", "\\`")`,
                     "body": `@Html.Raw(sanitiser.Sanitize(Markdown.ToHtml(email.Body)).Replace("`", "\\`").Replace("<p>", "").Replace("</p>", ""))`,
@@ -144,7 +155,12 @@
             }
             toListString = toListString.substring(0, toListString.length - 2)
             toLine.innerHTML = "To: " + toListString
-            countryLine.innerHTML = "(Country: " + emailToOpen.country + ")"
+            if (emailToOpen.country === false) {
+                countryLine.innerHTML = "(No country)"
+            }
+            else {
+                countryLine.innerHTML = "(Country: " + emailToOpen.country + ")"
+            }
             subjectLine.innerHTML = emailToOpen.subject
             bodyLine.innerHTML = emailToOpen.body
 

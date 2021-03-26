@@ -158,7 +158,7 @@ namespace govgameWebApp.Controllers
                     if (newCountry.GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
                     {
                         ViewData["errorMessage"] = "Invalid invite link. The person who invited you may have cancelled the invitation.";
-                        return View("/Error/TextError.cshtml");
+                        return View("../Error/TextError");
                     }
 
                     return View("./Invite/Minister");
@@ -563,13 +563,13 @@ namespace govgameWebApp.Controllers
                 else
                 {
                     ViewData["errorMessage"] = "Internal server error.";
-                    return View("/Error/TextError.cshtml");
+                    return View("../Error/TextError");
                 }
             }
             else
             {
                 ViewData["errorMessage"] = "You are not logged in.";
-                return View("/Error/TextError.cshtml");
+                return View("../Error/TextError");
             }
         }
 
@@ -757,7 +757,7 @@ namespace govgameWebApp.Controllers
                     if (existingCountryNames.Contains(country.CountryName))
                     {
                         ViewData["errorMessage"] = "There is another country with that name, and we don't allow duplicate names. Sorry!";
-                        return View("/Error/TextError.cshtml");
+                        return View("../Error/TextError");
                     }
 
                     GlobalLocationIdentifier globalLocationIdentifier = new GlobalLocationIdentifier(int.Parse(Request.Form["locationX"]) - 50, int.Parse(Request.Form["locationY"]) - 50);
@@ -768,7 +768,7 @@ namespace govgameWebApp.Controllers
                         if (location.Owner != "none")
                         {
                             ViewData["errorMessage"] = "Some or all of the land that you chose is owned by another country. Sorry!";
-                            return View("/Error/TextError.cshtml");
+                            return View("../Error/TextError");
                         }
                     }
 
@@ -790,19 +790,19 @@ namespace govgameWebApp.Controllers
                     else
                     {
                         ViewData["errorMessage"] = "Internal server error.";
-                        return View("/Error/TextError.cshtml");
+                        return View("../Error/TextError");
                     }
                 }
                 else
                 {
                     ViewData["errorMessage"] = "You are already a minister in another country.";
-                    return View("/Error/TextError.cshtml");
+                    return View("../Error/TextError");
                 }
             }
             else
             {
                 ViewData["errorMessage"] = "You are not logged in.";
-                return View("/Error/TextError.cshtml");
+                return View("../Error/TextError");
             }
         }
         #endregion

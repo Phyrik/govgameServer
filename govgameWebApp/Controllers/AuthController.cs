@@ -87,9 +87,19 @@ namespace govgameWebApp.Controllers
                 return Unauthorized("No id token provided.");
             }
 
+            TimeSpan expirationTimeSpan;
+            if (Request.Form["remember-me"] == "on")
+            {
+                expirationTimeSpan = TimeSpan.FromDays(30);
+            }
+            else
+            {
+                expirationTimeSpan = TimeSpan.FromDays(1);
+            }
+
             SessionCookieOptions options = new SessionCookieOptions()
             {
-                ExpiresIn = TimeSpan.FromDays(5)
+                ExpiresIn = expirationTimeSpan
             };
 
             try
@@ -145,9 +155,19 @@ namespace govgameWebApp.Controllers
                 return Content("error: internal server error");
             }
 
+            TimeSpan expirationTimeSpan;
+            if (Request.Form["remember-me"] == "on")
+            {
+                expirationTimeSpan = TimeSpan.FromDays(30);
+            }
+            else
+            {
+                expirationTimeSpan = TimeSpan.FromDays(1);
+            }
+
             SessionCookieOptions options = new SessionCookieOptions()
             {
-                ExpiresIn = TimeSpan.FromDays(5)
+                ExpiresIn = expirationTimeSpan
             };
 
             try

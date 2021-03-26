@@ -3,6 +3,11 @@
 @{
     Layout = "_EmailLayout";
 
+    if ((bool)ViewData["noCountry"])
+    {
+        Layout = "_NoCountryEmailLayout";
+    }
+
     PublicUser publicUser = (PublicUser)ViewData["publicUser"];
 
     Country country = (Country)ViewData["country"];

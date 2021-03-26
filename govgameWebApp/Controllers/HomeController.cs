@@ -17,16 +17,7 @@ namespace govgameWebApp.Controllers
             {
                 FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
 
-                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseToken.Uid);
-
-                if (!publicUser.IsAMinister())
-                {
-                    return Redirect("/Auth/NextSteps");
-                }
-                else
-                {
-                    return Redirect("/Game/Index");
-                }
+                return Redirect("/Game/Index");
             }
             else
             {

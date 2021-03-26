@@ -1,6 +1,11 @@
 ﻿@{
     Layout = "_GameLayout";
 
+    if ((bool)ViewData["noCountry"])
+    {
+        Layout = "_NoCountryGameLayout";
+    }
+
     Country oldCountry = (Country)ViewData["country"];
     Country newCountry = (Country)ViewData["newCountry"];
     PublicUser oldPrimeMinister = (PublicUser)ViewData["oldPrimeMinisterUser"];

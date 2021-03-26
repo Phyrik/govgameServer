@@ -1,6 +1,11 @@
 ﻿@{
     Layout = "_GameLayout";
 
+    if ((bool)ViewData["noCountry"])
+    {
+        Layout = "_NoCountryGameLayout";
+    }
+
     Notification[] notifications = (Notification[])ViewData["notifications"];
 
     ViewData["Title"] = "Notifications";

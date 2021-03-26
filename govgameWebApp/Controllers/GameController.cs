@@ -80,15 +80,38 @@ namespace govgameWebApp.Controllers
             return Redirect("/Game/Home");
         }
 
-        public IActionResult Home()
+        public IActionResult Home(string authSessionCookie)
         {
-            return View();
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
+
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            switch (publicUser.IsAMinister())
+            {
+                case true:
+                    return View();
+
+                case false:
+                    return View("./NoCountry/Home");
+            }
         }
 
         public IActionResult Notifications(string authSessionCookie)
         {
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
+
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            if (!publicUser.IsAMinister())
+            {
+                ViewData["noCountry"] = true;
+            }
+            else
+            {
+                ViewData["noCountry"] = false;
+            }
 
             Notification[] notifications = MongoDBHelper.NotificationsDatabase.GetUsersReceivedNotifications(firebaseUid);
             ViewData["notifications"] = notifications;
@@ -100,6 +123,17 @@ namespace govgameWebApp.Controllers
         {
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
+
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            if (!publicUser.IsAMinister())
+            {
+                ViewData["noCountry"] = true;
+            }
+            else
+            {
+                ViewData["noCountry"] = false;
+            }
 
             switch (page)
             {
@@ -126,6 +160,15 @@ namespace govgameWebApp.Controllers
             string firebaseUid = firebaseToken.Uid;
 
             PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            if (!publicUser.IsAMinister())
+            {
+                ViewData["noCountry"] = true;
+            }
+            else
+            {
+                ViewData["noCountry"] = false;
+            }
 
             Country oldCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
 
@@ -170,6 +213,16 @@ namespace govgameWebApp.Controllers
 
         public IActionResult CountryDashboard(string page, string authSessionCookie)
         {
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
+
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            if (!publicUser.IsAMinister())
+            {
+                return Redirect("/Game/Index");
+            }
+
             switch (page)
             {
                 case null:
@@ -186,6 +239,11 @@ namespace govgameWebApp.Controllers
             string firebaseUid = firebaseToken.Uid;
 
             PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            if (!publicUser.IsAMinister())
+            {
+                return Redirect("/Game/Index");
+            }
 
             ViewData["publicUser"] = publicUser;
 

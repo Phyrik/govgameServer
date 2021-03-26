@@ -90,7 +90,7 @@ namespace govgameWebApp.Controllers
             TimeSpan expirationTimeSpan;
             if (Request.Form["remember-me"] == "on")
             {
-                expirationTimeSpan = TimeSpan.FromDays(30);
+                expirationTimeSpan = TimeSpan.FromDays(14);
             }
             else
             {
@@ -158,7 +158,7 @@ namespace govgameWebApp.Controllers
             TimeSpan expirationTimeSpan;
             if (Request.Form["remember-me"] == "on")
             {
-                expirationTimeSpan = TimeSpan.FromDays(30);
+                expirationTimeSpan = TimeSpan.FromDays(14);
             }
             else
             {

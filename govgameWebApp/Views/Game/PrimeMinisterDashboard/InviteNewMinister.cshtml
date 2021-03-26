@@ -20,8 +20,13 @@
     <span style="text-decoration: underline; text-decoration-color: @ministryColour">@ministryName</span>
 </h1>
 <br />
+<h3>Search users</h3>
+<input type="text" id="search-input" />
+<button onclick="searchUsers()">Go</button>
+<button onclick="document.getElementById('search-input').value = ''; searchUsers()">Show all users</button>
+<br />
 <hr />
-<ul class="no-margin-ul">
+<ul class="no-margin-ul" id="user-ul">
     @foreach (PublicUser publicUser in allPublicUsers)
     {
         @if (publicUser.UserId == currentPublicUser.UserId) continue;
@@ -50,5 +55,32 @@
                 }
             })
         }
+
+        function searchUsers() {
+            var searchText = $("#search-input").val()
+
+            var lis = $("#user-ul")[0].getElementsByTagName("li")
+            var hrs = $("#user-ul")[0].getElementsByTagName("hr")
+
+            for (var i = 0; i < lis.length; i++) {
+                var name = lis[i].getElementsByTagName("h2")[0].innerHTML
+
+                if (name.toLowerCase().includes(searchText.toLowerCase())) {
+                    lis[i].style.display = "grid"
+                    hrs[i].style.display = ""
+                }
+                else {
+                    lis[i].style.display = "none"
+                    hrs[i].style.display = "none"
+                }
+            }
+        }
+
+        document.getElementById("search-input").addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault()
+                searchUsers()
+            }
+        })
     </script>
 }

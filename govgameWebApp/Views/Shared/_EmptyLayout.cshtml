@@ -1,6 +1,11 @@
 ﻿@using govgameSharedClasses.Helpers;
 @{
-    Country country = (Country)ViewData["country"];
+    Country country = null;
+
+    if (!(bool)ViewData["noCountry"])
+    {
+        country = (Country)ViewData["country"];
+    }
 }
 
 <!DOCTYPE html>
@@ -8,7 +13,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @country.CountryName - Government Game</title>
+    <title>@ViewData["Title"] @if (!(bool)ViewData["noCountry"]) {<text>- @country.CountryName</text>} - Government Game</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com">

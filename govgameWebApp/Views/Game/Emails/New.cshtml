@@ -58,7 +58,7 @@
                 var user = users[toInputText]
                 var newToLi = document.createElement("li")
                 newToLi.id = "to-li-" + user.userId
-                newToLi.innerHTML = `<h5>${user.username}</h5 style="grid-column-start: 1; grid-column-end: 3;"><p style="margin-bottom: 0; font-size: small; grid-column-start: 1; grid-column-end: 3;">(User ID: ${user.userId})</p><button onclick="removeToLi(this, '${user.userId}');" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2; height: 20px; font-size: 10px; padding: 0;">X</button>`
+                newToLi.innerHTML = `<h5 style="grid-column-start: 1; grid-column-end: 2;">${user.username}</h5><button onclick="removeToLi(this, '${user.userId}');" style="grid-column-start: 3; grid-column-end: 4; height: 20px; font-size: 10px; padding: 0;">X</button>`
                 newToLi.style.display = "inline-grid"
                 newToLi.style.textAlign = "center"
                 newToLi.style.marginRight = "10px"
@@ -66,7 +66,7 @@
                 newToLi.style.border = "2px solid black"
                 newToLi.style.borderRadius = "10px"
                 newToLi.style.padding = "5px"
-                newToLi.style.gridTemplateColumns = "auto 20px"
+                newToLi.style.gridTemplateColumns = "auto 5px 20px"
                 toUl.appendChild(newToLi)
                 toUsers.push(toInputText)
             }

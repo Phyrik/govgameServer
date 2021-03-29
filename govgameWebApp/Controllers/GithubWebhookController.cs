@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace govgameWebApp.Controllers
@@ -14,9 +15,12 @@ namespace govgameWebApp.Controllers
         {
             JObject requestObject = JObject.Parse(new StreamReader(Request.Body).ReadToEndAsync().Result);
 
+            if (requestObject["repository"]["id"].ToString() == Environment.GetEnvironmentVariable("govgameServerRepoId"))
+            {
+                return Content($"received github webhook successfully! requestObject: {requestObject}");
+            }
 
-
-            return Content($"received github webhook successfully! requestObject: {requestObject}");
+            return Unauthorized();
         }
     }
 }

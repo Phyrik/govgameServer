@@ -12,7 +12,7 @@ namespace govgameWebApp.Controllers
     {
         public IActionResult Index()
         {
-            JObject requestObject = JObject.Parse(new StreamReader(Request.Body).ReadToEnd());
+            JObject requestObject = JObject.Parse(new StreamReader(Request.Body).ReadToEndAsync().Result);
 
 
 

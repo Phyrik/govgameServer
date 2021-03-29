@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,7 +12,11 @@ namespace govgameWebApp.Controllers
     {
         public IActionResult Index()
         {
-            return Content("received github webhook successfully!");
+            JObject requestObject = JObject.Parse(new StreamReader(Request.Body).ReadToEnd());
+
+
+
+            return Content($"received github webhook successfully! requestObject: {requestObject}");
         }
     }
 }

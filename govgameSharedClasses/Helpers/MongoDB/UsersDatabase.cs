@@ -1,6 +1,7 @@
 ﻿using govgameSharedClasses.Models.MongoDB;
 using MongoDB.Driver;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace govgameSharedClasses.Helpers
@@ -64,7 +65,7 @@ namespace govgameSharedClasses.Helpers
             {
                 FilterDefinition<PublicUser> filter = Builders<PublicUser>.Filter.Empty;
 
-                PublicUser[] allPublicUsers = usersCollection.Find(filter).ToList().ToArray();
+                PublicUser[] allPublicUsers = usersCollection.Find(filter).ToList().OrderBy(publicUser => publicUser.Username).ToArray();
 
                 if (excludeMinisters)
                 {

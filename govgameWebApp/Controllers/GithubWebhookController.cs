@@ -17,7 +17,7 @@ namespace govgameWebApp.Controllers
 
             if (requestObject["repository"]["id"].ToString() == Environment.GetEnvironmentVariable("govgameServerRepoId"))
             {
-                return Content($"received github webhook successfully! requestObject: {requestObject}");
+                return Content($"received github webhook successfully!");
             }
 
             return Unauthorized();

@@ -27,6 +27,8 @@ namespace govgameWebApp.Controllers
                     RedirectStandardError = true
                 };
 
+                System.IO.File.AppendAllText("output.txt", "test for permissions");
+
                 Process process = Process.Start(processStartInfo);
                 while (!process.StandardOutput.EndOfStream || !process.StandardError.EndOfStream)
                 {

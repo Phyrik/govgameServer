@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -17,6 +18,13 @@ namespace govgameWebApp.Controllers
 
             if (requestObject["repository"]["id"].ToString() == Environment.GetEnvironmentVariable("govgameServerRepoId"))
             {
+                Runspace runspace = RunspaceFactory.CreateRunspace();
+                runspace.Open();
+                Pipeline pipeline = runspace.CreatePipeline();
+                pipeline.Commands.Add(@"C:\Users\Administrator\Documents\deploy.ps1");
+                pipeline.Invoke();
+                runspace.Close();
+
                 return Content($"received github webhook successfully!");
             }
 

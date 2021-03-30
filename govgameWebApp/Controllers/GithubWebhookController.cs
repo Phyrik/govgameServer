@@ -18,7 +18,7 @@ namespace govgameWebApp.Controllers
 
             if (requestObject["repository"]["id"].ToString() == "328969055")
             {
-                Process.Start(@"powershell.exe -NoProfile -ExecutionPolicy unrestricted -File ""C:\Users\Administrator\Documents\deploy.ps1""");
+                Process.Start("powershell.exe", @"-NoProfile -ExecutionPolicy unrestricted -File ""C:\Users\Administrator\Documents\deploy.ps1""");
 
                 return Content($"received github webhook successfully!");
             }

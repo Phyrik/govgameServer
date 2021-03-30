@@ -30,15 +30,15 @@ namespace govgameWebApp.Controllers
                 string output = string.Empty;
                 Process process = Process.Start(processStartInfo);
                 output += Environment.CurrentDirectory + " [NEW LINE] ";
-                int i = 0;
+                /*int i = 0;
                 while ((!process.StandardOutput.EndOfStream && !process.StandardError.EndOfStream) && i < 2)
-                {
+                {*/
                     string line = process.StandardOutput.ReadLine();
                     output += line + " [NEW LINE] ";
                     line = process.StandardError.ReadLine();
                     output += line + " [NEW LINE] ";
-                    i++;
-                }
+                    /*i++;
+                }*/
 
                 return Content($"received github webhook successfully! output: {output}");
             }

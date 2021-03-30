@@ -21,7 +21,9 @@ namespace govgameWebApp.Controllers
                 ProcessStartInfo processStartInfo = new ProcessStartInfo()
                 {
                     FileName = "powershell.exe",
-                    Arguments = @"-ExecutionPolicy unrestricted -file ""C:\Users\Administrator\Documents\deploy.ps1"""
+                    Arguments = @"-ExecutionPolicy unrestricted -file ""C:\Users\Administrator\Documents\deploy.ps1""",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true
                 };
 
                 string output = string.Empty;

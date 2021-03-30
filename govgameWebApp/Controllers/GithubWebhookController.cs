@@ -30,7 +30,7 @@ namespace govgameWebApp.Controllers
                 string output = string.Empty;
                 Process process = Process.Start(processStartInfo);
                 output += Environment.CurrentDirectory + " [NEW LINE] ";
-                while (!process.StandardOutput.EndOfStream && !process.StandardError.EndOfStream)
+                while (!process.StandardOutput.EndOfStream || !process.StandardError.EndOfStream)
                 {
                     string line = process.StandardOutput.ReadLine();
                     output += line + " [NEW LINE] ";

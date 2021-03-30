@@ -1,5 +1,4 @@
 ﻿@using Ganss.XSS;
-@using Markdig;
 @{
     Layout = "_EmailLayout";
 
@@ -98,7 +97,7 @@
                     }
                     "userId": "@email.SenderId",
                     "subject": `@email.Subject.Replace("`", "\\`")`,
-                    "body": `@Html.Raw(sanitiser.Sanitize(Markdown.ToHtml(email.Body)).Replace("`", "\\`").Replace("<p>", "").Replace("</p>", ""))`,
+                    "body": `@Html.Raw(sanitiser.Sanitize(Markdig.Markdown.ToHtml(email.Body)).Replace("`", "\\`").Replace("<p>", "").Replace("</p>", ""))`,
                     "read": @email.MarkedAsRead.ToString().ToLower(),
                     "toList":
                     [

@@ -2,9 +2,9 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -18,12 +18,14 @@ namespace govgameWebApp.Controllers
 
             if (requestObject["repository"]["id"].ToString() == "328969055")
             {
-                Runspace runspace = RunspaceFactory.CreateRunspace();
-                runspace.Open();
-                Pipeline pipeline = runspace.CreatePipeline();
-                pipeline.Commands.Add(@"C:\Users\Administrator\Documents\deploy.ps1");
-                pipeline.Invoke();
-                runspace.Close();
+                ProcessStartInfo processStartInfo = new ProcessStartInfo()
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-NoProfile -ExecutionPolicy unrestricted -file \"C:\\Users\\Administrator\\Documents\\deploy.ps1\"",
+                    UseShellExecute = false
+                };
+
+                Process.Start(processStartInfo);
 
                 return Content($"received github webhook successfully!");
             }

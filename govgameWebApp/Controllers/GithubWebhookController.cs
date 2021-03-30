@@ -16,7 +16,7 @@ namespace govgameWebApp.Controllers
         {
             JObject requestObject = JObject.Parse(new StreamReader(Request.Body).ReadToEndAsync().Result);
 
-            if (requestObject["repository"]["id"].ToString() == Environment.GetEnvironmentVariable("govgameServerRepoId").ToString())
+            if (requestObject["repository"]["id"].ToString() == "328969055")
             {
                 Runspace runspace = RunspaceFactory.CreateRunspace();
                 runspace.Open();

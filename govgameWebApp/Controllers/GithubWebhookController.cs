@@ -28,8 +28,13 @@ namespace govgameWebApp.Controllers
                 };
 
                 Process process = Process.Start(processStartInfo);
+                while (!process.StandardOutput.EndOfStream || !process.StandardError.EndOfStream)
+                {
+                    System.IO.File.AppendAllText("output.txt", process.StandardOutput.ReadLine());
+                    System.IO.File.AppendAllText("output.txt", process.StandardError.ReadLine());
+                }
 
-                return Content($"received github webhook successfully! process name: {process.ProcessName}");
+                return Content($"received github webhook successfully!");
             }
 
             return Content($"Failure: {requestObject["repository"]["id"].ToString()} == {Environment.GetEnvironmentVariable("govgameServerRepoId").ToString()}");

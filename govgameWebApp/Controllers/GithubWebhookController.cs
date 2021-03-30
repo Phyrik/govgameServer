@@ -16,7 +16,7 @@ namespace govgameWebApp.Controllers
         {
             JObject requestObject = JObject.Parse(new StreamReader(Request.Body).ReadToEndAsync().Result);
 
-            if (requestObject["repository"]["id"].ToString() == Environment.GetEnvironmentVariable("govgameServerRepoId"))
+            if (requestObject["repository"]["id"].ToString() == Environment.GetEnvironmentVariable("govgameServerRepoId").ToString())
             {
                 Runspace runspace = RunspaceFactory.CreateRunspace();
                 runspace.Open();
@@ -28,7 +28,7 @@ namespace govgameWebApp.Controllers
                 return Content($"received github webhook successfully!");
             }
 
-            return Unauthorized();
+            return Unauthorized($"{requestObject["repository"]["id"].ToString()} == {Environment.GetEnvironmentVariable("govgameServerRepoId").ToString()}");
         }
     }
 }

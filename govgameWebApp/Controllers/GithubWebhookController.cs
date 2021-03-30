@@ -28,9 +28,11 @@ namespace govgameWebApp.Controllers
 
                 string output = string.Empty;
                 Process process = Process.Start(processStartInfo);
-                while (!process.StandardOutput.EndOfStream)
+                while (!process.StandardOutput.EndOfStream && !process.StandardError.EndOfStream)
                 {
                     string line = process.StandardOutput.ReadLine();
+                    output += line;
+                    line = process.StandardError.ReadLine();
                     output += line;
                 }
 

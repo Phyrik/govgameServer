@@ -23,7 +23,8 @@ namespace govgameWebApp.Controllers
                     FileName = "powershell.exe",
                     Arguments = @"-ExecutionPolicy unrestricted -file ""C:\Users\Administrator\Documents\deploy.ps1""",
                     UseShellExecute = false,
-                    RedirectStandardOutput = true
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
                 };
 
                 string output = string.Empty;

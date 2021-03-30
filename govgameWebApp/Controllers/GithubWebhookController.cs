@@ -32,6 +32,7 @@ namespace govgameWebApp.Controllers
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
+                    Domain = "EC2AMAZ-4L5VH2C",
                     UserName = "Administrator",
                     Password = password
                 };

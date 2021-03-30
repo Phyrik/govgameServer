@@ -27,18 +27,9 @@ namespace govgameWebApp.Controllers
                     RedirectStandardError = true
                 };
 
-                string output = string.Empty;
                 Process process = Process.Start(processStartInfo);
-                output += Environment.CurrentDirectory + " [NEW LINE] ";
-                while (!process.StandardOutput.EndOfStream || !process.StandardError.EndOfStream)
-                {
-                    string line = process.StandardOutput.ReadLine();
-                    output += line + " [NEW LINE] ";
-                    line = process.StandardError.ReadLine();
-                    output += line + " [NEW LINE] ";
-                }
 
-                return Content($"received github webhook successfully! output: {output}");
+                return Content($"received github webhook successfully! process name: {process.ProcessName}");
             }
 
             return Content($"Failure: {requestObject["repository"]["id"].ToString()} == {Environment.GetEnvironmentVariable("govgameServerRepoId").ToString()}");

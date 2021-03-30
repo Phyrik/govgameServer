@@ -29,12 +29,13 @@ namespace govgameWebApp.Controllers
 
                 string output = string.Empty;
                 Process process = Process.Start(processStartInfo);
+                output += Environment.CurrentDirectory + " [NEW LINE] ";
                 while (!process.StandardOutput.EndOfStream && !process.StandardError.EndOfStream)
                 {
                     string line = process.StandardOutput.ReadLine();
-                    output += line;
+                    output += line + " [NEW LINE] ";
                     line = process.StandardError.ReadLine();
-                    output += line;
+                    output += line + " [NEW LINE] ";
                 }
 
                 return Content($"received github webhook successfully! output: {output}");

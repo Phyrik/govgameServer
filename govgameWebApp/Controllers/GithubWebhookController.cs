@@ -28,7 +28,7 @@ namespace govgameWebApp.Controllers
                 return Content($"received github webhook successfully!");
             }
 
-            return Unauthorized($"{requestObject["repository"]["id"].ToString()} == {Environment.GetEnvironmentVariable("govgameServerRepoId").ToString()}");
+            return Content($"Failure: {requestObject["repository"]["id"].ToString()} == {Environment.GetEnvironmentVariable("govgameServerRepoId").ToString()}");
         }
     }
 }

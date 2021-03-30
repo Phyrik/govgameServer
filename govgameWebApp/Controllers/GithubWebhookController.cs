@@ -23,11 +23,24 @@ namespace govgameWebApp.Controllers
                     FileName = "powershell.exe",
                     Arguments = @"-NoProfile -ExecutionPolicy unrestricted -File ""C:\Users\Administrator\Documents\deploy.ps1""",
                     UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
                 };
 
-                Process.Start(processStartInfo);
+                string output = string.Empty;
+                Process process = Process.Start(processStartInfo);
+                output += Environment.CurrentDirectory + " [NEW LINE] ";
+                int i = 0;
+                while ((!process.StandardOutput.EndOfStream && !process.StandardError.EndOfStream) && i < 5)
+                {
+                    string line = process.StandardOutput.ReadLine();
+                    output += line + " [NEW LINE] ";
+                    line = process.StandardError.ReadLine();
+                    output += line + " [NEW LINE] ";
+                    i++;
+                }
 
-                return Content($"received github webhook successfully!");
+                return Content($"received github webhook successfully! output: {output}");
             }
 
             return Content($"Failure: {requestObject["repository"]["id"].ToString()} == {Environment.GetEnvironmentVariable("govgameServerRepoId").ToString()}");

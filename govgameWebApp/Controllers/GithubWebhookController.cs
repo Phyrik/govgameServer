@@ -24,9 +24,15 @@ namespace govgameWebApp.Controllers
                     Arguments = @"-ExecutionPolicy unrestricted -file ""C:\Users\Administrator\Documents\deploy.ps1"""
                 };
 
-                Process.Start(processStartInfo);
+                string output = string.Empty;
+                Process process = Process.Start(processStartInfo);
+                while (!process.StandardOutput.EndOfStream)
+                {
+                    string line = process.StandardOutput.ReadLine();
+                    output += line;
+                }
 
-                return Content($"received github webhook successfully!");
+                return Content($"received github webhook successfully! output: {output}");
             }
 
             return Content($"Failure: {requestObject["repository"]["id"].ToString()} == {Environment.GetEnvironmentVariable("govgameServerRepoId").ToString()}");

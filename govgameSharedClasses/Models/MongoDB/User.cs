@@ -48,11 +48,9 @@ namespace govgameSharedClasses.Models.MongoDB
 
         public bool HasAccessToMinistry(MinistryHelper.MinistryCode ministryCode)
         {
-            if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister && this.IsAPrimeMinister()) return true;
+            if (this.IsAPrimeMinister()) return true;
 
             if (this.GetMinistry() == ministryCode) return true;
-
-            if (this.IsAPrimeMinister() && MongoDBHelper.CountriesDatabase.GetCountry(this.CountryId).GetMinisterIdByCode(ministryCode) == "none") return true;
 
             return false;
         }

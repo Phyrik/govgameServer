@@ -60,6 +60,22 @@ namespace govgameSharedClasses.Helpers
                 }
             }
 
+            public static bool UpdateCountryRaw(string countryId, UpdateDefinition<Country> update)
+            {
+                FilterDefinition<Country> filter = Builders<Country>.Filter.Eq("CountryId", countryId);
+
+                try
+                {
+                    countriesCollection.UpdateOne(filter, update);
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
             public static bool NewCountry(Country country)
             {
                 try

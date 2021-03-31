@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace govgameSharedClasses.Models.MongoDB
 {
+    [BsonIgnoreExtraElements]
     public class Country
     {
         [BsonId]

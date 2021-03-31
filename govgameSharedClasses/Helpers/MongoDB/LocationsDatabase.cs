@@ -76,7 +76,7 @@ namespace govgameSharedClasses.Helpers
 
                 try
                 {
-                    locationsCollection.UpdateMany(filter, updateBuilder.Combine(updates));
+                    locationsCollection.UpdateOne(filter, updateBuilder.Combine(updates));
 
                     return true;
                 }

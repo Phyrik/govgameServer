@@ -50,7 +50,7 @@ namespace govgameSharedClasses.Helpers
 
                 try
                 {
-                    countriesCollection.UpdateMany(filter, updateBuilder.Combine(updates));
+                    countriesCollection.UpdateOne(filter, updateBuilder.Combine(updates));
 
                     return true;
                 }

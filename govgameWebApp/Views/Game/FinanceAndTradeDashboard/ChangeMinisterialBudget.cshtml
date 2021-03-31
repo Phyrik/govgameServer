@@ -1,0 +1,39 @@
+﻿@{
+    Layout = "_GameLayout";
+
+    Country country = (Country)ViewData["country"];
+
+    MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)ViewData["ministryCode"];
+
+    string ministryName = MinistryHelper.MinistryCodeToMinistryName(ministryCode);
+    string ministryColour = MinistryHelper.MinistryCodeToMinistryHexColour(ministryCode);
+
+    ViewData["Title"] = "Change ministerial budget";
+    ViewData["PageName"] = "Change ministerial budget";
+}
+
+<h1>
+    <span>Change ministerial budget for the</span>
+    <span style="text-decoration: underline; text-decoration-color: @ministryColour">@ministryName</span>
+</h1>
+<br />
+<h2>Current:</h2>
+<h2>$@country.GetBudgetByCode(ministryCode).GetValueOrDefault().ToString("n0")</h2>
+<h2><label for="new-budget">New:</label></h2>
+<label for="new-budget">$</label>
+<input type="number" min="0" max="@country.Budget" id="new-budget" name="new-budget" />
+<br />
+<br />
+<button onclick="submit()">Change</button>
+
+@section Scripts {
+    <script>
+        var newBudgetInput = document.getElementById("new-budget")
+
+        function submit() {
+            if (!confirm(`Are you sure you want to increase the @ministryName's budget by $${newBudgetInput.value - @country.GetBudgetByCode(ministryCode)} (making their new budget $${newBudgetInput.value})?`)) {
+                return
+            }
+        }
+    </script>
+}

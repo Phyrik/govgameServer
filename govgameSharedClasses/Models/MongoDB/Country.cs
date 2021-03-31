@@ -146,5 +146,21 @@ namespace govgameSharedClasses.Models.MongoDB
                     break;
             }
         }
+
+        public void SetBudgetByCode(MinistryHelper.MinistryCode ministryCode, int amount)
+        {
+            switch (ministryCode)
+            {
+                case MinistryHelper.MinistryCode.Interior:
+                    this.InteriorMinistryBudget = amount;
+                    break;
+                case MinistryHelper.MinistryCode.ForeignAffairs:
+                    this.ForeignMinistryBudget = amount;
+                    break;
+                case MinistryHelper.MinistryCode.Defence:
+                    this.DefenceMinistryBudget = amount;
+                    break;
+            }
+        }
     }
 }

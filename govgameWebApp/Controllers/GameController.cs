@@ -306,8 +306,14 @@ namespace govgameWebApp.Controllers
                 case null:
                     return View("./FinanceAndTradeDashboard/Index");
 
-                case "MinisterialBudget":
-                    return View("./FinanceAndTradeDashboard/MinisterialBudget");
+                case "Budget":
+                    return View("./FinanceAndTradeDashboard/Budget");
+
+                case "ChangeMinisterialBudget":
+                    MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["minister"]);
+                    ViewData["ministryCode"] = ministryCode;
+
+                    return View("./FinanceAndTradeDashboard/ChangeMinisterialBudget");
 
                 default:
                     return View("404");
@@ -789,6 +795,39 @@ namespace govgameWebApp.Controllers
                 else
                 {
                     return Content("Error: Internal server error.");
+                }
+            }
+            else
+            {
+                return Content("Error: You are not logged in.");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ChangeMinisterialBudget(string ministry, int changeAmount)
+        {
+            string authSessionCookie = Request.Cookies["authSession"];
+
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+
+            if (userLoggedIn)
+            {
+                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+                string firebaseUid = firebaseToken.Uid;
+
+                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+                Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+
+                MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+
+                if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.FinanceAndTrade))
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    return StatusCode(403);
                 }
             }
             else

@@ -37,7 +37,7 @@ namespace govgameSharedClasses.Helpers
 
                 try
                 {
-                    usersCollection.UpdateMany(filter, updateBuilder.Combine(updates));
+                    usersCollection.UpdateOne(filter, updateBuilder.Combine(updates));
 
                     return true;
                 }

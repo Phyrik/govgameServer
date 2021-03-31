@@ -25,7 +25,7 @@
 <h1>Go to a ministerial dashboard:</h1>
 <br />
 <ul style="list-style: none;">
-    @if (country.PrimeMinisterId == publicUser.UserId)
+    @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.PrimeMinister))
     {
         <li class="ministry-li">
             <a href="/Game/PrimeMinisterDashboard">
@@ -33,34 +33,34 @@
             </a>
         </li>
     }
-    @if (country.InteriorMinisterId == publicUser.UserId || (country.InteriorMinisterId == "none" && publicUser.UserId == country.PrimeMinisterId))
+    @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.Interior))
     {
         <li class="ministry-li">
-            <a href="/Game/InteriorMinisterDashboard">
+            <a href="/Game/InteriorDashboard">
                 <img src="~/images/ministries/ministry of the interior.png" height="175" onmouseover="this.src = '/images/ministries/ministry of the interior filled.png'" onmouseout="this.src = '/images/ministries/ministry of the interior.png'" />
             </a>
         </li>
     }
-    @if (country.FinanceAndTradeMinisterId == publicUser.UserId || (country.FinanceAndTradeMinisterId == "none" && publicUser.UserId == country.PrimeMinisterId))
+    @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.FinanceAndTrade))
     {
         <li class="ministry-li">
-            <a href="/Game/FinanceAndTradeMinisterDashboard">
+            <a href="/Game/FinanceAndTradeDashboard">
                 <img src="~/images/ministries/ministry of finance and trade.png" height="175" onmouseover="this.src = '/images/ministries/ministry of finance and trade filled.png'" onmouseout="this.src = '/images/ministries/ministry of finance and trade.png'" />
             </a>
         </li>
     }
-    @if (country.ForeignMinisterId == publicUser.UserId || (country.ForeignMinisterId == "none" && publicUser.UserId == country.PrimeMinisterId))
+    @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.ForeignAffairs))
     {
         <li class="ministry-li">
-            <a href="/Game/ForeignMinisterDashboard">
+            <a href="/Game/ForeignAffairsDashboard">
                 <img src="~/images/ministries/ministry of foreign affairs.png" height="175" onmouseover="this.src = '/images/ministries/ministry of foreign affairs filled.png'" onmouseout="this.src = '/images/ministries/ministry of foreign affairs.png'" />
             </a>
         </li>
     }
-    @if (country.DefenceMinisterId == publicUser.UserId || (country.DefenceMinisterId == "none" && publicUser.UserId == country.PrimeMinisterId))
+    @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.Defence))
     {
         <li class="ministry-li">
-            <a href="/Game/DefenceMinisterDashboard">
+            <a href="/Game/DefenceDashboard">
                 <img src="~/images/ministries/ministry of defence.png" height="175" onmouseover="this.src = '/images/ministries/ministry of defence filled.png'" onmouseout="this.src = '/images/ministries/ministry of defence.png'" />
             </a>
         </li>

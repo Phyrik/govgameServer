@@ -44,7 +44,7 @@
                 case MinistryCode.FinanceAndTrade:
                     return "Finance and Trade Minister";
                 case MinistryCode.ForeignAffairs:
-                    return "Foreign Minister";
+                    return "Foreign Affairs Minister";
                 case MinistryCode.Defence:
                     return "Defence Minister";
                 default:
@@ -93,4 +93,3 @@
         }
     }
 }
-

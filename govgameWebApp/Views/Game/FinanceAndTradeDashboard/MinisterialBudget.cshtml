@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "_GameLayout";
+
+    Country country = (Country)ViewData["country"];
+
+    ViewData["Title"] = "Ministerial budget";
+    ViewData["PageName"] = "Ministerial budget";
+}
+
+<h1>Current budget</h1>
+<br />
+<br />
+<ul style="list-style: none;" class="no-margin-ul">
+    @foreach (MinistryHelper.MinistryCode ministryCode in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
+    {
+        @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister || ministryCode == MinistryHelper.MinistryCode.None) continue;
+
+    }
+</ul>

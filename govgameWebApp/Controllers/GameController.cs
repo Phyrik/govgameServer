@@ -251,7 +251,7 @@ namespace govgameWebApp.Controllers
 
             ViewData["country"] = country;
 
-            if (country.PrimeMinisterId != publicUser.UserId)
+            if (!publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.PrimeMinister))
             {
                 return Content("403");
             }
@@ -272,6 +272,42 @@ namespace govgameWebApp.Controllers
                     ViewData["allPublicUsers"] = allPublicUsers;
 
                     return View("./PrimeMinisterDashboard/InviteNewMinister");
+
+                default:
+                    return View("404");
+            }
+        }
+
+        public IActionResult FinanceAndTradeDashboard(string page, string authSessionCookie)
+        {
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
+
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            if (!publicUser.IsAMinister())
+            {
+                return Redirect("/Game/Index");
+            }
+
+            ViewData["publicUser"] = publicUser;
+
+            Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+
+            ViewData["country"] = country;
+
+            if (!publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.FinanceAndTrade))
+            {
+                return Content("403");
+            }
+
+            switch (page)
+            {
+                case null:
+                    return View("./FinanceAndTradeDashboard/Index");
+
+                case "MinisterialBudget":
+                    return View("./FinanceAndTradeDashboard/MinisterialBudget");
 
                 default:
                     return View("404");

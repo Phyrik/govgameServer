@@ -23,6 +23,14 @@ namespace govgameSharedClasses.Models.MongoDB
         public string DefenceMinisterId { get; set; }
         [BsonDefaultValue("none")]
         public string InvitedDefenceMinisterId { get; set; }
+        [BsonDefaultValue(0)]
+        public int Budget { get; set; }
+        [BsonDefaultValue(0)]
+        public int InteriorMinistryBudget { get; set; }
+        [BsonDefaultValue(0)]
+        public int ForeignMinistryBudget { get; set; }
+        [BsonDefaultValue(0)]
+        public int DefenceMinistryBudget { get; set; }
 
         public string GetMinisterIdByCode(MinistryHelper.MinistryCode ministryCode)
         {
@@ -59,6 +67,21 @@ namespace govgameSharedClasses.Models.MongoDB
                     return null;
             }
         }
+
+        public int? GetBudgetByCode(MinistryHelper.MinistryCode ministryCode)
+        {
+            switch (ministryCode)
+            {
+                case MinistryHelper.MinistryCode.Interior:
+                    return this.InteriorMinistryBudget;
+                case MinistryHelper.MinistryCode.ForeignAffairs:
+                    return this.ForeignMinistryBudget;
+                case MinistryHelper.MinistryCode.Defence:
+                    return this.DefenceMinistryBudget;
+                default:
+                    return null;
+            }
+        }
     }
 
     public class CountryUpdate
@@ -75,6 +98,10 @@ namespace govgameSharedClasses.Models.MongoDB
         public string InvitedForeignMinisterId { get; set; }
         public string DefenceMinisterId { get; set; }
         public string InvitedDefenceMinisterId { get; set; }
+        public int? Budget { get; set; } = null;
+        public int? InteriorMinistryBudget { get; set; } = null;
+        public int? ForeignMinistryBudget { get; set; } = null;
+        public int? DefenceMinistryBudget { get; set; } = null;
 
         public bool? DeleteCountry { get; set; } = null;
 

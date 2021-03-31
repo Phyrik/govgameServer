@@ -8,12 +8,21 @@
 }
 
 <h1>Current budget</h1>
+<h2>$@country.Budget</h2>
 <br />
+<h1>Current ministerial budgets</h1>
 <br />
+<hr />
 <ul style="list-style: none;" class="no-margin-ul">
     @foreach (MinistryHelper.MinistryCode ministryCode in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
     {
-        @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister || ministryCode == MinistryHelper.MinistryCode.None) continue;
-
+        @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister || ministryCode == MinistryHelper.MinistryCode.None || ministryCode == MinistryHelper.MinistryCode.FinanceAndTrade) continue;
+        <li style="display: grid; grid-template-columns: 350px auto 100px; margin-left: 20px; margin-right: 50px;">
+            <img src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="150" style="grid-column-start: 1; grid-column-end: 2;" />
+            <h3 style="padding-left: 50px; align-self: center;">$@country.GetBudgetByCode(ministryCode)</h3>
+            <button style="grid-column-start: 3; grid-column-end: 4; margin-top: 40px; margin-bottom: 40px;">Change budget</button>
+        </li>
+        <hr />
     }
 </ul>
+<br />

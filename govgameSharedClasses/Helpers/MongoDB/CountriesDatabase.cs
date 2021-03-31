@@ -59,6 +59,7 @@ namespace govgameSharedClasses.Helpers
                     return false;
                 }
             }
+
             public static bool UpdateCountryRaw(string countryId, UpdateDefinition<Country> update)
             {
                 FilterDefinition<Country> filter = Builders<Country>.Filter.Eq("CountryId", countryId);

@@ -170,13 +170,28 @@ namespace govgameWebApp.Controllers
                 ViewData["noCountry"] = false;
             }
 
-            Country oldCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+            Country oldCountry;
+            try
+            {
+                oldCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+            }
+            catch
+            {
+                oldCountry = null;
+            }
 
             switch (page)
             {
                 case "Minister":
-                    PublicUser oldPrimeMinisterUser = MongoDBHelper.UsersDatabase.GetPublicUser(oldCountry.PrimeMinisterId);
-                    ViewData["oldPrimeMinisterUser"] = oldPrimeMinisterUser;
+                    try
+                    {
+                        PublicUser oldPrimeMinisterUser = MongoDBHelper.UsersDatabase.GetPublicUser(oldCountry.PrimeMinisterId);
+                        ViewData["oldPrimeMinisterUser"] = oldPrimeMinisterUser;
+                    }
+                    catch
+                    {
+                        ViewData["oldPrimeMinisterUser"] = null;
+                    }
 
                     Country newCountry = MongoDBHelper.CountriesDatabase.GetCountry(countryId);
                     ViewData["newCountry"] = newCountry;
@@ -190,13 +205,20 @@ namespace govgameWebApp.Controllers
                     bool isPrimeMinister = publicUser.IsAPrimeMinister();
                     ViewData["isPrimeMinister"] = isPrimeMinister;
 
-                    bool noMinistersToReplace = true;
-                    foreach (MinistryHelper.MinistryCode ministryCodeLoop in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
+                    if (isPrimeMinister)
                     {
-                        if (ministryCodeLoop == MinistryHelper.MinistryCode.PrimeMinister || ministryCodeLoop == MinistryHelper.MinistryCode.None) continue;
-                        if (oldCountry.GetMinisterIdByCode(ministryCodeLoop) != "none") noMinistersToReplace = false;
+                        bool noMinistersToReplace = true;
+                        foreach (MinistryHelper.MinistryCode ministryCodeLoop in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
+                        {
+                            if (ministryCodeLoop == MinistryHelper.MinistryCode.PrimeMinister || ministryCodeLoop == MinistryHelper.MinistryCode.None) continue;
+                            if (oldCountry.GetMinisterIdByCode(ministryCodeLoop) != "none") noMinistersToReplace = false;
+                        }
+                        ViewData["noMinistersToReplace"] = noMinistersToReplace;
                     }
-                    ViewData["noMinistersToReplace"] = noMinistersToReplace;
+                    else
+                    {
+                        ViewData["noMinistersToReplace"] = null;
+                    }
 
                     if (newCountry.GetInvitedMinisterIdByCode(ministryCode) != publicUser.UserId)
                     {

@@ -17,23 +17,86 @@
     <span style="text-decoration: underline; text-decoration-color: @ministryColour">@ministryName</span>
 </h1>
 <br />
-<h2>Current:</h2>
-<h2>$@country.GetBudgetByCode(ministryCode).GetValueOrDefault().ToString("n0")</h2>
-<h2><label for="new-budget">New:</label></h2>
-<label for="new-budget">$</label>
-<input type="number" min="0" max="@country.Budget" id="new-budget" name="new-budget" />
+<h2>Current @ministryName budget:</h2>
+<h3>$@country.GetBudgetByCode(ministryCode).GetValueOrDefault().ToString("n0")</h3>
+<br />
+<h2><label for="new-budget">New @ministryName budget:</label></h2>
+<div>
+    <h3 style="display: inline;"><label for="new-budget">$</label></h3>
+    <input type="number" min="0" max="@(country.SpareBudget + country.GetBudgetByCode(ministryCode))" id="new-budget" name="new-budget" value="@country.GetBudgetByCode(ministryCode)" style="vertical-align: super;" onchange="newBudgetChanged()" />
+    <h4 style="display: inline; margin-left: 20px;" id="change-amount">(+/-$0)</h4>
+</div>
+<br />
+<h2>Spare budget after change:</h2>
+<div>
+    <h3 id="new-spare-budget" style="display: inline;">$@country.SpareBudget.ToString("n0")</h3>
+    <h4 id="new-spare-budget-change-amount" style="display: inline; margin-left: 20px;">(+/-$0)</h4>
+</div>
 <br />
 <br />
 <button onclick="submit()">Change</button>
+<button onclick="location.href = '/Game/FinanceAndTradeDashboard/Budget'">Cancel</button>
 
 @section Scripts {
     <script>
         var newBudgetInput = document.getElementById("new-budget")
+        var changeAmount = document.getElementById("change-amount")
+        var newSpareBudget = document.getElementById("new-spare-budget")
+        var newSpareBudgetChangeAmount = document.getElementById("new-spare-budget-change-amount")
+        var spareBudget = @country.SpareBudget
+        var ministryBudget = @country.GetBudgetByCode(ministryCode)
 
         function submit() {
-            if (!confirm(`Are you sure you want to increase the @ministryName's budget by $${newBudgetInput.value - @country.GetBudgetByCode(ministryCode)} (making their new budget $${newBudgetInput.value})?`)) {
+            if (!confirm()) {
                 return
             }
+        }
+
+        function newBudgetChanged() {
+            if (newBudgetInput.value < 0) {
+                newBudgetInput.value = 0
+            }
+            if (newBudgetInput.value > spareBudget + ministryBudget) {
+                newBudgetInput.value = spareBudget + ministryBudget
+            }
+
+            var moneyModifier
+            var newSpareBudgetMoneyModifier
+            var moneyDifference = Math.abs(newBudgetInput.value - ministryBudget)
+            if (ministryBudget < newBudgetInput.value) {
+                changeAmount.style.color = "green"
+
+                newSpareBudgetChangeAmount.style.color = "red"
+
+                moneyModifier = "+"
+                newSpareBudgetMoneyModifier = "-"
+            }
+            if (ministryBudget > newBudgetInput.value) {
+                changeAmount.style.color = "red"
+
+                newSpareBudgetChangeAmount.style.color = "green"
+
+                moneyModifier = "-"
+                newSpareBudgetMoneyModifier = "+"
+            }
+            if (ministryBudget == newBudgetInput.value) {
+                changeAmount.style.color = ""
+
+                newSpareBudgetChangeAmount.style.color = ""
+
+                moneyModifier = "+/-"
+                newSpareBudgetMoneyModifier = "+/-"
+            }
+
+            changeAmount.innerHTML = "(" + moneyModifier + formatMoney(moneyDifference) + ")"
+            newSpareBudgetChangeAmount.innerHTML = "(" + newSpareBudgetMoneyModifier + formatMoney(moneyDifference) + ")"
+
+            newSpareBudget.innerHTML = formatMoney(spareBudget - (newBudgetInput.value - ministryBudget))
+        }
+
+        function formatMoney(stringToFormat) {
+            var formattedNumber = new Intl.NumberFormat('en-GB').format(stringToFormat)
+            return "$" + formattedNumber
         }
     </script>
 }

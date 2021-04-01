@@ -25,7 +25,7 @@ namespace govgameSharedClasses.Models.MongoDB
         [BsonDefaultValue("none")]
         public string InvitedDefenceMinisterId { get; set; }
         [BsonDefaultValue(0)]
-        public int Budget { get; set; }
+        public int SpareBudget { get; set; }
         [BsonDefaultValue(0)]
         public int InteriorMinistryBudget { get; set; }
         [BsonDefaultValue(0)]
@@ -99,7 +99,7 @@ namespace govgameSharedClasses.Models.MongoDB
         public string InvitedForeignMinisterId { get; set; }
         public string DefenceMinisterId { get; set; }
         public string InvitedDefenceMinisterId { get; set; }
-        public int? Budget { get; set; } = null;
+        public int? SpareBudget { get; set; } = null;
         public int? InteriorMinistryBudget { get; set; } = null;
         public int? ForeignMinistryBudget { get; set; } = null;
         public int? DefenceMinistryBudget { get; set; } = null;

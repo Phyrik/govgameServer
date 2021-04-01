@@ -823,7 +823,16 @@ namespace govgameWebApp.Controllers
 
                 if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.FinanceAndTrade))
                 {
-                    throw new NotImplementedException();
+                    bool moneyTransferSuccess = CountryBudgetHelper.TransferMoneyToFromMinisterialBudget(country.CountryId, ministryCode, changeAmount);
+
+                    if (moneyTransferSuccess)
+                    {
+                        return Content("success");
+                    }
+                    else
+                    {
+                        return Content("Error: Internal server error.");
+                    }
                 }
                 else
                 {

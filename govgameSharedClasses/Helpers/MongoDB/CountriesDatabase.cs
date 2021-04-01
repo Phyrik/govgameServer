@@ -60,13 +60,20 @@ namespace govgameSharedClasses.Helpers
                 }
             }
 
-            public static bool UpdateCountryRaw(string countryId, UpdateDefinition<Country> update)
+            public static bool UpdateCountryRaw(string countryId, UpdateDefinition<Country> update, FilterDefinition<Country> filter = null)
             {
-                FilterDefinition<Country> filter = Builders<Country>.Filter.Eq("CountryId", countryId);
+                FilterDefinitionBuilder<Country> filterBuilder = Builders<Country>.Filter;
+
+                if (filter == null)
+                {
+                    filter = filterBuilder.Empty;
+                }
+
+                FilterDefinition<Country> finalFilter = filterBuilder.And(filterBuilder.Eq("CountryId", countryId), filter);
 
                 try
                 {
-                    countriesCollection.UpdateOne(filter, update);
+                    countriesCollection.UpdateOne(finalFilter, update);
 
                     return true;
                 }

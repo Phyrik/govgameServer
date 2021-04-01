@@ -7,10 +7,10 @@
     ViewData["PageName"] = "Budget";
 }
 
-<h1>Current spare budget</h1>
-<h2>$@country.SpareBudget.ToString("n0")</h2>
+<h1>Current spare balance</h1>
+<h2>$@country.SpareBalance.ToString("n0")</h2>
 <br />
-<h1>Current ministerial budgets</h1>
+<h1>Ministries</h1>
 <br />
 <hr />
 <ul style="list-style: none;" class="no-margin-ul">
@@ -19,8 +19,8 @@
         @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister || ministryCode == MinistryHelper.MinistryCode.None || ministryCode == MinistryHelper.MinistryCode.FinanceAndTrade) continue;
         <li style="display: grid; grid-template-columns: 350px auto 100px; margin-left: 20px; margin-right: 50px;">
             <img src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="150" style="grid-column-start: 1; grid-column-end: 2;" />
-            <h3 style="padding-left: 50px; align-self: center;">$@country.GetBudgetByCode(ministryCode).GetValueOrDefault().ToString("n0")</h3>
-            <button style="grid-column-start: 3; grid-column-end: 4; margin-top: 40px; margin-bottom: 40px;" onclick="location.href = '/Game/FinanceAndTradeDashboard/ChangeMinisterialBudget?minister=@ministryCode.ToString("g")'">Change budget</button>
+            <h3 style="padding-left: 50px; align-self: center;">Current balance: $@country.GetBalanceByCode(ministryCode).GetValueOrDefault().ToString("n0")</h3>
+            <button style="grid-column-start: 3; grid-column-end: 4; margin-top: 40px; margin-bottom: 40px;" onclick="location.href = '/Game/FinanceAndTradeDashboard/ChangeMinisterialBalance?minister=@ministryCode.ToString("g")'">Change balance</button>
         </li>
         <hr />
     }

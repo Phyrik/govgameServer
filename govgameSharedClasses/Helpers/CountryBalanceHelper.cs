@@ -3,9 +3,9 @@ using MongoDB.Driver;
 
 namespace govgameSharedClasses.Helpers
 {
-    public class CountryBudgetHelper
+    public class CountryBalanceHelper
     {
-        public static bool TransferMoneyToFromMinisterialBudget(string countryId, MinistryHelper.MinistryCode ministryCode, int amount)
+        public static bool TransferMoneyToFromMinisterialBalance(string countryId, MinistryHelper.MinistryCode ministryCode, int amount)
         {
             if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister || ministryCode == MinistryHelper.MinistryCode.None || ministryCode == MinistryHelper.MinistryCode.FinanceAndTrade) return false;
 
@@ -13,15 +13,15 @@ namespace govgameSharedClasses.Helpers
             switch (ministryCode)
             {
                 case MinistryHelper.MinistryCode.Interior:
-                    ministryBudgetFieldName = "InteriorMinistryBudget";
+                    ministryBudgetFieldName = "InteriorMinistryBalance";
                     break;
 
                 case MinistryHelper.MinistryCode.ForeignAffairs:
-                    ministryBudgetFieldName = "ForeignMinistryBudget";
+                    ministryBudgetFieldName = "ForeignMinistryBalance";
                     break;
 
                 case MinistryHelper.MinistryCode.Defence:
-                    ministryBudgetFieldName = "DefenceMinistryBudget";
+                    ministryBudgetFieldName = "DefenceMinistryBalance";
                     break;
 
                 default:
@@ -31,11 +31,11 @@ namespace govgameSharedClasses.Helpers
 
             UpdateDefinitionBuilder<Country> updateBuilder = Builders<Country>.Update;
 
-            UpdateDefinition<Country> update = updateBuilder.Combine(updateBuilder.Inc(ministryBudgetFieldName, amount), updateBuilder.Inc("SpareBudget", -amount));
+            UpdateDefinition<Country> update = updateBuilder.Combine(updateBuilder.Inc(ministryBudgetFieldName, amount), updateBuilder.Inc("SpareBalance", -amount));
 
             FilterDefinitionBuilder<Country> filterBuilder = Builders<Country>.Filter;
 
-            FilterDefinition<Country> abortFilter = filterBuilder.And(filterBuilder.Gte(ministryBudgetFieldName, -amount), filterBuilder.Gte("SpareBudget", amount));
+            FilterDefinition<Country> abortFilter = filterBuilder.And(filterBuilder.Gte(ministryBudgetFieldName, -amount), filterBuilder.Gte("SpareBalance", amount));
 
             return MongoDBHelper.CountriesDatabase.UpdateCountryRaw(countryId, update, abortFilter);
         }

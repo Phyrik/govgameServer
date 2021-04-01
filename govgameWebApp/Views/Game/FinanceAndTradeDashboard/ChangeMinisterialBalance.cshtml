@@ -8,28 +8,28 @@
     string ministryName = MinistryHelper.MinistryCodeToMinistryName(ministryCode);
     string ministryColour = MinistryHelper.MinistryCodeToMinistryHexColour(ministryCode);
 
-    ViewData["Title"] = "Change ministerial budget";
-    ViewData["PageName"] = "Change ministerial budget";
+    ViewData["Title"] = "Change ministerial balance";
+    ViewData["PageName"] = "Change ministerial balance";
 }
 
 <h1>
-    <span>Change ministerial budget for the</span>
+    <span>Change ministerial balance for the</span>
     <span style="text-decoration: underline; text-decoration-color: @ministryColour">@ministryName</span>
 </h1>
 <br />
-<h2>Current @ministryName budget:</h2>
-<h3>$@country.GetBudgetByCode(ministryCode).GetValueOrDefault().ToString("n0")</h3>
+<h2>Current @ministryName balance:</h2>
+<h3>$@country.GetBalanceByCode(ministryCode).GetValueOrDefault().ToString("n0")</h3>
 <br />
-<h2><label for="new-budget">New @ministryName budget:</label></h2>
+<h2><label for="new-budget">New @ministryName balance:</label></h2>
 <div>
     <h3 style="display: inline;"><label for="new-budget">$</label></h3>
-    <input type="number" min="0" max="@(country.SpareBudget + country.GetBudgetByCode(ministryCode))" id="new-budget" name="new-budget" value="@country.GetBudgetByCode(ministryCode)" style="vertical-align: super;" onchange="newBudgetChanged()" />
+    <input type="number" min="0" max="@(country.SpareBalance + country.GetBalanceByCode(ministryCode))" id="new-budget" name="new-budget" value="@country.GetBalanceByCode(ministryCode)" style="vertical-align: super;" onchange="newBudgetChanged()" />
     <h4 style="display: inline; margin-left: 20px;" id="change-amount">(+/-$0)</h4>
 </div>
 <br />
-<h2>Spare budget after change:</h2>
+<h2>Spare balance after change:</h2>
 <div>
-    <h3 id="new-spare-budget" style="display: inline;">$@country.SpareBudget.ToString("n0")</h3>
+    <h3 id="new-spare-budget" style="display: inline;">$@country.SpareBalance.ToString("n0")</h3>
     <h4 id="new-spare-budget-change-amount" style="display: inline; margin-left: 20px;">(+/-$0)</h4>
 </div>
 <br />
@@ -41,10 +41,10 @@
     <script>
         var newBudgetInput = document.getElementById("new-budget")
         var changeAmount = document.getElementById("change-amount")
-        var newSpareBudget = document.getElementById("new-spare-budget")
-        var newSpareBudgetChangeAmount = document.getElementById("new-spare-budget-change-amount")
-        var spareBudget = @country.SpareBudget
-        var ministryBudget = @country.GetBudgetByCode(ministryCode)
+        var newSpareBalance = document.getElementById("new-spare-budget")
+        var newSpareBalanceChangeAmount = document.getElementById("new-spare-budget-change-amount")
+        var spareBudget = @country.SpareBalance
+        var ministryBudget = @country.GetBalanceByCode(ministryCode)
 
         function submit() {
             if (!confirm("Are you sure you want to make this budget change?")) {
@@ -69,37 +69,37 @@
             }
 
             var moneyModifier
-            var newSpareBudgetMoneyModifier
+            var newSpareBalanceMoneyModifier
             var moneyDifference = Math.abs(newBudgetInput.value - ministryBudget)
             if (ministryBudget < newBudgetInput.value) {
                 changeAmount.style.color = "green"
 
-                newSpareBudgetChangeAmount.style.color = "red"
+                newSpareBalanceChangeAmount.style.color = "red"
 
                 moneyModifier = "+"
-                newSpareBudgetMoneyModifier = "-"
+                newSpareBalanceMoneyModifier = "-"
             }
             if (ministryBudget > newBudgetInput.value) {
                 changeAmount.style.color = "red"
 
-                newSpareBudgetChangeAmount.style.color = "green"
+                newSpareBalanceChangeAmount.style.color = "green"
 
                 moneyModifier = "-"
-                newSpareBudgetMoneyModifier = "+"
+                newSpareBalanceMoneyModifier = "+"
             }
             if (ministryBudget == newBudgetInput.value) {
                 changeAmount.style.color = ""
 
-                newSpareBudgetChangeAmount.style.color = ""
+                newSpareBalanceChangeAmount.style.color = ""
 
                 moneyModifier = "+/-"
-                newSpareBudgetMoneyModifier = "+/-"
+                newSpareBalanceMoneyModifier = "+/-"
             }
 
             changeAmount.innerHTML = "(" + moneyModifier + formatMoney(moneyDifference) + ")"
-            newSpareBudgetChangeAmount.innerHTML = "(" + newSpareBudgetMoneyModifier + formatMoney(moneyDifference) + ")"
+            newSpareBalanceChangeAmount.innerHTML = "(" + newSpareBalanceMoneyModifier + formatMoney(moneyDifference) + ")"
 
-            newSpareBudget.innerHTML = formatMoney(spareBudget - (newBudgetInput.value - ministryBudget))
+            newSpareBalance.innerHTML = formatMoney(spareBudget - (newBudgetInput.value - ministryBudget))
         }
 
         function formatMoney(stringToFormat) {

@@ -331,11 +331,11 @@ namespace govgameWebApp.Controllers
                 case "Budget":
                     return View("./FinanceAndTradeDashboard/Budget");
 
-                case "ChangeMinisterialBudget":
+                case "ChangeMinisterialBalance":
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["minister"]);
                     ViewData["ministryCode"] = ministryCode;
 
-                    return View("./FinanceAndTradeDashboard/ChangeMinisterialBudget");
+                    return View("./FinanceAndTradeDashboard/ChangeMinisterialBalance");
 
                 default:
                     return View("404");
@@ -826,7 +826,7 @@ namespace govgameWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult ChangeMinisterialBudget(string ministry, int changeAmount)
+        public IActionResult ChangeMinisterialBalance(string ministry, int changeAmount)
         {
             string authSessionCookie = Request.Cookies["authSession"];
 
@@ -845,7 +845,7 @@ namespace govgameWebApp.Controllers
 
                 if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.FinanceAndTrade))
                 {
-                    bool moneyTransferSuccess = CountryBudgetHelper.TransferMoneyToFromMinisterialBudget(country.CountryId, ministryCode, changeAmount);
+                    bool moneyTransferSuccess = CountryBalanceHelper.TransferMoneyToFromMinisterialBalance(country.CountryId, ministryCode, changeAmount);
 
                     if (moneyTransferSuccess)
                     {

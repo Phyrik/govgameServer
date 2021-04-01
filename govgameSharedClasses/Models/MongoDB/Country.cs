@@ -25,13 +25,13 @@ namespace govgameSharedClasses.Models.MongoDB
         [BsonDefaultValue("none")]
         public string InvitedDefenceMinisterId { get; set; }
         [BsonDefaultValue(0)]
-        public int SpareBudget { get; set; }
+        public int SpareBalance { get; set; }
         [BsonDefaultValue(0)]
-        public int InteriorMinistryBudget { get; set; }
+        public int InteriorMinistryBalance { get; set; }
         [BsonDefaultValue(0)]
-        public int ForeignMinistryBudget { get; set; }
+        public int ForeignMinistryBalance { get; set; }
         [BsonDefaultValue(0)]
-        public int DefenceMinistryBudget { get; set; }
+        public int DefenceMinistryBalance { get; set; }
 
         public string GetMinisterIdByCode(MinistryHelper.MinistryCode ministryCode)
         {
@@ -69,16 +69,16 @@ namespace govgameSharedClasses.Models.MongoDB
             }
         }
 
-        public int? GetBudgetByCode(MinistryHelper.MinistryCode ministryCode)
+        public int? GetBalanceByCode(MinistryHelper.MinistryCode ministryCode)
         {
             switch (ministryCode)
             {
                 case MinistryHelper.MinistryCode.Interior:
-                    return this.InteriorMinistryBudget;
+                    return this.InteriorMinistryBalance;
                 case MinistryHelper.MinistryCode.ForeignAffairs:
-                    return this.ForeignMinistryBudget;
+                    return this.ForeignMinistryBalance;
                 case MinistryHelper.MinistryCode.Defence:
-                    return this.DefenceMinistryBudget;
+                    return this.DefenceMinistryBalance;
                 default:
                     return null;
             }
@@ -99,10 +99,10 @@ namespace govgameSharedClasses.Models.MongoDB
         public string InvitedForeignMinisterId { get; set; }
         public string DefenceMinisterId { get; set; }
         public string InvitedDefenceMinisterId { get; set; }
-        public int? SpareBudget { get; set; } = null;
-        public int? InteriorMinistryBudget { get; set; } = null;
-        public int? ForeignMinistryBudget { get; set; } = null;
-        public int? DefenceMinistryBudget { get; set; } = null;
+        public int? SpareBalance { get; set; } = null;
+        public int? InteriorMinistryBalance { get; set; } = null;
+        public int? ForeignMinistryBalance { get; set; } = null;
+        public int? DefenceMinistryBalance { get; set; } = null;
 
         public bool? DeleteCountry { get; set; } = null;
 
@@ -147,18 +147,18 @@ namespace govgameSharedClasses.Models.MongoDB
             }
         }
 
-        public void SetBudgetByCode(MinistryHelper.MinistryCode ministryCode, int amount)
+        public void SetBalanceByCode(MinistryHelper.MinistryCode ministryCode, int amount)
         {
             switch (ministryCode)
             {
                 case MinistryHelper.MinistryCode.Interior:
-                    this.InteriorMinistryBudget = amount;
+                    this.InteriorMinistryBalance = amount;
                     break;
                 case MinistryHelper.MinistryCode.ForeignAffairs:
-                    this.ForeignMinistryBudget = amount;
+                    this.ForeignMinistryBalance = amount;
                     break;
                 case MinistryHelper.MinistryCode.Defence:
-                    this.DefenceMinistryBudget = amount;
+                    this.DefenceMinistryBalance = amount;
                     break;
             }
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.IO;
 
 namespace govgameSharedClasses.Helpers
@@ -7,6 +8,11 @@ namespace govgameSharedClasses.Helpers
     {
         public static ViewResult MinistryDashboardView(Controller controller, string rootPath, MinistryHelper.MinistryCode ministryCode, string page)
         {
+            if (Environment.GetEnvironmentVariable("govgameProduction") == "true")
+            {
+                rootPath = @"C:\Users\Administrator\Documents\govgameServer\govgameWebApp";
+            }
+
             string ministryFolderName = "";
             switch (ministryCode)
             {

@@ -53,8 +53,10 @@
         }
 
         /// <returns>#XXXXXX (all caps, with #)</returns>
-        public static string MinistryCodeToMinistryHexColour(MinistryCode ministryCode)
+        public static string MinistryCodeToMinistryHexColour(MinistryCode ministryCode, bool forHeader = false)
         {
+            if (forHeader && ministryCode == MinistryCode.None) return "#FFFFFF";
+
             switch (ministryCode)
             {
                 case MinistryCode.PrimeMinister:

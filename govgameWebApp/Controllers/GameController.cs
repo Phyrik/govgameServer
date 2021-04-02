@@ -46,6 +46,8 @@ namespace govgameWebApp.Controllers
                     controller.ViewData["country"] = null;
                 }
 
+                controller.ViewData["ministryDashboard"] = MinistryHelper.MinistryCode.None;
+
                 int unreadEmails = 0;
                 foreach (Email email in MongoDBHelper.EmailsDatabase.GetUsersReceivedEmails(firebaseUid))
                 {
@@ -264,6 +266,8 @@ namespace govgameWebApp.Controllers
 
         public IActionResult PrimeMinisterDashboard(string authSessionCookie, string page = "Index")
         {
+            ViewData["ministryDashboard"] = MinistryHelper.MinistryCode.PrimeMinister;
+
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
 
@@ -305,6 +309,8 @@ namespace govgameWebApp.Controllers
 
         public IActionResult FinanceAndTradeDashboard(string authSessionCookie, string page = "Index")
         {
+            ViewData["ministryDashboard"] = MinistryHelper.MinistryCode.FinanceAndTrade;
+
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
 

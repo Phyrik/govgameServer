@@ -350,510 +350,309 @@ namespace govgameWebApp.Controllers
 
         #region POST Requests
         [HttpPost]
-        public IActionResult DismissMinister(string minister)
+        public IActionResult DismissMinister(string authSessionCookie, string minister)
         {
-            string authSessionCookie = Request.Cookies["authSession"];
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-            if (userLoggedIn)
+            Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+
+            if (country.PrimeMinisterId == publicUser.UserId)
             {
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
+                MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), minister);
 
-                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
-
-                Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
-
-                if (country.PrimeMinisterId == publicUser.UserId)
+                if (country.GetMinisterIdByCode(ministryCode) == "none")
                 {
-                    MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), minister);
+                    return Content("Error: There is no minister to dismiss!");
+                }
 
-                    if (country.GetMinisterIdByCode(ministryCode) == "none")
-                    {
-                        return Content("Error: There is no minister to dismiss!");
-                    }
+                CountryUpdate countryUpdate = new CountryUpdate();
+                countryUpdate.SetMinisterIdByCode(ministryCode, "none");
 
-                    CountryUpdate countryUpdate = new CountryUpdate();
-                    countryUpdate.SetMinisterIdByCode(ministryCode, "none");
+                UserUpdate userUpdate = new UserUpdate { CountryId = "none" };
 
-                    UserUpdate userUpdate = new UserUpdate { CountryId = "none" };
+                NotificationSendRequest notificationSendRequest = new NotificationSendRequest
+                {
+                    UserId = country.GetMinisterIdByCode(ministryCode),
+                    Title = $"Dismissal from your ministerial role at {country.CountryName}",
+                    Content = $"{publicUser.Username} has dismissed you from your position as {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of {country.CountryName}.",
+                };
 
-                    NotificationSendRequest notificationSendRequest = new NotificationSendRequest
-                    {
-                        UserId = country.GetMinisterIdByCode(ministryCode),
-                        Title = $"Dismissal from your ministerial role at {country.CountryName}",
-                        Content = $"{publicUser.Username} has dismissed you from your position as {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of {country.CountryName}.",
-                    };
-
-                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
-                        MongoDBHelper.UsersDatabase.UpdateUser(country.GetMinisterIdByCode(ministryCode), userUpdate) &&
-                        govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
-                    {
-                        return Content("success");
-                    }
-                    else
-                    {
-                        return Content("Error: Internal server error.");
-                    }
+                if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
+                    MongoDBHelper.UsersDatabase.UpdateUser(country.GetMinisterIdByCode(ministryCode), userUpdate) &&
+                    govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                {
+                    return Content("success");
                 }
                 else
                 {
-                    return StatusCode(403);
+                    return Content("Error: Internal server error.");
                 }
             }
             else
             {
-                return Content("Error: You are not logged in.");
+                return StatusCode(403);
             }
         }
 
         [HttpPost]
-        public IActionResult InviteMinister(string ministry, string invitedUserId)
+        public IActionResult InviteMinister(string authSessionCookie, string ministry, string invitedUserId)
         {
-            string authSessionCookie = Request.Cookies["authSession"];
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-            if (userLoggedIn)
+            Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+
+            if (country.PrimeMinisterId == publicUser.UserId)
             {
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
-
-                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
-
-                Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
-
-                if (country.PrimeMinisterId == publicUser.UserId)
-                {
-                    MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
-
-                    if (country.GetMinisterIdByCode(ministryCode) != "none")
-                    {
-                        return Content("Error: There is already a minister in that ministry. Dismiss them before inviting a new one.");
-                    }
-
-                    if (country.GetInvitedMinisterIdByCode(ministryCode) != "none")
-                    {
-                        return Content("Error: This user is already being invited to this ministry. Wait until they accept or decline the invitation.");
-                    }
-
-                    CountryUpdate countryUpdate = new CountryUpdate();
-                    countryUpdate.SetInvitedMinisterIdByCode(ministryCode, invitedUserId);
-
-                    NotificationSendRequest notificationSendRequest = new NotificationSendRequest
-                    {
-                        UserId = invitedUserId,
-                        Title = $"Invitation to ministerial role at {country.CountryName}",
-                        Content = $"{publicUser.Username} has invited you to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of {country.CountryName}",
-                        Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
-                    };
-
-                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
-                        govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
-                    {
-                        return Content("success");
-                    }
-                    else
-                    {
-                        return Content("Error: Internal server error.");
-                    }
-                }
-                else
-                {
-                    return StatusCode(403);
-                }
-            }
-            else
-            {
-                return Content("Error: You are not logged in.");
-            }
-        }
-
-        [HttpPost]
-        public IActionResult AcceptMinistryInvite(string ministry, string newCountryId, string ministryToReplacePM = null)
-        {
-            string authSessionCookie = Request.Cookies["authSession"];
-
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
-
-            if (userLoggedIn)
-            {
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
-
-                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
-
-                Country newCountry = MongoDBHelper.CountriesDatabase.GetCountry(newCountryId);
-
                 MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
 
-                if (publicUser.UserId == newCountry.GetInvitedMinisterIdByCode(ministryCode))
+                if (country.GetMinisterIdByCode(ministryCode) != "none")
                 {
-                    CountryUpdate newCountryUpdate = new CountryUpdate();
-                    newCountryUpdate.SetMinisterIdByCode(ministryCode, publicUser.UserId);
-                    newCountryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
+                    return Content("Error: There is already a minister in that ministry. Dismiss them before inviting a new one.");
+                }
 
-                    UserUpdate userUpdate = new UserUpdate { CountryId = newCountry.CountryId };
+                if (country.GetInvitedMinisterIdByCode(ministryCode) != "none")
+                {
+                    return Content("Error: This user is already being invited to this ministry. Wait until they accept or decline the invitation.");
+                }
 
-                    if (publicUser.IsAMinister())
+                CountryUpdate countryUpdate = new CountryUpdate();
+                countryUpdate.SetInvitedMinisterIdByCode(ministryCode, invitedUserId);
+
+                NotificationSendRequest notificationSendRequest = new NotificationSendRequest
+                {
+                    UserId = invitedUserId,
+                    Title = $"Invitation to ministerial role at {country.CountryName}",
+                    Content = $"{publicUser.Username} has invited you to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of {country.CountryName}",
+                    Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
+                };
+
+                if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
+                    govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                {
+                    return Content("success");
+                }
+                else
+                {
+                    return Content("Error: Internal server error.");
+                }
+            }
+            else
+            {
+                return StatusCode(403);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AcceptMinistryInvite(string authSessionCookie, string ministry, string newCountryId, string ministryToReplacePM = null)
+        {
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
+
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            Country newCountry = MongoDBHelper.CountriesDatabase.GetCountry(newCountryId);
+
+            MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+
+            if (publicUser.UserId == newCountry.GetInvitedMinisterIdByCode(ministryCode))
+            {
+                CountryUpdate newCountryUpdate = new CountryUpdate();
+                newCountryUpdate.SetMinisterIdByCode(ministryCode, publicUser.UserId);
+                newCountryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
+
+                UserUpdate userUpdate = new UserUpdate { CountryId = newCountry.CountryId };
+
+                if (publicUser.IsAMinister())
+                {
+                    Country oldCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+
+                    CountryUpdate oldCountryUpdate = new CountryUpdate();
+                    oldCountryUpdate.SetMinisterIdByCode(publicUser.GetMinistry(), "none");
+
+                    if (publicUser.IsAPrimeMinister())
                     {
-                        Country oldCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
-
-                        CountryUpdate oldCountryUpdate = new CountryUpdate();
-                        oldCountryUpdate.SetMinisterIdByCode(publicUser.GetMinistry(), "none");
-
-                        if (publicUser.IsAPrimeMinister())
+                        bool stillMinisters = false;
+                        foreach (MinistryHelper.MinistryCode ministryCodeLoop in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
                         {
-                            bool stillMinisters = false;
-                            foreach (MinistryHelper.MinistryCode ministryCodeLoop in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
-                            {
-                                if (ministryCodeLoop == MinistryHelper.MinistryCode.PrimeMinister || ministryCodeLoop == MinistryHelper.MinistryCode.None) continue;
-                                if (oldCountry.GetMinisterIdByCode(ministryCodeLoop) != "none") stillMinisters = true;
-                            }
-                            if (!stillMinisters) oldCountryUpdate.DeleteCountry = true;
-
-                            if (stillMinisters)
-                            {
-                                MinistryHelper.MinistryCode ministryToReplacePMCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministryToReplacePM);
-
-                                if (oldCountry.GetMinisterIdByCode(ministryToReplacePMCode) == "none")
-                                {
-                                    return Content("Error: The minister you are trying to set as Prime Minister doesn't exist.");
-                                }
-
-                                oldCountryUpdate.SetMinisterIdByCode(MinistryHelper.MinistryCode.PrimeMinister, oldCountry.GetMinisterIdByCode(ministryToReplacePMCode));
-                                oldCountryUpdate.SetMinisterIdByCode(ministryToReplacePMCode, "none");
-                            }
+                            if (ministryCodeLoop == MinistryHelper.MinistryCode.PrimeMinister || ministryCodeLoop == MinistryHelper.MinistryCode.None) continue;
+                            if (oldCountry.GetMinisterIdByCode(ministryCodeLoop) != "none") stillMinisters = true;
                         }
+                        if (!stillMinisters) oldCountryUpdate.DeleteCountry = true;
 
-                        if (!MongoDBHelper.CountriesDatabase.UpdateCountry(oldCountry.CountryId, oldCountryUpdate))
+                        if (stillMinisters)
                         {
-                            return Content("Error: Internal server error.");
+                            MinistryHelper.MinistryCode ministryToReplacePMCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministryToReplacePM);
+
+                            if (oldCountry.GetMinisterIdByCode(ministryToReplacePMCode) == "none")
+                            {
+                                return Content("Error: The minister you are trying to set as Prime Minister doesn't exist.");
+                            }
+
+                            oldCountryUpdate.SetMinisterIdByCode(MinistryHelper.MinistryCode.PrimeMinister, oldCountry.GetMinisterIdByCode(ministryToReplacePMCode));
+                            oldCountryUpdate.SetMinisterIdByCode(ministryToReplacePMCode, "none");
                         }
                     }
 
-                    PublicUser newPrimeMinister = MongoDBHelper.UsersDatabase.GetPublicUser(newCountry.PrimeMinisterId);
-                    NotificationSendRequest notificationSendRequest = new NotificationSendRequest
-                    {
-                        UserId = newPrimeMinister.UserId,
-                        Title = $"{publicUser.Username} has accepted your ministerial invite",
-                        Content = $"{publicUser.Username} has accepted your invitation to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
-                    };
-
-                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountry.CountryId, newCountryUpdate) &&
-                        MongoDBHelper.UsersDatabase.UpdateUser(publicUser.UserId, userUpdate) &&
-                        govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
-                    {
-                        return Content("success");
-                    }
-                    else
+                    if (!MongoDBHelper.CountriesDatabase.UpdateCountry(oldCountry.CountryId, oldCountryUpdate))
                     {
                         return Content("Error: Internal server error.");
                     }
                 }
+
+                PublicUser newPrimeMinister = MongoDBHelper.UsersDatabase.GetPublicUser(newCountry.PrimeMinisterId);
+                NotificationSendRequest notificationSendRequest = new NotificationSendRequest
+                {
+                    UserId = newPrimeMinister.UserId,
+                    Title = $"{publicUser.Username} has accepted your ministerial invite",
+                    Content = $"{publicUser.Username} has accepted your invitation to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
+                };
+
+                if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountry.CountryId, newCountryUpdate) &&
+                    MongoDBHelper.UsersDatabase.UpdateUser(publicUser.UserId, userUpdate) &&
+                    govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                {
+                    return Content("success");
+                }
                 else
                 {
-                    return StatusCode(403);
+                    return Content("Error: Internal server error.");
                 }
             }
             else
             {
-                return Content("Error: You are not logged in.");
+                return StatusCode(403);
             }
         }
 
         [HttpPost]
-        public IActionResult DeclineMinistryInvite(string ministry, string newCountryId)
+        public IActionResult DeclineMinistryInvite(string authSessionCookie, string ministry, string newCountryId)
         {
-            string authSessionCookie = Request.Cookies["authSession"];
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-            if (userLoggedIn)
+            Country newCountry = MongoDBHelper.CountriesDatabase.GetCountry(newCountryId);
+
+            MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+
+            if (publicUser.UserId == newCountry.GetInvitedMinisterIdByCode(ministryCode))
             {
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
+                CountryUpdate countryUpdate = new CountryUpdate();
+                countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
 
-                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
-
-                Country newCountry = MongoDBHelper.CountriesDatabase.GetCountry(newCountryId);
-
-                MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
-
-                if (publicUser.UserId == newCountry.GetInvitedMinisterIdByCode(ministryCode))
+                PublicUser newPrimeMinister = MongoDBHelper.UsersDatabase.GetPublicUser(newCountry.PrimeMinisterId);
+                NotificationSendRequest notificationSendRequest = new NotificationSendRequest
                 {
-                    CountryUpdate countryUpdate = new CountryUpdate();
-                    countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
-                    
-                    PublicUser newPrimeMinister = MongoDBHelper.UsersDatabase.GetPublicUser(newCountry.PrimeMinisterId);
-                    NotificationSendRequest notificationSendRequest = new NotificationSendRequest
-                    {
-                        UserId = newPrimeMinister.UserId,
-                        Title = $"{publicUser.Username} has declined your ministerial invite",
-                        Content = $"{publicUser.Username} has declined your invitation to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
-                    };
+                    UserId = newPrimeMinister.UserId,
+                    Title = $"{publicUser.Username} has declined your ministerial invite",
+                    Content = $"{publicUser.Username} has declined your invitation to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
+                };
 
-                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, countryUpdate) &&
-                        govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
-                    {
-                        return Content("success");
-                    }
-                    else
-                    {
-                        return Content("Error: Internal server error.");
-                    }
+                if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, countryUpdate) &&
+                    govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                {
+                    return Content("success");
                 }
                 else
                 {
-                    return StatusCode(403);
+                    return Content("Error: Internal server error.");
                 }
             }
             else
             {
-                return Content("Error: You are not logged in.");
+                return StatusCode(403);
             }
         }
 
         [HttpPost]
-        public IActionResult CancelMinistryInvite(string ministry)
+        public IActionResult CancelMinistryInvite(string authSessionCookie, string ministry)
         {
-            string authSessionCookie = Request.Cookies["authSession"];
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
 
-            if (userLoggedIn)
+            Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+
+            MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+
+            if (country.PrimeMinisterId == publicUser.UserId)
             {
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
+                CountryUpdate countryUpdate = new CountryUpdate();
+                countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
 
-                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
-
-                Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
-
-                MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
-
-                if (country.PrimeMinisterId == publicUser.UserId)
+                if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate))
                 {
-                    CountryUpdate countryUpdate = new CountryUpdate();
-                    countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
-
-                    if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate))
-                    {
-                        return Content("success");
-                    }
-                    else
-                    {
-                        return Content("Error: Internal server error.");
-                    }
+                    return Content("success");
                 }
                 else
                 {
-                    return StatusCode(403);
+                    return Content("Error: Internal server error.");
                 }
             }
             else
             {
-                return Content("Error: You are not logged in.");
+                return StatusCode(403);
             }
         }
 
         [HttpPost]
-        public IActionResult SendEmail()
+        public IActionResult SendEmail(string authSessionCookie)
         {
-            string authSessionCookie = Request.Cookies["authSession"];
+            string[] toUserIds = Request.Form["to"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries);
+            string emailSubject = Request.Form["subject"];
+            string emailBody = Request.Form["body"];
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
 
-            if (userLoggedIn)
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            bool sendEmailSuccess = MongoDBHelper.EmailsDatabase.SendEmail(new EmailSendRequest
             {
-                string[] toUserIds = Request.Form["to"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries);
-                string emailSubject = Request.Form["subject"];
-                string emailBody = Request.Form["body"];
+                SenderId = publicUser.UserId,
+                RecipientIds = toUserIds,
+                Subject = emailSubject,
+                Body = emailBody
+            });
 
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
-
-                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
-
-                bool sendEmailSuccess = MongoDBHelper.EmailsDatabase.SendEmail(new EmailSendRequest
-                {
-                    SenderId = publicUser.UserId,
-                    RecipientIds = toUserIds,
-                    Subject = emailSubject,
-                    Body = emailBody
-                });
-
-                if (sendEmailSuccess)
-                {
-                    return View("CloseWindow");
-                }
-                else
-                {
-                    ViewData["errorMessage"] = "Internal server error.";
-                    return View("../Error/TextError");
-                }
+            if (sendEmailSuccess)
+            {
+                return View("CloseWindow");
             }
             else
             {
-                ViewData["errorMessage"] = "You are not logged in.";
+                ViewData["errorMessage"] = "Internal server error.";
                 return View("../Error/TextError");
             }
         }
 
         [HttpPost]
-        public IActionResult MarkEmailAsReadUnread(string emailId, string readOrUnread)
+        public IActionResult MarkEmailAsReadUnread(string authSessionCookie, string emailId, string readOrUnread)
         {
-            string authSessionCookie = Request.Cookies["authSession"];
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            Email emailToMark = MongoDBHelper.EmailsDatabase.GetEmailById(emailId);
 
-            if (userLoggedIn)
+            if (emailToMark.RecipientId != firebaseUid)
             {
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
-
-                Email emailToMark = MongoDBHelper.EmailsDatabase.GetEmailById(emailId);
-
-                if (emailToMark.RecipientId != firebaseUid)
-                {
-                    return StatusCode(403);
-                }
-
-                switch (readOrUnread)
-                {
-                    case "read":
-                        bool markEmailAsReadSuccess = MongoDBHelper.EmailsDatabase.MarkEmailAsRead(emailId);
-
-                        if (markEmailAsReadSuccess)
-                        {
-                            return Content("success");
-                        }
-                        else
-                        {
-                            return Content("Error: Internal server error.");
-                        }
-
-                    case "unread":
-                        bool markEmailAsUnreadSuccess = MongoDBHelper.EmailsDatabase.MarkEmailAsUnread(emailId);
-
-                        if (markEmailAsUnreadSuccess)
-                        {
-                            return Content("success");
-                        }
-                        else
-                        {
-                            return Content("Error: Internal server error.");
-                        }
-
-                    default:
-                        return Content("invalid or missing parameter: readOrUnread");
-                }
+                return StatusCode(403);
             }
-            else
+
+            switch (readOrUnread)
             {
-                return Content("Error: You are not logged in.");
-            }
-        }
+                case "read":
+                    bool markEmailAsReadSuccess = MongoDBHelper.EmailsDatabase.MarkEmailAsRead(emailId);
 
-        [HttpPost]
-        public IActionResult BlockEmailsFromUser(string blockUserId)
-        {
-            string authSessionCookie = Request.Cookies["authSession"];
-
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
-
-            if (userLoggedIn)
-            {
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
-
-                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
-
-                List<string> newBlockedUsersList = new List<string>(publicUser.BlockedUsers);
-                newBlockedUsersList.Add(blockUserId);
-
-                UserUpdate userUpdate = new UserUpdate
-                {
-                    BlockedUsers = newBlockedUsersList.ToArray()
-                };
-
-                bool blockUserSuccess = MongoDBHelper.UsersDatabase.UpdateUser(firebaseUid, userUpdate);
-
-                if (blockUserSuccess)
-                {
-                    return Content("success");
-                }
-                else
-                {
-                    return Content("Error: Internal server error.");
-                }
-            }
-            else
-            {
-                return Content("Error: You are not logged in.");
-            }
-        }
-
-        [HttpPost]
-        public IActionResult MarkNotificationAsRead(string notificationId)
-        {
-            string authSessionCookie = Request.Cookies["authSession"];
-
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
-
-            if (userLoggedIn)
-            {
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
-
-                Notification notificationToMark = MongoDBHelper.NotificationsDatabase.GetNotificationById(notificationId);
-
-                if (notificationToMark.UserId != firebaseUid)
-                {
-                    return StatusCode(403);
-                }
-
-                bool markNotificationAsReadSuccess = MongoDBHelper.NotificationsDatabase.MarkNotificationAsRead(notificationId);
-
-                if (markNotificationAsReadSuccess)
-                {
-                    return Content("success");
-                }
-                else
-                {
-                    return Content("Error: Internal server error.");
-                }
-            }
-            else
-            {
-                return Content("Error: You are not logged in.");
-            }
-        }
-
-        [HttpPost]
-        public IActionResult ChangeMinisterialBalance(string ministry, int changeAmount)
-        {
-            string authSessionCookie = Request.Cookies["authSession"];
-
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
-
-            if (userLoggedIn)
-            {
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
-
-                PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
-
-                Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
-
-                MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
-
-                if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.FinanceAndTrade))
-                {
-                    bool moneyTransferSuccess = CountryBalanceHelper.TransferMoneyToFromMinisterialBalance(country.CountryId, ministryCode, changeAmount);
-
-                    if (moneyTransferSuccess)
+                    if (markEmailAsReadSuccess)
                     {
                         return Content("success");
                     }
@@ -861,15 +660,105 @@ namespace govgameWebApp.Controllers
                     {
                         return Content("Error: Internal server error.");
                     }
+
+                case "unread":
+                    bool markEmailAsUnreadSuccess = MongoDBHelper.EmailsDatabase.MarkEmailAsUnread(emailId);
+
+                    if (markEmailAsUnreadSuccess)
+                    {
+                        return Content("success");
+                    }
+                    else
+                    {
+                        return Content("Error: Internal server error.");
+                    }
+
+                default:
+                    return Content("invalid or missing parameter: readOrUnread");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult BlockEmailsFromUser(string authSessionCookie, string blockUserId)
+        {
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
+
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            List<string> newBlockedUsersList = new List<string>(publicUser.BlockedUsers);
+            newBlockedUsersList.Add(blockUserId);
+
+            UserUpdate userUpdate = new UserUpdate
+            {
+                BlockedUsers = newBlockedUsersList.ToArray()
+            };
+
+            bool blockUserSuccess = MongoDBHelper.UsersDatabase.UpdateUser(firebaseUid, userUpdate);
+
+            if (blockUserSuccess)
+            {
+                return Content("success");
+            }
+            else
+            {
+                return Content("Error: Internal server error.");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult MarkNotificationAsRead(string authSessionCookie, string notificationId)
+        {
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
+
+            Notification notificationToMark = MongoDBHelper.NotificationsDatabase.GetNotificationById(notificationId);
+
+            if (notificationToMark.UserId != firebaseUid)
+            {
+                return StatusCode(403);
+            }
+
+            bool markNotificationAsReadSuccess = MongoDBHelper.NotificationsDatabase.MarkNotificationAsRead(notificationId);
+
+            if (markNotificationAsReadSuccess)
+            {
+                return Content("success");
+            }
+            else
+            {
+                return Content("Error: Internal server error.");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ChangeMinisterialBalance(string authSessionCookie, string ministry, int changeAmount)
+        {
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
+
+            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
+
+            Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
+
+            MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+
+            if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.FinanceAndTrade))
+            {
+                bool moneyTransferSuccess = CountryBalanceHelper.TransferMoneyToFromMinisterialBalance(country.CountryId, ministryCode, changeAmount);
+
+                if (moneyTransferSuccess)
+                {
+                    return Content("success");
                 }
                 else
                 {
-                    return StatusCode(403);
+                    return Content("Error: Internal server error.");
                 }
             }
             else
             {
-                return Content("Error: You are not logged in.");
+                return StatusCode(403);
             }
         }
         #endregion

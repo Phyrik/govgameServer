@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Web;
 using FirebaseAdmin.Auth;
 using govgameSharedClasses.Helpers;
 using govgameSharedClasses.Models.MongoDB;
@@ -116,7 +117,7 @@ namespace govgameWebApp.Controllers
                 };
 
                 Response.Cookies.Append("authSession", sessionCookie, cookieOptions);
-                return Redirect(redirect);
+                return Redirect(HttpUtility.UrlDecode(redirect));
             }
             catch (FirebaseAuthException)
             {

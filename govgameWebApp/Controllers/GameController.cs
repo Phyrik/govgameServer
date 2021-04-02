@@ -1,11 +1,13 @@
 ﻿using FirebaseAdmin.Auth;
 using govgameSharedClasses.Helpers;
 using govgameSharedClasses.Models.MongoDB;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 
 namespace govgameWebApp.Controllers
 {
@@ -67,7 +69,9 @@ namespace govgameWebApp.Controllers
             }
             else
             {
-                string redirectPath = context.HttpContext.Request.Path;
+                Uri redirectUri = new Uri(context.HttpContext.Request.GetDisplayUrl());
+
+                string redirectPath = HttpUtility.UrlEncode(redirectUri.PathAndQuery);
 
                 context.Result = new RedirectResult($"/Auth/LogIn?redirect={redirectPath}");
             }

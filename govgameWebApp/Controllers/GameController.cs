@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -287,10 +288,11 @@ namespace govgameWebApp.Controllers
             switch (page)
             {
                 case null:
-                    return View("./PrimeMinisterDashboard/Index");
+                    page = "Index";
+                    break;
 
                 case "MinistryManagement":
-                    return View("./PrimeMinisterDashboard/MinistryManagement");
+                    break;
 
                 case "InviteNewMinister":
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["minister"]);
@@ -299,11 +301,13 @@ namespace govgameWebApp.Controllers
                     PublicUser[] allPublicUsers = MongoDBHelper.UsersDatabase.GetAllPublicUsers();
                     ViewData["allPublicUsers"] = allPublicUsers;
 
-                    return View("./PrimeMinisterDashboard/InviteNewMinister");
+                    break;
 
                 default:
-                    return View("404");
+                    break;
             }
+
+            return ViewHelper.MinistryDashboardView(this, Directory.GetCurrentDirectory(), MinistryHelper.MinistryCode.PrimeMinister, page);
         }
 
         public IActionResult FinanceAndTradeDashboard(string page, string authSessionCookie)
@@ -332,20 +336,20 @@ namespace govgameWebApp.Controllers
             switch (page)
             {
                 case null:
-                    return View("./FinanceAndTradeDashboard/Index");
-
-                case "Budget":
-                    return View("./FinanceAndTradeDashboard/Budget");
+                    page = "Index";
+                    break;
 
                 case "ChangeMinisterialBalance":
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["minister"]);
                     ViewData["ministryCode"] = ministryCode;
 
-                    return View("./FinanceAndTradeDashboard/ChangeMinisterialBalance");
+                    break;
 
                 default:
-                    return View("404");
+                    break;
             }
+
+            return ViewHelper.MinistryDashboardView(this, Directory.GetCurrentDirectory(), MinistryHelper.MinistryCode.FinanceAndTrade, page);
         }
 
         #region POST Requests

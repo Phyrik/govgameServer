@@ -10,16 +10,18 @@ namespace govgameWebApp.Controllers
 {
     public class AuthController : Controller
     {
-        public IActionResult LogIn()
+        public IActionResult LogIn(string redirect = "/")
         {
             string authSessionCookie = Request.Cookies["authSession"];
 
             switch (FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true))
             {
                 case true:
-                    return Redirect("/");
+                    return Redirect(redirect);
 
                 case false:
+                    ViewData["redirectPath"] = redirect;
+
                     return View();
             }
         }
@@ -78,7 +80,7 @@ namespace govgameWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult LogInPOST()
+        public IActionResult LogInPOST(string redirect = "/")
         {
             string idToken = Request.Form["idToken"];
 
@@ -114,7 +116,7 @@ namespace govgameWebApp.Controllers
                 };
 
                 Response.Cookies.Append("authSession", sessionCookie, cookieOptions);
-                return Redirect("/");
+                return Redirect(redirect);
             }
             catch (FirebaseAuthException)
             {

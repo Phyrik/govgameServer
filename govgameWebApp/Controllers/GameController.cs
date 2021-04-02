@@ -67,7 +67,9 @@ namespace govgameWebApp.Controllers
             }
             else
             {
-                context.Result = new RedirectResult("/");
+                string redirectPath = context.HttpContext.Request.Path;
+
+                context.Result = new RedirectResult($"/Auth/LogIn?redirect={redirectPath}");
             }
         }
     }

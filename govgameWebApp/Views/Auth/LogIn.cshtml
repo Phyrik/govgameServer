@@ -4,7 +4,7 @@
 
 <h1 style="text-align: center;">Log in</h1>
 <br />
-<form id="login-form" style="text-align: center;" method="post" action="/Auth/LogInPOST">
+<form id="login-form" style="text-align: center;" method="post" action="/Auth/LogInPOST?redirect=@ViewData["redirectPath"]">
     <label for="email">Email:</label>
     <input type="email" name="email" id="email" />
     <br />

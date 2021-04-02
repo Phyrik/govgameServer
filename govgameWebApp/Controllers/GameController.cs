@@ -262,7 +262,7 @@ namespace govgameWebApp.Controllers
             }
         }
 
-        public IActionResult PrimeMinisterDashboard(string page, string authSessionCookie)
+        public IActionResult PrimeMinisterDashboard(string authSessionCookie, string page = "Index")
         {
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
@@ -287,13 +287,6 @@ namespace govgameWebApp.Controllers
 
             switch (page)
             {
-                case null:
-                    page = "Index";
-                    break;
-
-                case "MinistryManagement":
-                    break;
-
                 case "InviteNewMinister":
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["minister"]);
                     ViewData["ministryCode"] = ministryCode;
@@ -310,7 +303,7 @@ namespace govgameWebApp.Controllers
             return ViewHelper.MinistryDashboardView(this, Directory.GetCurrentDirectory(), MinistryHelper.MinistryCode.PrimeMinister, page);
         }
 
-        public IActionResult FinanceAndTradeDashboard(string page, string authSessionCookie)
+        public IActionResult FinanceAndTradeDashboard(string authSessionCookie, string page = "Index")
         {
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
@@ -335,10 +328,6 @@ namespace govgameWebApp.Controllers
 
             switch (page)
             {
-                case null:
-                    page = "Index";
-                    break;
-
                 case "ChangeMinisterialBalance":
                     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["minister"]);
                     ViewData["ministryCode"] = ministryCode;

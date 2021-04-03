@@ -13,6 +13,8 @@ namespace govgameSharedClasses.Models.MongoDB
         public string CountryId { get; set; }
         [BsonDefaultValue(new string[0])]
         public string[] BlockedUsers { get; set; }
+        [BsonDefaultValue(false)]
+        public bool Admin { get; set; }
 
         public bool IsAMinister()
         {
@@ -48,6 +50,8 @@ namespace govgameSharedClasses.Models.MongoDB
 
         public bool HasAccessToMinistry(MinistryHelper.MinistryCode ministryCode)
         {
+            if (this.Admin) return true;
+
             if (this.IsAPrimeMinister()) return true;
 
             if (this.GetMinistry() == ministryCode) return true;

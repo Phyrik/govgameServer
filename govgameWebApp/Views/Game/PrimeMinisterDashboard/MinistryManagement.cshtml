@@ -45,39 +45,3 @@
     }
 </ul>
 <br />
-
-@section Scripts{
-    <script>
-        function dismissMinister(minister) {
-            var okPressed = confirm("Are you sure you want to dismiss this minister?")
-
-            if (!okPressed) return
-
-            var ministryLi = document.getElementById(`ministry-li-${minister}`)
-            ministryLi.getElementsByTagName("h3")[0].innerHTML = "No minister"
-            ministryLi.getElementsByTagName("button")[0].onclick = function () { location.href = `/Game/PrimeMinisterDashboard/InviteNewMinister?minister=${minister}` }
-            ministryLi.getElementsByTagName("button")[0].innerHTML = "Invite new minister"
-
-            $.post(`/Game/DismissMinister?minister=${minister}`, function (data, status) {
-                if (data != "success") {
-                    alert(data)
-                    location.reload()
-                }
-            })
-        }
-
-        function cancelMinistryInvite(ministry) {
-            var ministryLi = document.getElementById(`ministry-li-${ministry}`)
-            ministryLi.getElementsByTagName("h3")[0].innerHTML = "No minister"
-            ministryLi.getElementsByTagName("button")[0].onclick = function () { location.href = `/Game/PrimeMinisterDashboard/InviteNewMinister?minister=${ministry}` }
-            ministryLi.getElementsByTagName("button")[0].innerHTML = "Invite new minister"
-
-            $.post(`/Game/CancelMinistryInvite?ministry=${ministry}`, function (data, status) {
-                if (data != "success") {
-                    alert(data)
-                    location.reload()
-                }
-            })
-        }
-    </script>
-}

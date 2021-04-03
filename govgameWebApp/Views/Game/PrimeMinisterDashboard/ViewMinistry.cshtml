@@ -1,4 +1,4 @@
-﻿@{ 
+﻿@{
     Layout = "_GameLayout";
 
     Country country = (Country)ViewData["country"];
@@ -13,20 +13,58 @@
 <img src="~/images/ministries/@MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode)" height="200" />
 <br />
 <br />
-<h2>
-    @if (ministerId != "none")
+@if (ministerId != "none")
+{
+    <h2 id="minister">Minister: @MongoDBHelper.UsersDatabase.GetPublicUser(ministerId).Username</h2>
+    <button id="minister-button" onclick="dismissMinister('@ministryCode.ToString("g")')" style="width: 200px;">Dismiss minister</button>
+}
+else
+{
+    if (invitedMinisterId != "none")
     {
-        <text>Minister: @MongoDBHelper.UsersDatabase.GetPublicUser(ministerId).Username</text>
+        <h2 id="minister">Invitation sent to: @MongoDBHelper.UsersDatabase.GetPublicUser(invitedMinisterId).Username</h2>
+        <button id="minister-button" onclick="cancelMinistryInvite('@ministryCode.ToString("g")')" style="width: 200px;">Cancel invite</button>
     }
     else
     {
-        if (invitedMinisterId != "none")
-        {
-            <text>Invitation sent to: @MongoDBHelper.UsersDatabase.GetPublicUser(invitedMinisterId).Username</text>
-        }
-        else
-        {
-            <text>No minister</text>
-        }
+        <h2 id="minister">No minister</h2>
+        <button id="minister-button" onclick="location.href = '/Game/PrimeMinisterDashboard/InviteNewMinister?minister=@(ministryCode.ToString("g"))'" style="width: 200px;">Invite new minister</button>
     }
-</h2>
+}
+
+@section Scripts {
+    <script>
+        var ministerHeading = document.getElementById("minister")
+        var ministerButton = document.getElementById("minister-button")
+
+        function dismissMinister() {
+            var okPressed = confirm("Are you sure you want to dismiss this minister?")
+
+            if (!okPressed) return
+
+            ministerHeading.innerHTML = "No minister"
+            ministerButton.onclick = function () { location.href = `/Game/PrimeMinisterDashboard/InviteNewMinister?minister=@ministryCode.ToString("g")` }
+            ministerButton.innerHTML = "Invite new minister"
+
+            $.post(`/Game/DismissMinister?minister=@ministryCode.ToString("g")`, function (data, status) {
+                if (data != "success") {
+                    alert(data)
+                    location.reload()
+                }
+            })
+        }
+
+        function cancelMinistryInvite() {
+            ministerHeading.innerHTML = "No minister"
+            ministerButton.onclick = function () { location.href = `/Game/PrimeMinisterDashboard/InviteNewMinister?minister=@ministryCode.ToString("g")` }
+            ministerButton.innerHTML = "Invite new minister"
+
+            $.post(`/Game/CancelMinistryInvite?ministry=@ministryCode.ToString("g")`, function (data, status) {
+                if (data != "success") {
+                    alert(data)
+                    location.reload()
+                }
+            })
+        }
+    </script>
+} 

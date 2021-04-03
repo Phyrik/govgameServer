@@ -48,7 +48,7 @@
         function inviteMinister(userId) {
             $.post(`/Game/InviteMinister?ministry=@ministryCode.ToString("g")&invitedUserId=${userId}`, function (data, status) {
                 if (data == "success") {
-                    location.href = "/Game/PrimeMinisterDashboard/MinistryManagement"
+                    location.href = "/Game/PrimeMinisterDashboard/ViewMinistry?ministry=@ministryCode.ToString("g")"
                 }
                 else {
                     alert(data)

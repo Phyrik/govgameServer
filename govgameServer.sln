@@ -11,7 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "govgameSharedClasses", "gov
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "govgameSandboxAndTesting", "govgameSandboxAndTesting\govgameSandboxAndTesting.csproj", "{8E7E245E-BA33-4527-8CC1-6E6F70A817D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "govgameMapCreator", "govgameMapCreator\govgameMapCreator.csproj", "{75984EE2-E386-45D2-ACED-3F51378B4E3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "govgameMapCreator", "govgameMapCreator\govgameMapCreator.csproj", "{75984EE2-E386-45D2-ACED-3F51378B4E3C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30AB57CC-5FB9-4CD4-A071-455F6BF868AB}"
+	ProjectSection(SolutionItems) = preProject
+		mergeMasterIntoFeatures.ps1 = mergeMasterIntoFeatures.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

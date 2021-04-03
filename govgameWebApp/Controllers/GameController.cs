@@ -289,14 +289,21 @@ namespace govgameWebApp.Controllers
                 return Content("403");
             }
 
+            MinistryHelper.MinistryCode ministryCode;
             switch (page)
             {
                 case "InviteNewMinister":
-                    MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["minister"]);
+                    ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["minister"]);
                     ViewData["ministryCode"] = ministryCode;
 
                     PublicUser[] allPublicUsers = MongoDBHelper.UsersDatabase.GetAllPublicUsers();
                     ViewData["allPublicUsers"] = allPublicUsers;
+
+                    break;
+
+                case "ViewMinistry":
+                    ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["ministry"]);
+                    ViewData["ministryCode"] = ministryCode;
 
                     break;
 

@@ -1,0 +1,32 @@
+﻿@{ 
+    Layout = "_GameLayout";
+
+    Country country = (Country)ViewData["country"];
+    MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)ViewData["ministryCode"];
+    string ministerId = country.GetMinisterIdByCode(ministryCode);
+    string invitedMinisterId = country.GetInvitedMinisterIdByCode(ministryCode);
+
+    ViewData["Title"] = "View ministry";
+    ViewData["PageName"] = "View ministry";
+}
+
+<img src="~/images/ministries/@MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode)" height="200" />
+<br />
+<br />
+<h2>
+    @if (ministerId != "none")
+    {
+        <text>Minister: @MongoDBHelper.UsersDatabase.GetPublicUser(ministerId).Username</text>
+    }
+    else
+    {
+        if (invitedMinisterId != "none")
+        {
+            <text>Invitation sent to: @MongoDBHelper.UsersDatabase.GetPublicUser(invitedMinisterId).Username</text>
+        }
+        else
+        {
+            <text>No minister</text>
+        }
+    }
+</h2>

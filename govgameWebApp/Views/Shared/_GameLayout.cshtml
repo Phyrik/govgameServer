@@ -9,7 +9,15 @@
     int unreadNotifications = (int)ViewData["unreadNotifications"];
     int unreadEmails = (int)ViewData["unreadEmails"];
 
-    string flagName = CountryGenerationHelper.flagNames[country.FlagId];
+    string flagName;
+    try
+    {
+        flagName = CountryGenerationHelper.flagNames[country.FlagId];
+    }
+    catch
+    {
+        flagName = "none";
+    }
 }
 
 <!DOCTYPE html>
@@ -17,7 +25,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @country.CountryName - Government Game</title>
+    @if (country != null)
+    {
+        <title>@ViewData["Title"] - @country.CountryName - Government Game</title>
+    }
+    else
+    {
+        <title>@ViewData["Title"] - Government Game</title>
+    }
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -25,12 +40,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
 </head>
 <body style="font-family: 'Roboto Slab', serif;">
-    <header style="overflow: hidden; margin-left: 200px; position: sticky; top: 0; border-bottom: 5px solid @MinistryHelper.MinistryCodeToMinistryHexColour(ministryDashboard, true)">
-        <a href="/Game/CountryDashboard"><img height="100" src="~/images/flags/@(flagName).png" style="float: left; margin-top: 10px; margin-bottom: 10px; margin-left: 10px;" title="Go to Country Dashboard" /></a>
-        <div style="float: left; display: grid; grid-template-rows: 70px 50px;">
-            <h1 style="margin-left: 10px; margin-top: 10px;" title="Go to Country Dashboard"><a href="/Game/CountryDashboard" class="underline-a">@country.CountryName</a></h1>
-            <h3 style="margin-left: 10px; color: #151515;">Page: @ViewData["PageName"]</h3>
-        </div>
+    <header style="overflow: hidden; position: sticky; top: 0; border-bottom: 5px solid @MinistryHelper.MinistryCodeToMinistryHexColour(ministryDashboard, true)">
+        @if (country != null)
+        {
+            <a href="/Game/CountryDashboard"><img height="100" src="~/images/flags/@(flagName).png" style="float: left; margin-top: 10px; margin-bottom: 10px; margin-left: 10px;" title="Go to Country Dashboard" /></a>
+            <div style="float: left; display: grid; grid-template-rows: 70px 50px;">
+                <h1 style="margin-left: 10px; margin-top: 10px;" title="Go to Country Dashboard"><a href="/Game/CountryDashboard" class="underline-a">@country.CountryName</a></h1>
+                <h3 style="margin-left: 10px; color: #151515;">Page: @ViewData["PageName"]</h3>
+            </div>
+        }
+        else
+        {
+            <h3 style="margin-top: 10px; margin-left: 10px; margin-bottom: 10px; color: #151515; float: left;">Page: @ViewData["PageName"]</h3>
+        }
         <nav>
             <ul class="nav justify-content-end">
                 <li class="nav-item"><a class="nav-link underline-a" href="/Game/Index">Home</a></li>
@@ -55,13 +77,8 @@
             </ul>
         </nav>
     </header>
-    <div id="sidebar" style="position: fixed; top: 0; height: 100vh; width: 200px; background-color: #222; color: white; padding: 10px;">
-        <h3>Time:</h3>
-        <h5 id="time-h5">Loading...</h5>
-        <a href="/Home/PrivacyPolicy" style="position: absolute; bottom: 5px; color: white;">Privacy policy</a>
-    </div>
     <br />
-    <main style="margin-left: calc(200px + 20px);">
+    <main @if (ViewData["PageName"].ToString() != "Emails") { <text> style="margin-left: 50px;" </text> }>
         @RenderBody()
     </main>
 

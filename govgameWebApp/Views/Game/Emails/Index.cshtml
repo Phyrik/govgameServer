@@ -1,12 +1,7 @@
 ﻿@using Ganss.XSS;
 @using Markdig; 
 @{
-    Layout = "_EmailLayout";
-
-    if ((bool)ViewData["noCountry"])
-    {
-        Layout = "_NoCountryEmailLayout";
-    }
+    Layout = "_GameLayout";
 
     PublicUser publicUser = (PublicUser)ViewData["publicUser"];
 
@@ -27,7 +22,6 @@
 }
 
 <div id="main-header">
-    <br />
     <h1>Emails</h1>
     <br />
 </div>

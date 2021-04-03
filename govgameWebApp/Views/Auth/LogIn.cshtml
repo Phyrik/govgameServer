@@ -1,10 +1,11 @@
-﻿@{ 
+﻿@using System.Web; 
+@{ 
     ViewData["Title"] = "Log in";
 }
 
 <h1 style="text-align: center;">Log in</h1>
 <br />
-<form id="login-form" style="text-align: center;" method="post" action="/Auth/LogInPOST?redirect=@ViewData["redirectPath"]">
+<form id="login-form" style="text-align: center;" method="post" action="/Auth/LogInPOST?redirect=@HttpUtility.UrlEncode((string)ViewData["redirectPath"])">
     <label for="email">Email:</label>
     <input type="email" name="email" id="email" />
     <br />

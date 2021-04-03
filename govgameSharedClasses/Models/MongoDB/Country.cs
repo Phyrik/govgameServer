@@ -11,6 +11,7 @@ namespace govgameSharedClasses.Models.MongoDB
         public string CountryName { get; set; }
         public string CapitalName { get; set; }
         public int FlagId { get; set; }
+
         public string PrimeMinisterId { get; set; }
         public string InteriorMinisterId { get; set; }
         [BsonDefaultValue("none")]
@@ -24,6 +25,7 @@ namespace govgameSharedClasses.Models.MongoDB
         public string DefenceMinisterId { get; set; }
         [BsonDefaultValue("none")]
         public string InvitedDefenceMinisterId { get; set; }
+
         [BsonDefaultValue(0)]
         public int SpareBalance { get; set; }
         [BsonDefaultValue(0)]

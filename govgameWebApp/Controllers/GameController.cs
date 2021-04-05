@@ -821,7 +821,7 @@ namespace govgameWebApp.Controllers
                     string[] existingCountryNames = MongoDBHelper.CountriesDatabase.GetAllCountryNames();
                     if (existingCountryNames.Contains(country.CountryName))
                     {
-                        ViewData["errorMessage"] = "There is another country with that name, and we don't allow duplicate names. Sorry!";
+                        ViewData["errorMessage"] = "There is another country with that name, and we don't allow duplicate country names. Sorry!";
                         return View("../Error/TextError");
                     }
 

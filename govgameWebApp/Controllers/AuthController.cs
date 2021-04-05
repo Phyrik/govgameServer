@@ -142,7 +142,7 @@ namespace govgameWebApp.Controllers
             if (existingUsernames.Contains(username))
             {
                 FirebaseAuth.DefaultInstance.DeleteUserAsync(firebaseToken.Uid).Wait();
-                return Content("error: username taken");
+                return Content("There is another user with that username, and we don't allow duplicate usernames. Sorry!");
             }
 
             PublicUser publicUser = new PublicUser
@@ -155,7 +155,7 @@ namespace govgameWebApp.Controllers
             if (!MongoDBHelper.UsersDatabase.NewUser(publicUser))
             {
                 FirebaseAuth.DefaultInstance.DeleteUserAsync(firebaseToken.Uid).Wait();
-                return Content("error: internal server error");
+                return Content("Error: Internal server error");
             }
 
             TimeSpan expirationTimeSpan;

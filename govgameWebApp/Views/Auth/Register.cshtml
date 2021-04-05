@@ -69,6 +69,8 @@
                     if (data == "success") {
                         firebase.auth().currentUser.sendEmailVerification(actionCodeSettings).then(() => {
                             location.href = "/Auth/CheckVerificationEmail"
+                        }).catch(error => {
+                            alert(error.message)
                         })
                     }
                     else if (data == "error: username taken") {

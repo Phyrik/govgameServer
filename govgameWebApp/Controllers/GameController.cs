@@ -813,9 +813,17 @@ namespace govgameWebApp.Controllers
                         FlagId = CountryGenerationHelper.FlagNameToId(Request.Form["flag-name"]),
                         PrimeMinisterId = firebaseUid,
                         InteriorMinisterId = "none",
+                        InvitedInteriorMinisterId = "none",
                         FinanceAndTradeMinisterId = "none",
+                        InvitedFinanceAndTradeMinisterId = "none",
                         ForeignMinisterId = "none",
-                        DefenceMinisterId = "none"
+                        InvitedForeignMinisterId = "none",
+                        DefenceMinisterId = "none",
+                        InvitedDefenceMinisterId = "none",
+                        SpareBalance = 0,
+                        InteriorMinistryBalance = 0,
+                        ForeignMinistryBalance = 0,
+                        DefenceMinistryBalance = 0
                     };
 
                     string[] existingCountryNames = MongoDBHelper.CountriesDatabase.GetAllCountryNames();

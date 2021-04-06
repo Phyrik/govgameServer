@@ -16,6 +16,8 @@ namespace govgameSharedClasses.Models.MongoDB
         [BsonDefaultValue(false)]
         public bool Admin { get; set; }
 
+        // when adding new properties, remember to set them to their defaults in AuthController RegisterPOST
+
         public bool IsAMinister()
         {
             if (this.CountryId == "none") return false;

@@ -149,7 +149,8 @@ namespace govgameWebApp.Controllers
             {
                 UserId = firebaseToken.Uid,
                 Username = username,
-                CountryId = "none"
+                CountryId = "none",
+                BlockedUsers = new string[] { "none" }
             };
 
             if (!MongoDBHelper.UsersDatabase.NewUser(publicUser))

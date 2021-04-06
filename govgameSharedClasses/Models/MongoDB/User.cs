@@ -11,7 +11,7 @@ namespace govgameSharedClasses.Models.MongoDB
         public string UserId { get; set; }
         public string Username { get; set; }
         public string CountryId { get; set; }
-        [BsonDefaultValue(new string[0])]
+        [BsonDefaultValue(new string[] { "none" })]
         public string[] BlockedUsers { get; set; }
         [BsonDefaultValue(false)]
         public bool Admin { get; set; }

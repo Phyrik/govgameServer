@@ -4,16 +4,23 @@
 
 a {
     color: black;
-}
-
-a:hover {
-    color: black;
-}
-
-.underline-a:hover {
-    color: black;
     text-decoration: underline;
 }
+
+    a:hover {
+        color: black;
+        text-decoration: none;
+    }
+
+.nav-a {
+    color: black;
+    text-decoration: none;
+}
+
+    .nav-a:hover {
+        color: black;
+        text-decoration: none;
+    }
 
 main {
     margin-left: 10px;

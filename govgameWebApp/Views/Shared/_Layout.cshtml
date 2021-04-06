@@ -21,16 +21,16 @@
     <header>
         <nav>
             <ul class="nav justify-content-end">
-                <li class="nav-item"><a class="nav-link underline-a" href="/Home/PrivacyPolicy">Privacy policy</a></li>
+                <li class="nav-item"><a class="nav-link nav-a" href="/Home/PrivacyPolicy">Privacy policy</a></li>
                 @if ((bool)ViewData["userLoggedIn"])
                 {
-                    <li class="nav-item"><a class="nav-link underline-a" href="/">Go to game</a></li>
-                    <li class="nav-item"><a class="nav-link underline-a" href="/Auth/LogOut">Log out</a></li>
+                    <li class="nav-item"><a class="nav-link nav-a" href="/">Go to game</a></li>
+                    <li class="nav-item"><a class="nav-link nav-a" href="/Auth/LogOut">Log out</a></li>
                 }
                 else
                 {
-                    <li class="nav-item"><a class="nav-link underline-a" href="/Auth/Register">Register</a></li>
-                    <li class="nav-item"><a class="nav-link underline-a" href="/Auth/LogIn">Log in</a></li>
+                    <li class="nav-item"><a class="nav-link nav-a" href="/Auth/Register">Register</a></li>
+                    <li class="nav-item"><a class="nav-link nav-a" href="/Auth/LogIn">Log in</a></li>
                 }
             </ul>
         </nav>

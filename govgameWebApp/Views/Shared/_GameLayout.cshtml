@@ -45,7 +45,7 @@
         {
             <a href="/Game/CountryDashboard"><img height="100" src="~/images/flags/@(flagName).png" style="float: left; margin-top: 10px; margin-bottom: 10px; margin-left: 10px;" title="Go to Country Dashboard" /></a>
             <div style="float: left; display: grid; grid-template-rows: 70px 50px;">
-                <h1 style="margin-left: 10px; margin-top: 10px;" title="Go to Country Dashboard"><a href="/Game/CountryDashboard" class="underline-a">@country.CountryName</a></h1>
+                <h1 style="margin-left: 10px; margin-top: 10px;" title="Go to Country Dashboard"><a href="/Game/CountryDashboard">@country.CountryName</a></h1>
                 <h3 style="margin-left: 10px; color: #151515;">Page: @ViewData["PageName"]</h3>
             </div>
         }
@@ -55,25 +55,25 @@
         }
         <nav>
             <ul class="nav justify-content-end">
-                <li class="nav-item"><a class="nav-link underline-a" href="/Game/Index">Home</a></li>
+                <li class="nav-item"><a class="nav-link nav-a" href="/Game/Index">Home</a></li>
                 @if (unreadNotifications != 0)
                 {
-                    <li class="nav-item" style="background-color: darkorange;"><a class="nav-link underline-a" href="/Game/Notifications">Notifications (@unreadNotifications)</a></li>
+                    <li class="nav-item" style="background-color: darkorange;"><a class="nav-link nav-a" href="/Game/Notifications">Notifications (@unreadNotifications)</a></li>
                 }
                 else
                 {
-                    <li class="nav-item"><a class="nav-link underline-a" href="/Game/Notifications">Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link nav-a" href="/Game/Notifications">Notifications</a></li>
                 }
                 @if (unreadEmails != 0)
                 {
-                    <li class="nav-item" style="background-color: darkorange;"><a class="nav-link underline-a" href="/Game/Emails">Emails (@unreadEmails)</a></li>
+                    <li class="nav-item" style="background-color: darkorange;"><a class="nav-link nav-a" href="/Game/Emails">Emails (@unreadEmails)</a></li>
                 }
                 else
                 {
-                    <li class="nav-item"><a class="nav-link underline-a" href="/Game/Emails">Emails</a></li>
+                    <li class="nav-item"><a class="nav-link nav-a" href="/Game/Emails">Emails</a></li>
                 }
                 <li class="nav-item"><a class="nav-link">Logged in as: @publicUser.Username</a></li>
-                <li class="nav-item"><a class="nav-link underline-a" href="/Auth/LogOut">Log out</a></li>
+                <li class="nav-item"><a class="nav-link nav-a" href="/Auth/LogOut">Log out</a></li>
             </ul>
         </nav>
     </header>

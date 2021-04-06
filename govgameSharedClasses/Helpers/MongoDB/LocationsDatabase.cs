@@ -13,21 +13,12 @@ namespace govgameSharedClasses.Helpers
             static readonly IMongoDatabase locationsDatabase = mongoClient.GetDatabase("govgame_locations_table");
             static readonly IMongoCollection<Location> locationsCollection = locationsDatabase.GetCollection<Location>("locations");
 
-            public static FilterDefinition<Location> GetDBFilterForLocationIdentifier(GlobalLocationIdentifier globalLocationIdentifier)
+            static FilterDefinition<Location> GetDBFilterForLocationIdentifier(GlobalLocationIdentifier globalLocationIdentifier)
             {
                 FilterDefinitionBuilder<Location> builder = Builders<Location>.Filter;
                 FilterDefinition<Location> filter = builder.And(builder.Eq("GlobalX", globalLocationIdentifier.GlobalX), builder.Eq("GlobalY", globalLocationIdentifier.GlobalY));
 
                 return filter;
-            }
-
-            public static Map GetWorldMap()
-            {
-                Map worldMap = new Map();
-
-                worldMap.Locations = locationsCollection.Find(Builders<Location>.Filter.Empty).ToList();
-
-                return worldMap;
             }
 
             public static Location GetLocation(GlobalLocationIdentifier globalLocationIdentifier)
@@ -42,20 +33,35 @@ namespace govgameSharedClasses.Helpers
                 FilterDefinitionBuilder<Location> filterBuilder = Builders<Location>.Filter;
                 FilterDefinition<Location> filter = filterBuilder.And(filterBuilder.Gte("GlobalX", topLeftGlobalLocationIdentifier.GlobalX), filterBuilder.Lt("GlobalX", topLeftGlobalLocationIdentifier.GlobalX + width), filterBuilder.Gte("GlobalY", topLeftGlobalLocationIdentifier.GlobalY), filterBuilder.Lt("GlobalY", topLeftGlobalLocationIdentifier.GlobalY + height));
 
+                return locationsCollection.Find(filter).ToList().ToArray();
+            }
+
+            public static bool UpdateLocation(GlobalLocationIdentifier globalLocationIdentifier, LocationUpdate locationUpdate)
+            {
+                FilterDefinitionBuilder<Location> filterBuilder = Builders<Location>.Filter;
+                FilterDefinition<Location> filter = filterBuilder.And(filterBuilder.Eq("GlobalX", globalLocationIdentifier.GlobalX), filterBuilder.Eq("GlobalY", globalLocationIdentifier.GlobalY));
+
+                UpdateDefinitionBuilder<Location> updateBuilder = Builders<Location>.Update;
+                List<UpdateDefinition<Location>> updates = new List<UpdateDefinition<Location>>();
+                PropertyInfo[] properties = typeof(LocationUpdate).GetProperties();
+                foreach (PropertyInfo property in properties)
+                {
+                    if (property.GetValue(locationUpdate) != null)
+                    {
+                        updates.Add(updateBuilder.Set(property.Name, property.GetValue(locationUpdate)));
+                    }
+                }
+
                 try
                 {
-                    return locationsCollection.Find(filter).ToList().ToArray();
+                    locationsCollection.UpdateOne(filter, updateBuilder.Combine(updates));
+
+                    return true;
                 }
                 catch
                 {
-                    return null;
+                    return false;
                 }
-            }
-
-            /// <summary>Not implemented yet</summary>
-            public static Location[] GetLocations(GlobalLocationIdentifier[] globalLocationIdentifiers)
-            {
-                throw new NotImplementedException();
             }
 
             public static bool UpdateLocations(GlobalLocationIdentifier topLeftGlobalLocationIdentifier, int width, int height, LocationUpdate locationUpdate)
@@ -84,12 +90,6 @@ namespace govgameSharedClasses.Helpers
                 {
                     return false;
                 }
-            }
-
-            /// <summary>Not implemented yet</summary>
-            public static bool UpdateLocations(GlobalLocationIdentifier[] globalLocationIdentifiers, LocationUpdate locationUpdate)
-            {
-                throw new NotImplementedException();
             }
 
             public static Location[] GetCountrysLocations(string countryId)

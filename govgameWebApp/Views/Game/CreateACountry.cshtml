@@ -18,11 +18,13 @@
     <img src="~/images/flags/default.png" height="125" id="flagImg" style="border: 1px solid black" />
     <br />
     <br />
+    <!--
     <label for="map" style="font-size: xx-large;">Choose a location:</label>
     <br />
     <canvas id="map-canvas"></canvas>
     <br />
     <br />
+    -->
     <button type="button" onclick="formSubmitted()">Create country</button>
     <br />
     <br />
@@ -40,6 +42,7 @@
         currentFlag = flag
     }
 
+    /*
     function getCanvasClickPosition(canvas, event) {
         const rect = canvas.getBoundingClientRect()
         const x = event.clientX - rect.left
@@ -76,6 +79,7 @@
 
         lastClickLocation = mapClickLocation
     })
+    */
 
     function formSubmitted() {
         var form = document.getElementById("country-form")
@@ -87,6 +91,7 @@
         flagInput.setAttribute("value", currentFlag)
         form.appendChild(flagInput)
 
+        /*
         var locationXInput = document.createElement("input")
         locationXInput.setAttribute("name", "locationX")
         locationXInput.setAttribute("type", "text")
@@ -100,6 +105,7 @@
         locationYInput.style.display = "none"
         locationYInput.setAttribute("value", lastClickLocation[1])
         form.appendChild(locationYInput)
+        */
 
         form.submit()
     }

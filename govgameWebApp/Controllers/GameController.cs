@@ -826,6 +826,11 @@ namespace govgameWebApp.Controllers
                         DefenceMinistryBalance = 0
                     };
 
+                    UserUpdate userUpdate = new UserUpdate
+                    {
+                        CountryId = country.CountryId
+                    };
+
                     string[] existingCountryNames = MongoDBHelper.CountriesDatabase.GetAllCountryNames();
                     if (existingCountryNames.Contains(country.CountryName))
                     {
@@ -833,6 +838,7 @@ namespace govgameWebApp.Controllers
                         return View("../Error/TextError");
                     }
 
+                    /*
                     GlobalLocationIdentifier globalLocationIdentifier = new GlobalLocationIdentifier(int.Parse(Request.Form["locationX"]) - 50, int.Parse(Request.Form["locationY"]) - 50);
 
                     Location[] locations = MongoDBHelper.LocationsDatabase.GetLocations(globalLocationIdentifier, 100, 100);
@@ -849,15 +855,12 @@ namespace govgameWebApp.Controllers
                     {
                         Owner = country.CountryId
                     };
-                    if (MongoDBHelper.LocationsDatabase.UpdateLocations(globalLocationIdentifier, 100, 100, locationUpdate))
+                    */
+
+                    if (/*MongoDBHelper.LocationsDatabase.UpdateLocations(globalLocationIdentifier, 100, 100, locationUpdate) &&*/
+                        MongoDBHelper.CountriesDatabase.NewCountry(country) &&
+                        MongoDBHelper.UsersDatabase.UpdateUser(firebaseUid, userUpdate))
                     {
-                        MongoDBHelper.CountriesDatabase.NewCountry(country);
-
-                        MongoDBHelper.UsersDatabase.UpdateUser(firebaseUid, new UserUpdate
-                        {
-                            CountryId = country.CountryId
-                        });
-
                         return Redirect("/");
                     }
                     else

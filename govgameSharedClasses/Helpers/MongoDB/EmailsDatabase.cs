@@ -33,8 +33,15 @@ namespace govgameSharedClasses.Helpers
 
                 PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(userId);
 
-                FilterDefinition<Email> filter = filterBuilder.And(filterBuilder.Eq("RecipientId", userId), filterBuilder.Nin("SenderId", publicUser.BlockedUsers));
-
+                FilterDefinition<Email> filter;
+                if (includeBlocked)
+                {
+                    filter = filterBuilder.And(filterBuilder.Eq("RecipientId", userId));
+                }
+                else
+                {
+                    filter = filterBuilder.And(filterBuilder.Eq("RecipientId", userId), filterBuilder.Nin("SenderId", publicUser.BlockedUsers));
+                }
                 SortDefinition<Email> sort = Builders<Email>.Sort.Descending("EmailId");
 
                 return emailsCollection.Find(filter).Sort(sort).ToList().ToArray();

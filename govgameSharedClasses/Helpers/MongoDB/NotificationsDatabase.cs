@@ -34,6 +34,29 @@ namespace govgameSharedClasses.Helpers
                 return notificationsCollection.Find(filter).Sort(sort).ToList().ToArray();
             }
 
+            public static bool SendNotification(NotificationSendRequest notificationSendRequest)
+            {
+                Notification notification = new Notification
+                {
+                    UserId = notificationSendRequest.UserId,
+                    Title = notificationSendRequest.Title,
+                    Content = notificationSendRequest.Content,
+                    Link = notificationSendRequest.Link,
+                    MarkedAsRead = false
+                };
+
+                try
+                {
+                    notificationsCollection.InsertOne(notification);
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
             public static bool MarkNotificationAsRead(ObjectId notificationId)
             {
                 FilterDefinition<Notification> filter = Builders<Notification>.Filter.Eq("NotificationId", notificationId);

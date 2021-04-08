@@ -388,7 +388,7 @@ namespace govgameWebApp.Controllers
 
                 if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
                     MongoDBHelper.UsersDatabase.UpdateUser(country.GetMinisterIdByCode(ministryCode), userUpdate) &&
-                    govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                    MongoDBHelper.NotificationsDatabase.SendNotification(notificationSendRequest))
                 {
                     return Content("success");
                 }
@@ -439,7 +439,7 @@ namespace govgameWebApp.Controllers
                 };
 
                 if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
-                    govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                    MongoDBHelper.NotificationsDatabase.SendNotification(notificationSendRequest))
                 {
                     return Content("success");
                 }
@@ -521,7 +521,7 @@ namespace govgameWebApp.Controllers
 
                 if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountry.CountryId, newCountryUpdate) &&
                     MongoDBHelper.UsersDatabase.UpdateUser(publicUser.UserId, userUpdate) &&
-                    govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                    MongoDBHelper.NotificationsDatabase.SendNotification(notificationSendRequest))
                 {
                     return Content("success");
                 }
@@ -562,7 +562,7 @@ namespace govgameWebApp.Controllers
                 };
 
                 if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, countryUpdate) &&
-                    govgameGameServer.Managers.MongoDBManager.SendNotification(notificationSendRequest))
+                    MongoDBHelper.NotificationsDatabase.SendNotification(notificationSendRequest))
                 {
                     return Content("success");
                 }

@@ -48,6 +48,7 @@ namespace govgameWebApp
             app.Use(async (context, next) =>
             {
                 context.Response.Headers.Add("X-Frame-Options", "DENY");
+                await next();
             });
 
             app.UseEndpoints(endpoints =>

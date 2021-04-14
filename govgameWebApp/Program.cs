@@ -23,6 +23,7 @@ namespace govgameWebApp
             });
 
             Directory.SetCurrentDirectory("govgameWebapp");
+            Console.WriteLine(Directory.GetCurrentDirectory());
 
             IHost govgameWebAppIHost = CreateHostBuilder(args).Build();
             TimeManagerHubServerMethods.TimeManagerHubContext = (IHubContext<TimeManagerHub>)govgameWebAppIHost.Services.GetService(typeof(IHubContext<TimeManagerHub>));

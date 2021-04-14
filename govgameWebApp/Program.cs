@@ -26,7 +26,6 @@ namespace govgameWebApp
             Console.WriteLine("govgameWebApp current working directory: " + Directory.GetCurrentDirectory());
 
             IHost govgameWebAppIHost = CreateHostBuilder(args).Build();
-            TimeManagerHubServerMethods.TimeManagerHubContext = (IHubContext<TimeManagerHub>)govgameWebAppIHost.Services.GetService(typeof(IHubContext<TimeManagerHub>));
             govgameWebAppIHost.RunAsync();
 
             Console.ReadKey();

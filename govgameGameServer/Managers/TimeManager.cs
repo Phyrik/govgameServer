@@ -25,8 +25,6 @@ namespace govgameGameServer.Managers
         private static void GameTimerIntervalElapsed(object source, ElapsedEventArgs elapsedEventArgs)
         {
             MinutesPastEpoch = (int)((DateTime.UtcNow - Epoch).TotalMinutes * irlSecondsInGameSecond);
-
-            govgameWebApp.Hubs.Server_Only_Hub_Methods.TimeManagerHubServerMethods.BroadcastNewTime(MinutesPastEpoch);
         }
     }
 }

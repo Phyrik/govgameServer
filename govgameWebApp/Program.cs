@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Timers;
@@ -20,6 +21,8 @@ namespace govgameWebApp
             {
                 Credential = GoogleCredential.FromFile("government-game-firebase-adminsdk-8gpmw-d6a3303ab7.json")
             });
+
+            Directory.SetCurrentDirectory("govgameWebapp");
 
             IHost govgameWebAppIHost = CreateHostBuilder(args).Build();
             TimeManagerHubServerMethods.TimeManagerHubContext = (IHubContext<TimeManagerHub>)govgameWebAppIHost.Services.GetService(typeof(IHubContext<TimeManagerHub>));

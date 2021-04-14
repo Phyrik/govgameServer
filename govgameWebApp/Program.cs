@@ -1,6 +1,5 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-//using govgameGameServer.Managers;
 using govgameWebApp.Hubs;
 using govgameWebApp.Hubs.Server_Only_Hub_Methods;
 using Microsoft.AspNetCore.Hosting;
@@ -25,9 +24,6 @@ namespace govgameWebApp
             IHost govgameWebAppIHost = CreateHostBuilder(args).Build();
             TimeManagerHubServerMethods.TimeManagerHubContext = (IHubContext<TimeManagerHub>)govgameWebAppIHost.Services.GetService(typeof(IHubContext<TimeManagerHub>));
             govgameWebAppIHost.RunAsync();
-
-            //govgameGameServer.Program.StartAllManagers();
-            //TimeManager.GameTimer.Elapsed += TimeManagerHubServerMethods.BroadcastNewTime;
 
             Console.ReadKey();
         }

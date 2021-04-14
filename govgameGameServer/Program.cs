@@ -7,7 +7,17 @@ namespace govgameGameServer
     {
         public static void Main(string[] args)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Starting the govgameServer");
+
+            Console.WriteLine("Starting the govgameGameServer");
+            StartAllManagers();
+
+            Console.WriteLine("Starting the govgameWebApp");
+            govgameWebApp.Program.Main(Array.Empty<string>());
+
+            Console.WriteLine("All started!");
+
+            Console.ReadKey();
         }
 
         public static void StartAllManagers()

@@ -1,4 +1,3 @@
-using govgameWebApp.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -64,8 +63,6 @@ namespace govgameWebApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}");
-
-                endpoints.MapHub<TimeManagerHub>("/TimeManagerHub");
             });
         }
     }

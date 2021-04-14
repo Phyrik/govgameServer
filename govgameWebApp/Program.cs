@@ -22,8 +22,8 @@ namespace govgameWebApp
                 Credential = GoogleCredential.FromFile("government-game-firebase-adminsdk-8gpmw-d6a3303ab7.json")
             });
 
-            Directory.SetCurrentDirectory("govgameWebapp");
-            Console.WriteLine(Directory.GetCurrentDirectory());
+            Directory.SetCurrentDirectory("govgameWebApp");
+            Console.WriteLine("govgameWebApp current working directory: " + Directory.GetCurrentDirectory());
 
             IHost govgameWebAppIHost = CreateHostBuilder(args).Build();
             TimeManagerHubServerMethods.TimeManagerHubContext = (IHubContext<TimeManagerHub>)govgameWebAppIHost.Services.GetService(typeof(IHubContext<TimeManagerHub>));

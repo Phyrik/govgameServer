@@ -8,8 +8,6 @@ namespace govgameWebApp.Hubs
     {
         public override Task OnConnectedAsync()
         {
-            TimeManagerHubServerMethods.BroadcastNewTime();
-
             return base.OnConnectedAsync();
         }
     }

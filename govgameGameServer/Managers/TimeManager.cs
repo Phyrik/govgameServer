@@ -26,7 +26,7 @@ namespace govgameGameServer.Managers
         {
             MinutesPastEpoch = (int)((DateTime.UtcNow - Epoch).TotalMinutes * irlSecondsInGameSecond);
 
-            Console.WriteLine($"Game timer ticked. {MinutesPastEpoch} total minutes elapsed.");
+            govgameWebApp.Hubs.Server_Only_Hub_Methods.TimeManagerHubServerMethods.BroadcastNewTime(MinutesPastEpoch);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace govgameGameServer
             Console.WriteLine("Starting the govgameWebApp");
             govgameWebApp.Program.Main(Array.Empty<string>());
 
-            Console.WriteLine("All started!");
+            Console.WriteLine("All projects started!");
 
             Console.ReadKey();
         }
@@ -24,7 +24,7 @@ namespace govgameGameServer
         {
             Console.WriteLine("Starting TimeManager...");
             TimeManager.Start();
-            Console.WriteLine("Started!");
+            Console.WriteLine("Started manager!");
         }
     }
 }

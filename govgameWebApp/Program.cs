@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Net;
 using System.Threading;
 using System.Timers;
 
@@ -35,6 +36,13 @@ namespace govgameWebApp
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseKestrel(options =>
+                    {
+                        options.Listen(IPAddress.Any, 5000, listenOptions =>
+                        {
+                            listenOptions.UseHttps("certificate.pfx", "friends2021");
+                        });
+                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }

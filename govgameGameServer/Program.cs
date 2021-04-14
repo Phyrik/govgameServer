@@ -13,7 +13,7 @@ namespace govgameGameServer
             StartAllManagers();
 
             Console.WriteLine("Starting the govgameWebApp");
-            govgameWebApp.Program.Main(Array.Empty<string>());
+            govgameWebApp.Program.Main(args);
 
             Console.WriteLine("All projects started!");
 

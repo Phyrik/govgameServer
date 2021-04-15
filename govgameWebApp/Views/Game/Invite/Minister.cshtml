@@ -31,7 +31,7 @@
     @if (oldCountry != null)
     {
         <div id="old-country-div" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2;">
-            <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[oldCountry.FlagId]).png" style="margin-left: auto; margin-right: auto;" />
+            <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[oldCountry.FlagId]).png" style="margin-left: auto; margin-right: auto; border: 1px solid black;" />
             <br />
             <br />
             <h2>@oldCountry.CountryName</h2>
@@ -42,7 +42,7 @@
     else
     {
         <div id="old-country-div" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2;">
-            <img height="200" src="~/images/flags/default.png" style="margin-left: auto; margin-right: auto;" />
+            <img height="200" src="~/images/flags/default.png" style="margin-left: auto; margin-right: auto; border: 1px solid black;" />
             <br />
             <br />
             <h2>No country</h2>
@@ -50,7 +50,7 @@
         <img width="150" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2; margin: auto;" src="~/images/arrow right.svg" />
     }
     <div id="new-country-div" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 1; grid-row-end: 2;">
-        <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[newCountry.FlagId]).png" style="margin-left: auto; margin-right: auto;" />
+        <img height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[newCountry.FlagId]).png" style="margin-left: auto; margin-right: auto; border: 1px solid black;" />
         <br />
         <br />
         <h2>@newCountry.CountryName</h2>

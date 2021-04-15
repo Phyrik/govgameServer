@@ -113,7 +113,7 @@ namespace govgameWebApp.Controllers
                 {
                     Expires = DateTimeOffset.UtcNow.Add(options.ExpiresIn),
                     HttpOnly = true,
-                    Secure = true
+                    Secure = EnvironmentHelper.KeepCookiesSecure()
                 };
 
                 Response.Cookies.Append("authSession", sessionCookie, cookieOptions);
@@ -183,7 +183,7 @@ namespace govgameWebApp.Controllers
                 {
                     Expires = DateTimeOffset.UtcNow.Add(options.ExpiresIn),
                     HttpOnly = true,
-                    Secure = true
+                    Secure = EnvironmentHelper.KeepCookiesSecure()
                 };
 
                 Response.Cookies.Append("authSession", sessionCookie, cookieOptions);

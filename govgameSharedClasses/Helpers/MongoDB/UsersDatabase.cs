@@ -10,8 +10,7 @@ namespace govgameSharedClasses.Helpers
     {
         public class UsersDatabase
         {
-            static readonly IMongoDatabase usersDatabase = mongoClient.GetDatabase("govgame_user_table");
-            static readonly IMongoCollection<PublicUser> usersCollection = usersDatabase.GetCollection<PublicUser>("users");
+            static readonly IMongoCollection<PublicUser> usersCollection = govgameDatabase.GetCollection<PublicUser>("users");
 
             public static PublicUser GetPublicUser(string userId)
             {

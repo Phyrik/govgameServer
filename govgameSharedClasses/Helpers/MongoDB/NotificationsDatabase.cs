@@ -8,8 +8,7 @@ namespace govgameSharedClasses.Helpers
     {
         public class NotificationsDatabase
         {
-            static readonly IMongoDatabase notificationsDatabase = mongoClient.GetDatabase("govgame_notifications_table");
-            static readonly IMongoCollection<Notification> notificationsCollection = notificationsDatabase.GetCollection<Notification>("notifications");
+            static readonly IMongoCollection<Notification> notificationsCollection = govgameDatabase.GetCollection<Notification>("notifications");
 
             public static Notification GetNotificationById(ObjectId notificationId)
             {

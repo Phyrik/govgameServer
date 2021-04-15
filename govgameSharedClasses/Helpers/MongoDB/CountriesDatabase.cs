@@ -9,8 +9,7 @@ namespace govgameSharedClasses.Helpers
     {
         public class CountriesDatabase
         {
-            static readonly IMongoDatabase countriesDatabase = mongoClient.GetDatabase("govgame_countries_table");
-            static readonly IMongoCollection<Country> countriesCollection = countriesDatabase.GetCollection<Country>("countries");
+            static readonly IMongoCollection<Country> countriesCollection = govgameDatabase.GetCollection<Country>("countries");
 
             public static Country GetCountry(string countryId)
             {

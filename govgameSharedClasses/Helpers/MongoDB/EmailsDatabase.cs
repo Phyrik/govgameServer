@@ -9,9 +9,8 @@ namespace govgameSharedClasses.Helpers
     {
         public class EmailsDatabase
         {
-            static readonly IMongoDatabase emailsDatabase = mongoClient.GetDatabase("govgame_emails_table");
-            static readonly IMongoCollection<Email> emailsCollection = emailsDatabase.GetCollection<Email>("emails");
-            static readonly IMongoCollection<Email> deletedEmailsCollection = emailsDatabase.GetCollection<Email>("deletedEmails");
+            static readonly IMongoCollection<Email> emailsCollection = govgameDatabase.GetCollection<Email>("emails");
+            static readonly IMongoCollection<Email> deletedEmailsCollection = govgameDatabase.GetCollection<Email>("deletedEmails");
 
             public static Email GetEmailById(ObjectId emailId)
             {

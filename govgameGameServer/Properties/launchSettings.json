@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "govgameGameServer": {
+      "commandName": "Project",
+      "commandLineArgs": "secure"
+    }
+  }
+}

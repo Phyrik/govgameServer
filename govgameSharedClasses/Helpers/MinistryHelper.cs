@@ -74,21 +74,21 @@
             }
         }
 
-        /// <returns>ministry of example.png (not absolute path, inculdes file extension)</returns>
+        /// <returns>ministry of example.svg (not absolute path, includes file extension)</returns>
         public static string MinistryCodeToMinistryImageFileName(MinistryCode ministryCode)
         {
             switch (ministryCode)
             {
                 case MinistryCode.PrimeMinister:
-                    return "office of the prime minister logo.png";
+                    return "office of the prime minister.svg";
                 case MinistryCode.Interior:
-                    return "ministry of the interior.png";
+                    return "ministry of the interior.svg";
                 case MinistryCode.FinanceAndTrade:
-                    return "ministry of finance and trade.png";
+                    return "ministry of finance and trade.svg";
                 case MinistryCode.ForeignAffairs:
-                    return "ministry of foreign affairs.png";
+                    return "ministry of foreign affairs.svg";
                 case MinistryCode.Defence:
-                    return "ministry of defence.png";
+                    return "ministry of defence.svg";
                 default:
                     return null;
             }

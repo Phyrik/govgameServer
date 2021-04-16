@@ -33,13 +33,13 @@ namespace govgameWebApp
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    //webBuilder.UseKestrel(options =>
-                    //{
-                    //    options.Listen(IPAddress.Any, 5000, listenOptions =>
-                    //    {
-                    //        listenOptions.UseHttps("certificate.pfx", "friends2021");
-                    //    });
-                    //});
+                    webBuilder.UseKestrel(options =>
+                    {
+                        options.Listen(IPAddress.Any, 5001, listenOptions =>
+                        {
+                            listenOptions.UseHttps("finalcert.pfx", "friends2021");
+                        });
+                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }

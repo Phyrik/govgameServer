@@ -8,11 +8,6 @@ namespace govgameSharedClasses.Helpers
     {
         public static ViewResult MinistryDashboardView(Controller controller, string rootPath, MinistryHelper.MinistryCode ministryCode, string page)
         {
-            if (Environment.GetEnvironmentVariable("govgameProduction") == "true")
-            {
-                rootPath = @"C:\Users\Administrator\Documents\govgameServer\govgameWebApp";
-            }
-
             string ministryFolderName = "";
             switch (ministryCode)
             {
@@ -37,7 +32,7 @@ namespace govgameSharedClasses.Helpers
                     break;
             }
 
-            if (File.Exists($@"{rootPath}\Views\Game\{ministryFolderName}\{page}.cshtml"))
+            if (File.Exists($@"{rootPath}/Views/Game/{ministryFolderName}/{page}.cshtml"))
             {
                 return controller.View($"./{ministryFolderName}/{page}");
             }

@@ -43,6 +43,7 @@
     <header style="overflow: hidden; position: sticky; top: 0; border-bottom: 5px solid @MinistryHelper.MinistryCodeToMinistryHexColour(ministryDashboard, true)">
         @if (country != null)
         {
+            <h5 style="font-family: 'Arvo', serif; float: left; margin: 0; height: 110px; line-height: 110px; margin-left: 10px; border-right: 1px solid black; padding-right: 10px; margin-top: 5px; margin-bottom: 5px;"><a href="/">GovSim</a></h5>
             <a href="/Game/CountryDashboard"><img height="100" src="~/images/flags/@(flagName).png" style="float: left; margin-top: 10px; margin-bottom: 10px; margin-left: 10px;" title="Go to Country Dashboard" /></a>
             <div style="float: left; display: grid; grid-template-rows: 70px 50px;">
                 <h1 style="margin-left: 10px; margin-top: 10px;" title="Go to Country Dashboard"><a href="/Game/CountryDashboard" class="nav-a">@country.CountryName</a></h1>

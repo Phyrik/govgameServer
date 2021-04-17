@@ -1,5 +1,5 @@
 ﻿@using Ganss.XSS;
-@using Markdig; 
+@using Markdig;
 @{
     Layout = "_GameLayout";
 
@@ -48,6 +48,7 @@
         <button class="action-button" id="block-button" onclick="blockCurrentEmailUser()" disabled>Block emails from this user</button>
     </div>
     <div style="grid-column-start: 2; grid-column-end: 3; background-color: lightgrey; padding: 5px 10px 5px 10px; overflow-y: auto;">
+        <p id="sent-datetime-line" style="font-size: small; float: right; margin-top: 10px; margin-right: 10px;"></p>
         <h2 id="from-line">Click on an email to view it here</h2>
         <h4 id="country-line"></h4>
         <h6 id="to-line"></h6>
@@ -100,10 +101,11 @@
                     {
                         <text>"@MongoDBHelper.UsersDatabase.GetPublicUser(toUserId).Username",</text>
                     }
-                    ]
+                    ],
+                    "sentDateTime": "@email.EmailId.CreationTime"
                 },
                 </text>
-    }
+            }
         }
 
         var emailSystemContainer = document.getElementById("email-system-container")
@@ -114,6 +116,7 @@
         var countryLine = document.getElementById("country-line");
         var subjectLine = document.getElementById("subject-line");
         var bodyLine = document.getElementById("body-line");
+        var sentDateTimeLine = document.getElementById("sent-datetime-line");
 
         var currentlyOpenedEmailId
 
@@ -139,6 +142,7 @@
             countryLine.innerHTML = ""
             subjectLine.innerHTML = ""
             bodyLine.innerHTML = ""
+            sentDateTimeLine.innerHTML = ""
 
             var emailToOpen = emails[emailId]
 
@@ -157,6 +161,7 @@
             }
             subjectLine.innerHTML = emailToOpen.subject
             bodyLine.innerHTML = emailToOpen.body
+            sentDateTimeLine.innerHTML = "Sent on " + emailToOpen.sentDateTime
 
             var emailLi = document.getElementById("email-li-" + emailId)
 

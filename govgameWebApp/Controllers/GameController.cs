@@ -379,12 +379,7 @@ namespace govgameWebApp.Controllers
 
                 UserUpdate userUpdate = new UserUpdate { CountryId = "none" };
 
-                NotificationSendRequest notificationSendRequest = new NotificationSendRequest
-                {
-                    UserId = country.GetMinisterIdByCode(ministryCode),
-                    Title = $"Dismissal from your ministerial role at {country.CountryName}",
-                    Content = $"{publicUser.Username} has dismissed you from your position as {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of {country.CountryName}.",
-                };
+                NotificationSendRequest notificationSendRequest = NotificationHelper.GenerateDismissedMinisterNotification(publicUser.UserId, country.GetMinisterIdByCode(ministryCode), ministryCode);
 
                 if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
                     MongoDBHelper.UsersDatabase.UpdateUser(country.GetMinisterIdByCode(ministryCode), userUpdate) &&
@@ -430,13 +425,7 @@ namespace govgameWebApp.Controllers
                 CountryUpdate countryUpdate = new CountryUpdate();
                 countryUpdate.SetInvitedMinisterIdByCode(ministryCode, invitedUserId);
 
-                NotificationSendRequest notificationSendRequest = new NotificationSendRequest
-                {
-                    UserId = invitedUserId,
-                    Title = $"Invitation to ministerial role at {country.CountryName}",
-                    Content = $"{publicUser.Username} has invited you to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of {country.CountryName}",
-                    Link = $"https://govgame.crumble-technologies.co.uk/Game/Invite/Minister?countryId={country.CountryId}&ministry={ministry}"
-                };
+                NotificationSendRequest notificationSendRequest = NotificationHelper.GenerateMinisterialInvitationNotification(publicUser.UserId, invitedUserId, ministryCode);
 
                 if (MongoDBHelper.CountriesDatabase.UpdateCountry(country.CountryId, countryUpdate) &&
                     MongoDBHelper.NotificationsDatabase.SendNotification(notificationSendRequest))
@@ -512,12 +501,7 @@ namespace govgameWebApp.Controllers
                 }
 
                 PublicUser newPrimeMinister = MongoDBHelper.UsersDatabase.GetPublicUser(newCountry.PrimeMinisterId);
-                NotificationSendRequest notificationSendRequest = new NotificationSendRequest
-                {
-                    UserId = newPrimeMinister.UserId,
-                    Title = $"{publicUser.Username} has accepted your ministerial invite",
-                    Content = $"{publicUser.Username} has accepted your invitation to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
-                };
+                NotificationSendRequest notificationSendRequest = NotificationHelper.GenerateMinisterialInvitationAcceptedNotification(newPrimeMinister.UserId, publicUser.UserId, ministryCode);
 
                 if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountry.CountryId, newCountryUpdate) &&
                     MongoDBHelper.UsersDatabase.UpdateUser(publicUser.UserId, userUpdate) &&
@@ -554,12 +538,7 @@ namespace govgameWebApp.Controllers
                 countryUpdate.SetInvitedMinisterIdByCode(ministryCode, "none");
 
                 PublicUser newPrimeMinister = MongoDBHelper.UsersDatabase.GetPublicUser(newCountry.PrimeMinisterId);
-                NotificationSendRequest notificationSendRequest = new NotificationSendRequest
-                {
-                    UserId = newPrimeMinister.UserId,
-                    Title = $"{publicUser.Username} has declined your ministerial invite",
-                    Content = $"{publicUser.Username} has declined your invitation to become the {MinistryHelper.MinistryCodeToMinisterName(ministryCode)} of your country."
-                };
+                NotificationSendRequest notificationSendRequest = NotificationHelper.GenerateMinisterialInvitationDeclinedNotification(newPrimeMinister.UserId, publicUser.UserId, ministryCode);
 
                 if (MongoDBHelper.CountriesDatabase.UpdateCountry(newCountryId, countryUpdate) &&
                     MongoDBHelper.NotificationsDatabase.SendNotification(notificationSendRequest))

@@ -6,7 +6,7 @@ namespace govgameSharedClasses.Helpers
 {
     public class ViewHelper
     {
-        public static ViewResult MinistryDashboardView(Controller controller, string rootPath, MinistryHelper.MinistryCode ministryCode, string page)
+        public static ViewResult GetMinistryDashboardView(Controller controller, string rootPath, MinistryHelper.MinistryCode ministryCode, string page)
         {
             string ministryFolderName = "";
             switch (ministryCode)
@@ -22,7 +22,6 @@ namespace govgameSharedClasses.Helpers
                     break;
 
                 case MinistryHelper.MinistryCode.FinanceAndTrade:
-                    ministryFolderName = "FinanceAndTradeDashboard";
                     break;
 
                 case MinistryHelper.MinistryCode.ForeignAffairs:

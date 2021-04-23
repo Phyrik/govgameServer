@@ -311,47 +311,7 @@ namespace govgameWebApp.Controllers
                     break;
             }
 
-            return ViewHelper.MinistryDashboardView(this, Directory.GetCurrentDirectory(), MinistryHelper.MinistryCode.PrimeMinister, page);
-        }
-
-        public IActionResult FinanceAndTradeDashboard(string authSessionCookie, string page = "Index")
-        {
-            ViewData["ministryDashboard"] = MinistryHelper.MinistryCode.FinanceAndTrade;
-
-            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-            string firebaseUid = firebaseToken.Uid;
-
-            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
-
-            if (!publicUser.IsAMinister())
-            {
-                return Redirect("/Game/Index");
-            }
-
-            ViewData["publicUser"] = publicUser;
-
-            Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
-
-            ViewData["country"] = country;
-
-            if (!publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.FinanceAndTrade))
-            {
-                return Content("403");
-            }
-
-            switch (page)
-            {
-                case "ChangeMinisterialBalance":
-                    MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), Request.Query["minister"]);
-                    ViewData["ministryCode"] = ministryCode;
-
-                    break;
-
-                default:
-                    break;
-            }
-
-            return ViewHelper.MinistryDashboardView(this, Directory.GetCurrentDirectory(), MinistryHelper.MinistryCode.FinanceAndTrade, page);
+            return ViewHelper.GetMinistryDashboardView(this, Directory.GetCurrentDirectory(), MinistryHelper.MinistryCode.PrimeMinister, page);
         }
 
         #region POST Requests

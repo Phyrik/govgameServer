@@ -39,48 +39,100 @@
     <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: 'Roboto Slab', serif;">
-    <header style="overflow: hidden; position: sticky; top: 0; border-bottom: 5px solid @MinistryHelper.MinistryCodeToMinistryHexColour(ministryDashboard, true)">
+<body>
+    <header>
         @if (country != null)
         {
-            <h5 style="font-family: 'Arvo', serif; float: left; margin: 0; height: 110px; line-height: 110px; margin-left: 10px; border-right: 1px solid black; padding-right: 10px; margin-top: 5px; margin-bottom: 5px;"><a href="/">GovSim</a></h5>
-            <a href="/Game/CountryDashboard"><img height="100" src="~/images/flags/@(flagName).png" style="float: left; margin-top: 10px; margin-bottom: 10px; margin-left: 10px;" title="Go to Country Dashboard" /></a>
-            <div style="float: left; display: grid; grid-template-rows: 70px 50px;">
-                <h1 style="margin-left: 10px; margin-top: 10px;" title="Go to Country Dashboard"><a href="/Game/CountryDashboard" class="nav-a">@country.CountryName</a></h1>
-                <h3 style="margin-left: 10px; color: #151515;">Page: @ViewData["PageName"]</h3>
+            <h5 id="govsim-text"><a href="/">GovSim</a></h5>
+            <a href="/Game/CountryDashboard"><img id="country-flag" height="100" src="~/images/flags/@(flagName).png" title="Go to Country Dashboard" /></a>
+            <div id="other-header-text-div">
+                <h1 id="country-name-text" title="Go to Country Dashboard"><a href="/Game/CountryDashboard" class="nav-a">@country.CountryName</a></h1>
+                <h3 id="page-name-text">Page: @ViewData["PageName"]</h3>
             </div>
         }
         else
         {
-            <h3 style="margin-top: 10px; margin-left: 10px; margin-bottom: 10px; color: #151515; float: left;">Page: @ViewData["PageName"]</h3>
+            <h3 id="no-country-page-name">Page: @ViewData["PageName"]</h3>
         }
         <nav>
             <ul class="nav justify-content-end">
-                @if (unreadNotifications != 0)
-                {
-                    <li class="nav-item" style="background-color: darkorange;"><a class="nav-link nav-a" href="/Game/Notifications">Notifications (@unreadNotifications)</a></li>
-                }
-                else
-                {
-                    <li class="nav-item"><a class="nav-link nav-a" href="/Game/Notifications">Notifications</a></li>
-                }
-                @if (unreadEmails != 0)
-                {
-                    <li class="nav-item" style="background-color: darkorange;"><a class="nav-link nav-a" href="/Game/Emails">Emails (@unreadEmails)</a></li>
-                }
-                else
-                {
-                    <li class="nav-item"><a class="nav-link nav-a" href="/Game/Emails">Emails</a></li>
-                }
+                <li class="nav-item @if (unreadNotifications != 0) { <text>unread</text> }"><a class="nav-link nav-a" href="/Game/Notifications">Notifications @if (unreadEmails != 0) { <text>(@unreadNotifications)</text> }</a></li>
+                <li class="nav-item @if (unreadEmails != 0) { <text>unread</text> }"><a class="nav-link nav-a" href="/Game/Emails">Emails @if (unreadEmails != 0) { <text>(@unreadEmails)</text> }</a></li>
                 <li class="nav-item"><a class="nav-link">Logged in as: @publicUser.Username</a></li>
                 <li class="nav-item"><a class="nav-link nav-a" href="/Auth/LogOut">Log out</a></li>
             </ul>
         </nav>
     </header>
     <br />
-    <main @if (ViewData["PageName"].ToString() != "Emails") { <text> style="margin-left: 50px; margin-right: 50px;" </text> }>
+    <main @if (ViewData["PageName"].ToString() != "Emails") { <text> id="emails-main" </text> }>
         @RenderBody()
     </main>
+
+    <style>
+        body {
+            font-family: 'Roboto Slab', serif;
+        }
+
+        header {
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+            border-bottom: 5px solid @MinistryHelper.MinistryCodeToMinistryHexColour(ministryDashboard, true);
+        }
+
+        .unread {
+            background-color: darkorange;
+        }
+
+        #govsim-text {
+            font-family: 'Arvo', serif;
+            float: left;
+            margin: 0;
+            height: 110px;
+            line-height: 110px;
+            margin-left: 10px;
+            border-right: 1px solid black;
+            padding-right: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        #country-flag {
+            float: left;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+        }
+
+        #other-header-text-div {
+            float: left;
+            display: grid;
+            grid-template-rows: 70px 50px;
+        }
+
+        #country-name-text {
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+
+        #page-name-text {
+            margin-left: 10px;
+            color: #151515;
+        }
+
+        #no-country-page-name {
+            margin-top: 10px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+            color: #151515;
+            float: left;
+        }
+
+        #emails-main {
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+    </style>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -12,15 +12,15 @@
 <h1>Ministries</h1>
 <br />
 <hr />
-<ul style="list-style: none;" class="no-margin-ul">
+<ul id="ministry-list" class="no-margin-ul">
     @foreach (MinistryHelper.MinistryCode ministryCode in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
     {
         @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister || ministryCode == MinistryHelper.MinistryCode.None) continue;
         ministerId = country.GetMinisterIdByCode(ministryCode);
         invitedMinisterId = country.GetInvitedMinisterIdByCode(ministryCode);
-        <li class="ministry-li" id="ministry-li-@ministryCode.ToString("g")" style="margin-bottom: 10px; margin-right: 50px; display: grid; grid-template-columns: 350px auto; margin-left: 20px; cursor: pointer;" onclick="location.href = '/Game/PrimeMinisterDashboard/ViewMinistry?ministry=@ministryCode'">
-            <img src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="175" style="grid-column-start: 1; grid-column-end: 2;" />
-            <div style="align-items: center; margin-left: 20px; position: relative;">
+        <li class="ministry-li" id="ministry-li-@ministryCode.ToString("g")" onclick="location.href = '/Game/PrimeMinisterDashboard/ViewMinistry?ministry=@ministryCode'">
+            <img class="ministry-image" src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="175" />
+            <div class="ministry-status-div">
                 <h3>
                     @if (ministerId != "none")
                     {
@@ -38,10 +38,41 @@
                         }
                     }
                 </h3>
-                <p style="position: absolute; bottom: 0;">(Click to see more)</p>
+                <p class="see-more-text">(Click to see more)</p>
             </div>
         </li>
         <hr />
     }
 </ul>
 <br />
+
+<style>
+    .ministry-li {
+        margin-bottom: 10px;
+        margin-right: 50px;
+        display: grid;
+        grid-template-columns: 350px auto;
+        margin-left: 20px;
+        cursor: pointer;
+    }
+
+    .ministry-image {
+        grid-column-start: 1;
+        grid-column-end: 2;
+    }
+
+    .ministry-status-div {
+        align-items: center;
+        margin-left: 20px;
+        position: relative;
+    }
+
+    .see-more-text {
+        position: absolute;
+        bottom: 0;
+    }
+
+    #ministry-list {
+        list-style: none;
+    }
+</style>

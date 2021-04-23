@@ -24,7 +24,7 @@
 
 <h1>Go to a ministerial dashboard:</h1>
 <br />
-<ul style="list-style: none;">
+<ul id="ministry-list">
     @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.PrimeMinister))
     {
         <li class="ministry-li">
@@ -75,6 +75,10 @@
         .ministry-li > img:hover {
             cursor: pointer;
         }
+
+    #ministry-list {
+        list-style: none;
+    }
 </style>
 
 @section Scripts

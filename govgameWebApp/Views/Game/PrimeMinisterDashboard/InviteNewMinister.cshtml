@@ -17,7 +17,7 @@
 
 <h1>
     <span>Invite a new minister to the</span>
-    <span style="text-decoration: underline; text-decoration-color: @ministryColour">@ministryName</span>
+    <span id="ministry-name-text">@ministryName</span>
 </h1>
 <br />
 <button onclick="location.href = '/Game/PrimeMinisterDashboard/ViewMinistry?ministry=@ministryCode.ToString("g")'">Cancel</button>
@@ -33,18 +33,53 @@
     @foreach (PublicUser publicUser in allPublicUsers)
     {
         @if (publicUser.UserId == currentPublicUser.UserId) continue;
-        <li style="list-style: none; display: grid; grid-template-columns: auto auto; margin-left: 50px; margin-right: 50px;">
-            <h2 style="grid-column-start: 1; grid-column-end: 2;">@publicUser.Username</h2>
+        <li class="user-li">
+            <h2 class="username-text">@publicUser.Username</h2>
             @if (publicUser.IsAMinister())
             {
                 Country publicUserCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
-                <h4 style="color: orangered;">NOTE: This user is already a minister in the country of @publicUserCountry.CountryName</h4>
+                <h4 id="country-note">NOTE: This user is already a minister in the country of @publicUserCountry.CountryName</h4>
             }
-            <button onclick="inviteMinister('@publicUser.UserId')" style="justify-self: end; grid-row-start: 1; grid-row-end: 3; grid-column-start: 2; grid-column-end: 3; margin-top: 20px; margin-bottom: 20px;">Invite user</button>
+            <button class="invite-user-button" onclick="inviteMinister('@publicUser.UserId')">Invite user</button>
         </li>
         <hr />
     }
 </ul>
+
+<style>
+    .user-li {
+        list-style: none;
+        display: grid;
+        grid-template-columns: auto auto;
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+
+    .username-text {
+        grid-column-start: 1;
+        grid-column-end: 2;
+    }
+
+    .invite-user-button {
+        justify-self: end;
+        grid-row-start: 1;
+        grid-row-end: 3;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #ministry-name-text {
+        text-decoration: underline;
+        text-decoration-color: @ministryColour;
+    }
+
+    #country-note {
+        color: orangered;
+    }
+</style>
+
 
 @section Scripts {
     <script>

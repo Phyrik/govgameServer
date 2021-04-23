@@ -9,7 +9,13 @@
     ViewData["PageName"] = "Home";
 }
 
-<button onclick="location.href = '/Game/CountryDashboard'" style="font-size: xx-large">Go to your country dashboard</button>
+<button id="country-dashboard-button" onclick="location.href = '/Game/CountryDashboard'">Go to your country dashboard</button>
 <br />
 <br />
 <h1>News</h1>
+
+<style>
+    #country-dashboard-button {
+        font-size: xx-large
+    }
+</style>

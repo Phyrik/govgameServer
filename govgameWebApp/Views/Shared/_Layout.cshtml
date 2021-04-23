@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: 'Roboto Slab', serif;">
+<body>
     <header>
         <nav>
             <ul class="nav justify-content-end">
@@ -34,12 +34,26 @@
                 }
             </ul>
         </nav>
-        <h1 style="margin-top: 10px; margin-left: 10px; text-align: left; font-family: 'Arvo', serif; font-size: 60px;"><a href="/">GovSim</a></h1>
+        <h1 id="govsim-text"><a href="/">GovSim</a></h1>
     </header>
     <br />
     <main>
         @RenderBody()
     </main>
+
+    <style>
+        body {
+            font-family: 'Roboto Slab', serif;
+        }
+
+        #govsim-text {
+            margin-top: 10px;
+            margin-left: 10px;
+            text-align: left;
+            font-family: 'Arvo', serif;
+            font-size: 60px;
+        }
+    </style>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

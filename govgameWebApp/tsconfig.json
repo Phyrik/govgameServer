@@ -11,6 +11,6 @@
     "checkJs": true
   },
   "include": [
-    "scripts/**/*"
+    "scripts"
   ]
 }

@@ -21,6 +21,11 @@ namespace govgameWebApp.Controllers
             }
             else
             {
+                if (FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true))
+                {
+                    return Redirect("/Auth/CheckVerificationEmail");
+                }
+
                 return View();
             }
         }
@@ -29,7 +34,7 @@ namespace govgameWebApp.Controllers
         {
             string authSessionCookie = Request.Cookies["authSession"];
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie, true);
 
             ViewData["userLoggedIn"] = userLoggedIn;
 

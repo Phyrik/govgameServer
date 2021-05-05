@@ -3,8 +3,6 @@
   "name": "asp.net",
   "private": true,
   "devDependencies": {
-    "@types/jquery": "3.5.5",
-    "@firebase/app": "0.6.20",
-    "@firebase/auth": "0.16.5"
+    "@types/jquery": "3.5.5"
   }
 }

@@ -41,9 +41,9 @@
 </head>
 <body>
     <header>
+        <h5 id="govsim-text"><a href="/">GovSim</a></h5>
         @if (country != null)
         {
-            <h5 id="govsim-text"><a href="/">GovSim</a></h5>
             <a href="/Game/CountryDashboard"><img id="country-flag" height="100" src="~/images/flags/@(flagName).png" title="Go to Country Dashboard" /></a>
             <div id="other-header-text-div">
                 <h1 id="country-name-text" title="Go to Country Dashboard"><a href="/Game/CountryDashboard" class="nav-a">@country.CountryName</a></h1>
@@ -56,8 +56,18 @@
         }
         <nav>
             <ul class="nav justify-content-end">
-                <li class="nav-item @if (unreadNotifications != 0) { <text>unread</text> }"><a class="nav-link nav-a" href="/Game/Notifications">Notifications @if (unreadEmails != 0) { <text>(@unreadNotifications)</text> }</a></li>
-                <li class="nav-item @if (unreadEmails != 0) { <text>unread</text> }"><a class="nav-link nav-a" href="/Game/Emails">Emails @if (unreadEmails != 0) { <text>(@unreadEmails)</text> }</a></li>
+                <li class="nav-item @if (unreadNotifications != 0) { <text>unread</text> }">
+                    <a class="nav-link nav-a" href="/Game/Notifications">
+                        Notifications @if (unreadEmails != 0)
+                        {<text>(@unreadNotifications)</text>}
+                    </a>
+                </li>
+                <li class="nav-item @if (unreadEmails != 0) { <text>unread</text> }">
+                    <a class="nav-link nav-a" href="/Game/Emails">
+                        Emails @if (unreadEmails != 0)
+                        {<text>(@unreadEmails)</text>}
+                    </a>
+                </li>
                 <li class="nav-item"><a class="nav-link">Logged in as: @publicUser.Username</a></li>
                 <li class="nav-item"><a class="nav-link nav-a" href="/Auth/LogOut">Log out</a></li>
             </ul>
@@ -88,8 +98,14 @@
             font-family: 'Arvo', serif;
             float: left;
             margin: 0;
-            height: 110px;
-            line-height: 110px;
+            @if (country != null)
+            {
+                <text>line-height: 110px;</text>
+            }
+            else
+            {
+                <text>line-height: 50px;</text>
+            }
             margin-left: 10px;
             border-right: 1px solid black;
             padding-right: 10px;

@@ -24,7 +24,7 @@ namespace govgameWebApp
             Console.WriteLine("govgameWebApp current working directory: " + Directory.GetCurrentDirectory());
 
             IHost govgameWebAppIHost = CreateHostBuilder(args).Build();
-            govgameWebAppIHost.RunAsync();
+            govgameWebAppIHost.Run();
 
             Console.ReadKey();
         }

@@ -7,13 +7,13 @@ namespace govgameGameServer
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Starting the govgameServer");
+            Console.WriteLine("Starting the govgameServer...");
 
-            Console.WriteLine("Starting the govgameGameServer");
+            Console.WriteLine("Starting the govgameGameServer...");
             StartAllManagers();
             Console.WriteLine("Started!");
 
-            Console.WriteLine("Starting the govgameWebApp");
+            Console.WriteLine("Starting the govgameWebApp...");
             govgameWebApp.Program.Main(args);
             Console.WriteLine("Started!");
 

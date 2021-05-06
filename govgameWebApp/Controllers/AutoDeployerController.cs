@@ -11,9 +11,10 @@ namespace govgameWebApp.Controllers
 {
     public class AutoDeployerController : Controller
     {
+        [HttpPost]
         public IActionResult Deploy()
         {
-            JObject requestBodyJObject = JObject.Parse(new StreamReader(Request.Body).ReadToEnd());
+            JObject requestBodyJObject = JObject.Parse(new StreamReader(Request.Body).ReadToEndAsync().Result);
             if (requestBodyJObject["ref"].ToString().Split('/')[2] == "master")
             {
                 Console.WriteLine($"Pushing with commit {requestBodyJObject["before"]}...");

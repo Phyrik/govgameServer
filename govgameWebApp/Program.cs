@@ -25,8 +25,6 @@ namespace govgameWebApp
 
             IHost govgameWebAppIHost = CreateHostBuilder(args).Build();
             govgameWebAppIHost.Run();
-
-            Console.ReadKey();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

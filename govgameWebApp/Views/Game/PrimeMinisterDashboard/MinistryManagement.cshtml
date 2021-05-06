@@ -24,13 +24,31 @@
                 <h3>
                     @if (ministerId != "none")
                     {
-                        <text>Minister: @MongoDBHelper.UsersDatabase.GetPublicUser(ministerId).Username</text>
+                        PublicUser minister;
+                        try
+                        {
+                            minister = MongoDBHelper.UsersDatabase.GetPublicUser(ministerId);
+                            <text>Minister: @minister.Username</text>
+                        }
+                        catch
+                        {
+                            <text>No minister</text>
+                        }
                     }
                     else
                     {
                         if (invitedMinisterId != "none")
                         {
-                            <text>Invitation sent to: @MongoDBHelper.UsersDatabase.GetPublicUser(invitedMinisterId).Username</text>
+                            PublicUser minister;
+                            try
+                            {
+                                minister = MongoDBHelper.UsersDatabase.GetPublicUser(ministerId);
+                                <text>Invitation sent to: @minister.Username</text>
+                            }
+                            catch
+                            {
+                                <text>No minister</text>
+                            }
                         }
                         else
                         {

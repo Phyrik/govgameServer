@@ -14,7 +14,7 @@ namespace govgameSharedClasses.Helpers
 
             public static Email GetEmailById(ObjectId emailId)
             {
-                FilterDefinition<Email> filter = Builders<Email>.Filter.Eq("EmailId", emailId);
+                FilterDefinition<Email> filter = Builders<Email>.Filter.Eq(email => email.EmailId, emailId);
 
                 return emailsCollection.Find(filter).First();
             }
@@ -35,13 +35,13 @@ namespace govgameSharedClasses.Helpers
                 FilterDefinition<Email> filter;
                 if (includeBlocked)
                 {
-                    filter = filterBuilder.And(filterBuilder.Eq("RecipientId", userId));
+                    filter = filterBuilder.And(filterBuilder.Eq(email => email.RecipientId, userId));
                 }
                 else
                 {
-                    filter = filterBuilder.And(filterBuilder.Eq("RecipientId", userId), filterBuilder.Nin("SenderId", publicUser.BlockedUsers));
+                    filter = filterBuilder.And(filterBuilder.Eq(email => email.RecipientId, userId), filterBuilder.Nin(email => email.SenderId, publicUser.BlockedUsers));
                 }
-                SortDefinition<Email> sort = Builders<Email>.Sort.Descending("EmailId");
+                SortDefinition<Email> sort = Builders<Email>.Sort.Descending(email => email.EmailId);
 
                 return emailsCollection.Find(filter).Sort(sort).ToList().ToArray();
             }
@@ -75,11 +75,11 @@ namespace govgameSharedClasses.Helpers
                 }
             }
 
-            public static bool MarkEmailAsRead(ObjectId emailId)
+            static bool MarkEmailAsReadUnread(ObjectId emailId, bool markAsRead)
             {
-                FilterDefinition<Email> filter = Builders<Email>.Filter.Eq("EmailId", emailId);
+                FilterDefinition<Email> filter = Builders<Email>.Filter.Eq(email => email.EmailId, emailId);
 
-                UpdateDefinition<Email> update = Builders<Email>.Update.Set("MarkedAsRead", true);
+                UpdateDefinition<Email> update = Builders<Email>.Update.Set(email => email.MarkedAsRead, markAsRead);
 
                 try
                 {
@@ -91,6 +91,11 @@ namespace govgameSharedClasses.Helpers
                 {
                     return false;
                 }
+            }
+
+            public static bool MarkEmailAsRead(ObjectId emailId)
+            {
+                return MarkEmailAsReadUnread(emailId, true);
             }
 
             public static bool MarkEmailAsRead(string emailIdString)
@@ -102,20 +107,7 @@ namespace govgameSharedClasses.Helpers
 
             public static bool MarkEmailAsUnread(ObjectId emailId)
             {
-                FilterDefinition<Email> filter = Builders<Email>.Filter.Eq("EmailId", emailId);
-
-                UpdateDefinition<Email> update = Builders<Email>.Update.Set("MarkedAsRead", false);
-
-                try
-                {
-                    emailsCollection.UpdateOne(filter, update);
-
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
+                return MarkEmailAsReadUnread(emailId, false);
             }
 
             public static bool MarkEmailAsUnread(string emailIdString)
@@ -129,7 +121,7 @@ namespace govgameSharedClasses.Helpers
             {
                 Email email = GetEmailById(emailId);
 
-                FilterDefinition<Email> filter = Builders<Email>.Filter.Eq("EmailId", email.EmailId);
+                FilterDefinition<Email> filter = Builders<Email>.Filter.Eq(email => email.EmailId, email.EmailId);
 
                 try
                 {

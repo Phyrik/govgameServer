@@ -14,14 +14,14 @@ namespace govgameSharedClasses.Helpers
 
             public static PublicUser GetPublicUser(string userId)
             {
-                FilterDefinition<PublicUser> filter = Builders<PublicUser>.Filter.Eq("UserId", userId);
+                FilterDefinition<PublicUser> filter = Builders<PublicUser>.Filter.Eq(user => user.UserId, userId);
 
                 return usersCollection.Find(filter).First();
             }
 
             public static bool UpdateUser(string userId, UserUpdate userUpdate)
             {
-                FilterDefinition<PublicUser> filter = Builders<PublicUser>.Filter.Eq("UserId", userId);
+                FilterDefinition<PublicUser> filter = Builders<PublicUser>.Filter.Eq(user => user.UserId, userId);
 
                 UpdateDefinitionBuilder<PublicUser> updateBuilder = Builders<PublicUser>.Update;
                 List<UpdateDefinition<PublicUser>> updates = new List<UpdateDefinition<PublicUser>>();

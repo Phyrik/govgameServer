@@ -12,7 +12,7 @@ namespace govgameSharedClasses.Helpers
 
             public static Notification GetNotificationById(ObjectId notificationId)
             {
-                FilterDefinition<Notification> filter = Builders<Notification>.Filter.Eq("NotificationId", notificationId);
+                FilterDefinition<Notification> filter = Builders<Notification>.Filter.Eq(notification => notification.NotificationId, notificationId);
 
                 return notificationsCollection.Find(filter).First();
             }
@@ -26,9 +26,9 @@ namespace govgameSharedClasses.Helpers
 
             public static Notification[] GetUsersReceivedNotifications(string userId)
             {
-                FilterDefinition<Notification> filter = Builders<Notification>.Filter.Eq("UserId", userId);
+                FilterDefinition<Notification> filter = Builders<Notification>.Filter.Eq(notification => notification.UserId, userId);
 
-                SortDefinition<Notification> sort = Builders<Notification>.Sort.Descending("NotificationId");
+                SortDefinition<Notification> sort = Builders<Notification>.Sort.Descending(notification => notification.NotificationId);
 
                 return notificationsCollection.Find(filter).Sort(sort).ToList().ToArray();
             }
@@ -58,9 +58,9 @@ namespace govgameSharedClasses.Helpers
 
             public static bool MarkNotificationAsRead(ObjectId notificationId)
             {
-                FilterDefinition<Notification> filter = Builders<Notification>.Filter.Eq("NotificationId", notificationId);
+                FilterDefinition<Notification> filter = Builders<Notification>.Filter.Eq(notification => notification.NotificationId, notificationId);
 
-                UpdateDefinition<Notification> update = Builders<Notification>.Update.Set("MarkedAsRead", true);
+                UpdateDefinition<Notification> update = Builders<Notification>.Update.Set(notification => notification.MarkedAsRead, true);
 
                 try
                 {

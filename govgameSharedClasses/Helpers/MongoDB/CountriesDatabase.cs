@@ -13,14 +13,14 @@ namespace govgameSharedClasses.Helpers
 
             public static Country GetCountry(string countryId)
             {
-                FilterDefinition<Country> filter = Builders<Country>.Filter.Eq("CountryId", countryId);
+                FilterDefinition<Country> filter = Builders<Country>.Filter.Eq(country => country.CountryId, countryId);
 
                 return countriesCollection.Find(filter).First();
             }
 
             public static bool UpdateCountry(string countryId, CountryUpdate countryUpdate)
             {
-                FilterDefinition<Country> filter = Builders<Country>.Filter.Eq("CountryId", countryId);
+                FilterDefinition<Country> filter = Builders<Country>.Filter.Eq(country => country.CountryId, countryId);
 
                 if (countryUpdate.DeleteCountry.HasValue && countryUpdate.DeleteCountry.Value == true)
                 {
@@ -68,7 +68,7 @@ namespace govgameSharedClasses.Helpers
                     filter = filterBuilder.Empty;
                 }
 
-                FilterDefinition<Country> finalFilter = filterBuilder.And(filterBuilder.Eq("CountryId", countryId), filter);
+                FilterDefinition<Country> finalFilter = filterBuilder.And(filterBuilder.Eq(country => country.CountryId, countryId), filter);
 
                 try
                 {

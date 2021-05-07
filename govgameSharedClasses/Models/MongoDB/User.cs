@@ -17,6 +17,7 @@ namespace govgameSharedClasses.Models.MongoDB
         public bool Admin { get; set; }
 
         // when adding new properties, remember to set them to their defaults in AuthController RegisterPOST
+        // when adding new properties, remember to update the schema
 
         public bool IsAMinister()
         {

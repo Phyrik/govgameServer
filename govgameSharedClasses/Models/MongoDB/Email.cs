@@ -15,6 +15,7 @@ namespace govgameSharedClasses.Models.MongoDB
         public bool MarkedAsRead { get; set; }
 
         // reminder: NEVER trust user input
+        // when adding new properties, remember to update the schema
     }
 
     public class EmailSendRequest

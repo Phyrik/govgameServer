@@ -12,6 +12,8 @@ namespace govgameSharedClasses.Models.MongoDB
         public string Content { get; set; }
         public string Link { get; set; }
         public bool MarkedAsRead { get; set; }
+
+        // when adding new properties, remember to update the schema
     }
 
     public class NotificationSendRequest

@@ -36,6 +36,7 @@ namespace govgameSharedClasses.Models.MongoDB
         public int DefenceMinistryBalance { get; set; }
 
         // when adding new properties, remember to set them to their defaults in GameController CreateACountryPOST
+        // when adding new properties, remember to update the schema
 
         public string GetMinisterIdByCode(MinistryHelper.MinistryCode ministryCode)
         {

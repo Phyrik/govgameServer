@@ -20,21 +20,12 @@ namespace govgameSharedClasses.Helpers
 
             public static bool UpdateCountry(string countryId, CountryUpdate countryUpdate)
             {
-                FilterDefinition<Country> filter = Builders<Country>.Filter.Eq(country => country.CountryId, countryId);
-
                 if (countryUpdate.DeleteCountry.HasValue && countryUpdate.DeleteCountry.Value == true)
                 {
-                    try
-                    {
-                        countriesCollection.DeleteOne(filter);
-
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
+                    return DeleteCountry(countryId);
                 }
+
+                FilterDefinition<Country> filter = Builders<Country>.Filter.Eq(country => country.CountryId, countryId);
 
                 UpdateDefinitionBuilder<Country> updateBuilder = Builders<Country>.Update;
                 List<UpdateDefinition<Country>> updates = new List<UpdateDefinition<Country>>();
@@ -87,6 +78,22 @@ namespace govgameSharedClasses.Helpers
                 try
                 {
                     countriesCollection.InsertOne(country);
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            public static bool DeleteCountry(string countryId)
+            {
+                FilterDefinition<Country> filter = Builders<Country>.Filter.Eq(country => country.CountryId, countryId);
+
+                try
+                {
+                    countriesCollection.DeleteOne(filter);
 
                     return true;
                 }

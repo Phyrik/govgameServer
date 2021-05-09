@@ -1,24 +1,21 @@
-﻿using MySql.Data.MySqlClient;
-using System;
-using System.Data.Common;
+﻿using govgameSharedClasses.Models.MySQL;
+using Microsoft.EntityFrameworkCore;
 
 namespace govgameSharedClasses.Helpers.MySQL
 {
-    public class MySQLHelper
+    public partial class MySQLHelper
     {
-        static string mySQLConnectionString = "server=localhost;user=root;database=govgame;port=3306;password='A`T7fYQ!tP6;N[K$';";
-        static MySqlConnection mySQLConnection = new MySqlConnection(mySQLConnectionString);
+        static string connectionString = "server=localhost;user=root;database=govgame;port=3306;password='A`T7fYQ!tP6;N[K$';";
 
-        public static void SampleMethod(string query)
+        public class DatabaseContext : DbContext
         {
-            mySQLConnection.Open();
+            public DbSet<Country> Countries { get; set; }
 
-            string mySQLQuery = query;
-            MySqlCommand mySqlCommand = new MySqlCommand(mySQLQuery, mySQLConnection);
-            MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-            while (mySqlDataReader.Read())
+            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             {
-                Console.WriteLine(mySqlDataReader.GetString(0));
+                optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
+                base.OnConfiguring(optionsBuilder);
             }
         }
     }

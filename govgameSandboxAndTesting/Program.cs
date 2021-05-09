@@ -1,4 +1,8 @@
 ﻿using govgameSharedClasses.Helpers.MySQL;
+using govgameSharedClasses.Models.MySQL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace govgameSandboxAndTesting
 {
@@ -6,7 +10,12 @@ namespace govgameSandboxAndTesting
     {
         static void Main(string[] args)
         {
-            MySQLHelper.SampleMethod(args[0]);
+            using (var database = new MySQLHelper.DatabaseContext())
+            {
+                List<Country> countries = database.Countries.ToList();
+
+                Console.WriteLine(countries[0].CountryName);
+            }
         }
     }
 }

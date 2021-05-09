@@ -12,7 +12,7 @@ namespace govgameSandboxAndTesting
         {
             using (var database = new MySQLHelper.DatabaseContext())
             {
-                List<Country> countries = database.Countries.ToList();
+                List<Country> countries = database.countries.ToList();
 
                 Console.WriteLine(countries[0].CountryName);
             }

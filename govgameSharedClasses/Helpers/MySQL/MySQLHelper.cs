@@ -9,7 +9,7 @@ namespace govgameSharedClasses.Helpers.MySQL
 
         public class DatabaseContext : DbContext
         {
-            public DbSet<Country> Countries { get; set; }
+            public DbSet<Country> countries { get; set; }
 
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             {

@@ -16,8 +16,10 @@ namespace govgameSharedClasses.Helpers.MySQL
             string mySQLQuery = query;
             MySqlCommand mySqlCommand = new MySqlCommand(mySQLQuery, mySQLConnection);
             MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-            mySqlDataReader.Read();
-            Console.WriteLine(mySqlDataReader[0]);
+            while (mySqlDataReader.Read())
+            {
+                Console.WriteLine(mySqlDataReader.GetString(0));
+            }
         }
     }
 }

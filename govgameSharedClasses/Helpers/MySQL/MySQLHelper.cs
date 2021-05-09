@@ -13,14 +13,11 @@ namespace govgameSharedClasses.Helpers.MySQL
         {
             mySQLConnection.Open();
 
-            string mySQLQuery = "SELECT * FROM users";
+            string mySQLQuery = "DESCRIBE countries;";
             MySqlCommand mySqlCommand = new MySqlCommand(mySQLQuery, mySQLConnection);
             MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
 
-            foreach (DbColumn column in mySqlDataReader.GetColumnSchemaAsync().Result)
-            {
-                Console.WriteLine(column.DataType);
-            }
+            Console.WriteLine($"Type: {mySqlDataReader.GetDataTypeName(0)}");
         }
     }
 }

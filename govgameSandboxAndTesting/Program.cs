@@ -6,7 +6,7 @@ namespace govgameSandboxAndTesting
     {
         static void Main(string[] args)
         {
-            MySQLHelper.SampleMethod();
+            MySQLHelper.SampleMethod(args[0]);
         }
     }
 }

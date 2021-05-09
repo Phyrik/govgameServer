@@ -15,10 +15,4 @@
     <ProjectReference Include="..\govgameSharedClasses\govgameSharedClasses.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="map.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

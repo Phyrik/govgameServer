@@ -1,7 +1,10 @@
-﻿namespace govgameSharedClasses.Models.MySQL
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace govgameSharedClasses.Models.MySQL
 {
     public class Notification
     {
+        [Key]
         public int NotificationId { get; set; }
         public string Username { get; set; }
         public string Title { get; set; }

@@ -2,12 +2,13 @@
 
 namespace govgameSharedClasses.Models.MySQL
 {
-    public class Email
+    public class UserEmail
     {
         [Key]
         public int EmailId { get; set; }
-        public string Subject { get; set; }
-        public string Body { get; set; }
-        public bool MarkedAsRead { get; set; }
+        [Key]
+        public string SendingUsername { get; set; }
+        [Key]
+        public string ReceivingUsername { get; set; }
     }
 }

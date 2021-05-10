@@ -1,5 +1,6 @@
 ﻿using govgameSharedClasses.Models.MySQL;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace govgameSharedClasses.Helpers.MySQL
 {
@@ -10,6 +11,12 @@ namespace govgameSharedClasses.Helpers.MySQL
         public class DatabaseContext : DbContext
         {
             public DbSet<Country> countries { get; set; }
+            public DbSet<Email> emails { get; set; }
+            public DbSet<InvitedMinister> invitedministers { get; set; }
+            public DbSet<MinistryEnum> ministryenums { get; set; }
+            public DbSet<Notification> notifications { get; set; }
+            public DbSet<UserEmail> useremails { get; set; }
+            public DbSet<User> users { get; set; }
 
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             {

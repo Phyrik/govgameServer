@@ -12,9 +12,8 @@ namespace govgameSandboxAndTesting
         {
             using (var database = new MySQLHelper.DatabaseContext())
             {
-                List<Country> countries = database.countries.ToList();
-
-                Console.WriteLine(countries[0].CountryName);
+                User phyrik = database.Users.Where(user => user.Username == "phyrik").First();
+                Console.WriteLine(phyrik.CountryName);
             }
         }
     }

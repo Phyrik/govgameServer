@@ -675,37 +675,6 @@ namespace govgameWebApp.Controllers
                 return Content("Error: Internal server error.");
             }
         }
-
-        [HttpPost]
-        public IActionResult ChangeMinisterialBalance(string authSessionCookie, string ministry, int changeAmount)
-        {
-            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-            string firebaseUid = firebaseToken.Uid;
-
-            PublicUser publicUser = MongoDBHelper.UsersDatabase.GetPublicUser(firebaseUid);
-
-            Country country = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
-
-            MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
-
-            if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.FinanceAndTrade))
-            {
-                bool moneyTransferSuccess = CountryBalanceHelper.TransferMoneyToFromMinisterialBalance(country.CountryId, ministryCode, changeAmount);
-
-                if (moneyTransferSuccess)
-                {
-                    return Content("success");
-                }
-                else
-                {
-                    return Content("Error: Internal server error.");
-                }
-            }
-            else
-            {
-                return StatusCode(403);
-            }
-        }
         #endregion
 
         #region CreateACountry

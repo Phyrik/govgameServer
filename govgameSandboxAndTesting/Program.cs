@@ -9,7 +9,7 @@ namespace govgameSandboxAndTesting
     {
         static void Main(string[] args)
         {
-            using (var database = new MySQLHelper.DatabaseContext())
+            using (var database = new DatabaseContext())
             {
                 User phyrik = database.Users.Where(user => user.Username == "phyrik").First();
                 Console.WriteLine(phyrik.CountryName);

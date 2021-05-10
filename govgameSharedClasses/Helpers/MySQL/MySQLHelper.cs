@@ -1,6 +1,5 @@
 ﻿using govgameSharedClasses.Models.MySQL;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace govgameSharedClasses.Helpers.MySQL
 {

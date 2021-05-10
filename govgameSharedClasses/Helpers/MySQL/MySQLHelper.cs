@@ -1,5 +1,6 @@
 ﻿using govgameSharedClasses.Models.MySQL;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace govgameSharedClasses.Helpers.MySQL
 {
@@ -28,6 +29,8 @@ namespace govgameSharedClasses.Helpers.MySQL
             {
                 modelBuilder.Entity<InvitedMinister>().HasKey(invitedMinister => new { invitedMinister.Username, invitedMinister.CountryName, invitedMinister.Ministry });
                 modelBuilder.Entity<UserEmail>().HasKey(userEmail => new { userEmail.EmailId, userEmail.SendingUsername, userEmail.ReceivingUsername });
+
+                modelBuilder.Entity<User>().Property(user => user.Ministry).HasConversion(dbValue => dbValue.ToString(), dbValue => (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), dbValue));
 
                 base.OnModelCreating(modelBuilder);
             }

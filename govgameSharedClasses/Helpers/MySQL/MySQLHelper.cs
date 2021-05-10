@@ -9,13 +9,13 @@ namespace govgameSharedClasses.Helpers.MySQL
 
         public class DatabaseContext : DbContext
         {
-            public DbSet<Country> countries { get; set; }
-            public DbSet<Email> emails { get; set; }
-            public DbSet<InvitedMinister> invitedministers { get; set; }
-            public DbSet<MinistryEnum> ministryenums { get; set; }
-            public DbSet<Notification> notifications { get; set; }
-            public DbSet<UserEmail> useremails { get; set; }
-            public DbSet<User> users { get; set; }
+            public DbSet<Country> Countries { get; set; }
+            public DbSet<Email> Emails { get; set; }
+            public DbSet<InvitedMinister> InvitedMinisters { get; set; }
+            public DbSet<MinistryEnum> MinistryEnums { get; set; }
+            public DbSet<Notification> Notifications { get; set; }
+            public DbSet<UserEmail> UserEmails { get; set; }
+            public DbSet<User> Users { get; set; }
 
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             {

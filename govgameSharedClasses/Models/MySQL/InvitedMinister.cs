@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace govgameSharedClasses.Models.MySQL
+﻿namespace govgameSharedClasses.Models.MySQL
 {
     public class InvitedMinister
     {

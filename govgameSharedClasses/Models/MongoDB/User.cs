@@ -1,7 +1,6 @@
 ﻿using govgameSharedClasses.Helpers;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
-using System.Collections.Generic;
 
 namespace govgameSharedClasses.Models.MongoDB
 {

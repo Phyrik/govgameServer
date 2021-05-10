@@ -1,7 +1,6 @@
 ﻿using govgameSharedClasses.Helpers.MySQL;
 using govgameSharedClasses.Models.MySQL;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace govgameSandboxAndTesting

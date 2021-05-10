@@ -1,13 +1,10 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
 using System.Net;
-using System.Threading;
-using System.Timers;
 
 namespace govgameWebApp
 {

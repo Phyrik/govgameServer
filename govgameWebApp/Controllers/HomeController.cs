@@ -1,5 +1,4 @@
 ﻿using FirebaseAdmin.Auth;
-using govgameSharedClasses.Models.MongoDB;
 using Microsoft.AspNetCore.Mvc;
 using govgameSharedClasses.Helpers;
 

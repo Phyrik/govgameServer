@@ -1,5 +1,3 @@
-using System;
-
 namespace govgameWebApp.Models
 {
     public class ErrorViewModel

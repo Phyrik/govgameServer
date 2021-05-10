@@ -23,6 +23,14 @@ namespace govgameSharedClasses.Helpers.MySQL
 
                 base.OnConfiguring(optionsBuilder);
             }
+
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                modelBuilder.Entity<InvitedMinister>().HasKey(invitedMinister => new { invitedMinister.Username, invitedMinister.CountryName, invitedMinister.Ministry });
+                modelBuilder.Entity<UserEmail>().HasKey(userEmail => new { userEmail.EmailId, userEmail.SendingUsername, userEmail.ReceivingUsername });
+
+                base.OnModelCreating(modelBuilder);
+            }
         }
     }
 }

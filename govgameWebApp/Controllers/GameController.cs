@@ -259,7 +259,7 @@ namespace govgameWebApp.Controllers
                     return Redirect("/Game/Index");
                 }
 
-                if (MinistryHelper.CanUserAccessMinistryDashboard(user.Username, user.CountryName, MinistryHelper.MinistryCode.PrimeMinister))
+                if (!MinistryHelper.CanUserAccessMinistryDashboard(user.Username, user.CountryName, MinistryHelper.MinistryCode.PrimeMinister))
                 {
                     return View("403");
                 }

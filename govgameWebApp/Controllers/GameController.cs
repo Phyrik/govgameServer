@@ -427,6 +427,8 @@ namespace govgameWebApp.Controllers
                     Notification notification = NotificationHelper.GenerateMinisterialInvitationAcceptedNotification(database.Users.Single(u => u.CountryName == newCountry.CountryName && u.Ministry == MinistryHelper.MinistryCode.PrimeMinister).Username, user.Username, ministryCode);
                     database.Notifications.Add(notification);
 
+                    database.SaveChanges();
+
                     return Content("success");
                 }
                 else
@@ -457,6 +459,8 @@ namespace govgameWebApp.Controllers
 
                     Notification notification = NotificationHelper.GenerateMinisterialInvitationDeclinedNotification(database.Users.Single(u => u.CountryName == newCountry.CountryName && u.Ministry == MinistryHelper.MinistryCode.PrimeMinister).Username, user.Username, ministryCode);
                     database.Notifications.Add(notification);
+
+                    database.SaveChanges();
 
                     return Content("success");
                 }

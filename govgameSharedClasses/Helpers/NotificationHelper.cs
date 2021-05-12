@@ -1,58 +1,72 @@
-﻿using govgameSharedClasses.Models.MongoDB;
+﻿using govgameSharedClasses.Helpers.MySQL;
+using govgameSharedClasses.Models.MySQL;
+using System.Linq;
 
 namespace govgameSharedClasses.Helpers
 {
     public class NotificationHelper
     {
-        public static NotificationSendRequest GenerateMinisterialInvitationNotification(string inviterUserId, string invitedUserId, MinistryHelper.MinistryCode ministryInvitedTo)
+        public static Notification GenerateMinisterialInvitationNotification(string inviterUsername, string invitedUsername, MinistryHelper.MinistryCode ministryInvitedTo)
         {
-            PublicUser inviterUser = MongoDBHelper.UsersDatabase.GetPublicUser(inviterUserId);
-            Country inviterCountry = MongoDBHelper.CountriesDatabase.GetCountry(inviterUser.CountryId);
-
-            return new NotificationSendRequest
+            using (DatabaseContext database = new DatabaseContext())
             {
-                UserId = invitedUserId,
-                Title = $"Invitation to become a minister in {inviterCountry.CountryName}'s government",
-                Content = $"The Prime Minister of {inviterCountry.CountryName}, {inviterUser.Username}, has invited you to be their country's {MinistryHelper.MinistryCodeToMinisterName(ministryInvitedTo)}. Click this notification to accept or decline.",
-                Link = $"/Game/Invite/Minister?countryId={inviterCountry.CountryId}&ministry={ministryInvitedTo}"
-            };
+                User inviterUser = database.Users.Single(u => u.Username == inviterUsername);
+                Country inviterCountry = database.Countries.Single(c => c.CountryName == inviterUser.CountryName);
+
+                return new Notification
+                {
+                    Username = invitedUsername,
+                    Title = $"Invitation to become a minister in {inviterCountry.CountryName}'s government",
+                    Content = $"The Prime Minister of {inviterCountry.CountryName}, {inviterUser.Username}, has invited you to be their country's {MinistryHelper.MinistryCodeToMinisterName(ministryInvitedTo)}. Click this notification to accept or decline.",
+                    Link = $"/Game/Invite/Minister?countryName={inviterCountry.CountryName}&ministry={ministryInvitedTo}"
+                };
+            }
         }
 
-        public static NotificationSendRequest GenerateMinisterialInvitationAcceptedNotification(string inviterUserId, string invitedUserId, MinistryHelper.MinistryCode ministryInvitedTo)
+        public static Notification GenerateMinisterialInvitationAcceptedNotification(string inviterUsername, string invitedUsername, MinistryHelper.MinistryCode ministryInvitedTo)
         {
-            PublicUser invitedUser = MongoDBHelper.UsersDatabase.GetPublicUser(invitedUserId);
-
-            return new NotificationSendRequest
+            using (DatabaseContext database = new DatabaseContext())
             {
-                UserId = inviterUserId,
-                Title = $"{invitedUser.Username} has accepted your ministry invitation",
-                Content = $"{invitedUser.Username} is now your new {MinistryHelper.MinistryCodeToMinisterName(ministryInvitedTo)}."
-            };
+                User invitedUser = database.Users.Single(u => u.Username == invitedUsername);
+
+                return new Notification
+                {
+                    Username = inviterUsername,
+                    Title = $"{invitedUser.Username} has accepted your ministry invitation",
+                    Content = $"{invitedUser.Username} is now your new {MinistryHelper.MinistryCodeToMinisterName(ministryInvitedTo)}."
+                };
+            }
         }
 
-        public static NotificationSendRequest GenerateMinisterialInvitationDeclinedNotification(string inviterUserId, string invitedUserId, MinistryHelper.MinistryCode ministryInvitedTo)
+        public static Notification GenerateMinisterialInvitationDeclinedNotification(string inviterUsername, string invitedUsername, MinistryHelper.MinistryCode ministryInvitedTo)
         {
-            PublicUser invitedUser = MongoDBHelper.UsersDatabase.GetPublicUser(invitedUserId);
-
-            return new NotificationSendRequest
+            using (DatabaseContext database = new DatabaseContext())
             {
-                UserId = inviterUserId,
-                Title = $"{invitedUser.Username} has declined your ministry invitation",
-                Content = $"{invitedUser.Username} has decided not to be your {MinistryHelper.MinistryCodeToMinisterName(ministryInvitedTo)}."
-            };
+                User invitedUser = database.Users.Single(u => u.Username == invitedUsername);
+
+                return new Notification
+                {
+                    Username = inviterUsername,
+                    Title = $"{invitedUser.Username} has declined your ministry invitation",
+                    Content = $"{invitedUser.Username} has decided not to be your {MinistryHelper.MinistryCodeToMinisterName(ministryInvitedTo)}."
+                };
+            }
         }
 
-        public static NotificationSendRequest GenerateDismissedMinisterNotification(string dismisserUserId, string dismissedUserId, MinistryHelper.MinistryCode ministryDismissedFrom)
+        public static Notification GenerateDismissedMinisterNotification(string dismisserUsername, string dismissedUsername, MinistryHelper.MinistryCode ministryDismissedFrom)
         {
-            PublicUser dismisserUser = MongoDBHelper.UsersDatabase.GetPublicUser(dismisserUserId);
-            Country dismisserCountry = MongoDBHelper.CountriesDatabase.GetCountry(dismisserUser.CountryId);
-
-            return new NotificationSendRequest
+            using (DatabaseContext database = new DatabaseContext())
             {
-                UserId = dismissedUserId,
-                Title = $"You've been dismissed from your ministry",
-                Content = $"The Prime Minister of {dismisserCountry.CountryName}, {dismisserUser.Username}, has dismissed you from your position as {MinistryHelper.MinistryCodeToMinisterName(ministryDismissedFrom)}."
-            };
+                User dismisserUser = database.Users.Single(u => u.Username == dismisserUsername);
+                Country dismisserCountry = database.Countries.Single(c => c.CountryName == dismisserUser.CountryName);
+
+                return new Notification
+                {
+                    Username = dismissedUsername,
+                    Title = $"You've been dismissed from your ministry",
+                    Content = $"The Prime Minister of {dismisserCountry.CountryName}, {dismisserUser.Username}, has dismissed you from your position as {MinistryHelper.MinistryCodeToMinisterName(ministryDismissedFrom)}."
+                };
+            }
         }
     }
 }

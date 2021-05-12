@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿#nullable enable
+
+using System.ComponentModel.DataAnnotations;
 
 namespace govgameSharedClasses.Models.MySQL
 {
@@ -6,8 +8,7 @@ namespace govgameSharedClasses.Models.MySQL
     {
         [Key]
         public int EmailId { get; set; }
-        public string Subject { get; set; }
-        public string Body { get; set; }
-        public bool MarkedAsRead { get; set; }
+        public string? Subject { get; set; }
+        public string Body { get; set; } = null!;
     }
 }

@@ -4,12 +4,12 @@
     Country country = (Country)ViewData["country"];
 
     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)ViewData["ministryCode"];
-    PublicUser[] allPublicUsers = (PublicUser[])ViewData["allPublicUsers"];
+    User[] allUsers = (User[])ViewData["allUsers"];
 
     string ministryName = MinistryHelper.MinistryCodeToMinistryName(ministryCode);
     string ministryColour = MinistryHelper.MinistryCodeToMinistryHexColour(ministryCode);
 
-    PublicUser currentPublicUser = (PublicUser)ViewData["publicUser"];
+    User currentUser = (User)ViewData["user"];
 
     ViewData["Title"] = "Invite new minister";
     ViewData["PageName"] = "Invite new minister";
@@ -30,17 +30,16 @@
 <br />
 <hr />
 <ul class="no-margin-ul" id="user-ul">
-    @foreach (PublicUser publicUser in allPublicUsers)
+    @foreach (User user in allUsers)
     {
-        @if (publicUser.UserId == currentPublicUser.UserId) continue;
+        @if (user.Username == currentUser.Username) continue;
         <li class="user-li">
-            <h2 class="username-text">@publicUser.Username</h2>
-            @if (publicUser.IsAMinister())
+            <h2 class="username-text">@user.Username</h2>
+            @if (user.CountryName != null)
             {
-                Country publicUserCountry = MongoDBHelper.CountriesDatabase.GetCountry(publicUser.CountryId);
-                <h4 id="country-note">NOTE: This user is already a minister in the country of @publicUserCountry.CountryName</h4>
+                <h4 id="country-note">NOTE: This user is already a minister in the country of @user.CountryName</h4>
             }
-            <button class="invite-user-button" onclick="inviteMinister('@publicUser.UserId')">Invite user</button>
+            <button class="invite-user-button" onclick="inviteMinister('@user.Username')">Invite user</button>
         </li>
         <hr />
     }
@@ -83,8 +82,8 @@
 
 @section Scripts {
     <script>
-        function inviteMinister(userId) {
-            $.post(`/Game/InviteMinister?ministry=@ministryCode.ToString("g")&invitedUserId=${userId}`, function (data, status) {
+        function inviteMinister(username) {
+            $.post(`/Game/InviteMinister?ministry=@ministryCode.ToString("g")&invitedUsername=${username}`, function (data, status) {
                 if (data == "success") {
                     location.href = "/Game/PrimeMinisterDashboard/ViewMinistry?ministry=@ministryCode.ToString("g")"
                 }

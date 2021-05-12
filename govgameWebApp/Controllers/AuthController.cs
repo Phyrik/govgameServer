@@ -2,7 +2,8 @@
 using System.Linq;
 using FirebaseAdmin.Auth;
 using govgameSharedClasses.Helpers;
-using govgameSharedClasses.Models.MongoDB;
+using govgameSharedClasses.Helpers.MySQL;
+using govgameSharedClasses.Models.MySQL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -205,28 +206,23 @@ namespace govgameWebApp.Controllers
                 idToken = idTokenOrError.Remove(0, 9);
             }
 
-            string username = Request.Form["username"];
-
-            string[] existingUsernames = MongoDBHelper.UsersDatabase.GetAllUsernames();
-            if (existingUsernames.Contains(username))
+            using (DatabaseContext database = new DatabaseContext())
             {
-                FirebaseAuth.DefaultInstance.DeleteUserAsync(userRecord.Uid).Wait();
-                return Content("There is another user with that username, and we don't allow duplicate usernames. Sorry!");
-            }
+                string username = Request.Form["username"];
 
-            PublicUser publicUser = new PublicUser
-            {
-                UserId = userRecord.Uid,
-                Username = username,
-                CountryId = "none",
-                BlockedUsers = new string[] { "none" },
-                Admin = false
-            };
+                if (database.Users.Any(u => u.Username == username))
+                {
+                    FirebaseAuth.DefaultInstance.DeleteUserAsync(userRecord.Uid).Wait();
+                    return Content("There is another user with that username, and we don't allow duplicate usernames. Sorry!");
+                }
 
-            if (!MongoDBHelper.UsersDatabase.NewUser(publicUser))
-            {
-                FirebaseAuth.DefaultInstance.DeleteUserAsync(userRecord.Uid).Wait();
-                return Content("Error: Internal server error.");
+                User user = new User
+                {
+                    Username = username,
+                    FirebaseUid = userRecord.Uid
+                };
+                database.Users.Add(user);
+                database.SaveChanges();
             }
 
             FirebaseAuthHelper.SendVerificationEmail(idToken);

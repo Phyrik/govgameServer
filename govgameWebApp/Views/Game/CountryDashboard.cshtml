@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_GameLayout";
 
-    PublicUser publicUser = (PublicUser)ViewData["publicUser"];
+    User user = (User)ViewData["user"];
 
     Country country = (Country)ViewData["country"];
 
@@ -25,7 +25,7 @@
 <h1>Go to a ministerial dashboard:</h1>
 <br />
 <ul id="ministry-list">
-    @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.PrimeMinister))
+    @if (MinistryHelper.CanUserAccessMinistryDashboard(user.Username, country.CountryName, MinistryHelper.MinistryCode.PrimeMinister))
     {
         <li class="ministry-li">
             <a href="/Game/PrimeMinisterDashboard">
@@ -33,7 +33,7 @@
             </a>
         </li>
     }
-    @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.Interior))
+    @if (MinistryHelper.CanUserAccessMinistryDashboard(user.Username, country.CountryName, MinistryHelper.MinistryCode.Interior))
     {
         <li class="ministry-li">
             <a href="/Game/InteriorDashboard">
@@ -41,7 +41,7 @@
             </a>
         </li>
     }
-    @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.FinanceAndTrade))
+    @if (MinistryHelper.CanUserAccessMinistryDashboard(user.Username, country.CountryName, MinistryHelper.MinistryCode.FinanceAndTrade))
     {
         <li class="ministry-li">
             <a href="/Game/FinanceAndTradeDashboard">
@@ -49,7 +49,7 @@
             </a>
         </li>
     }
-    @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.ForeignAffairs))
+    @if (MinistryHelper.CanUserAccessMinistryDashboard(user.Username, country.CountryName, MinistryHelper.MinistryCode.ForeignAffairs))
     {
         <li class="ministry-li">
             <a href="/Game/ForeignAffairsDashboard">
@@ -57,7 +57,7 @@
             </a>
         </li>
     }
-    @if (publicUser.HasAccessToMinistry(MinistryHelper.MinistryCode.Defence))
+    @if (MinistryHelper.CanUserAccessMinistryDashboard(user.Username, country.CountryName, MinistryHelper.MinistryCode.Defence))
     {
         <li class="ministry-li">
             <a href="/Game/DefenceDashboard">

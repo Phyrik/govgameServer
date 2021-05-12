@@ -8,8 +8,8 @@
 
     Country oldCountry = (Country)ViewData["country"];
     Country newCountry = (Country)ViewData["newCountry"];
-    PublicUser oldPrimeMinister = (PublicUser)ViewData["oldPrimeMinisterUser"];
-    PublicUser newPrimeMinister = (PublicUser)ViewData["newPrimeMinisterUser"];
+    User oldPrimeMinister = (User)ViewData["oldPrimeMinister"];
+    User newPrimeMinister = (User)ViewData["newPrimeMinister"];
     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)ViewData["ministryCode"];
 
     bool isPrimeMinister = (bool)ViewData["isPrimeMinister"];
@@ -27,138 +27,140 @@
     ViewData["PageName"] = "Invitiation to ministry";
 }
 
-<div id="grid">
-    @if (oldCountry != null)
-    {
-        <div id="old-country-div">
-            <img class="country-image" height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[oldCountry.FlagId]).png" />
+@using (DatabaseContext database = new DatabaseContext())
+{
+    <div id="grid">
+        @if (oldCountry != null)
+        {
+            <div id="old-country-div">
+                <img class="country-image" height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[oldCountry.FlagId]).png" />
+                <br />
+                <br />
+                <h2>@oldCountry.CountryName</h2>
+                <h3>Prime Minister: @oldPrimeMinister.Username</h3>
+            </div>
+        }
+        else
+        {
+            <div id="old-country-div">
+                <img class="country-image" height="200" src="~/images/flags/default.png" />
+                <br />
+                <br />
+                <h2>No country</h2>
+            </div>
+        }
+        <img id="arrow-right-image" width="150" src="~/images/arrow right.svg" />
+        <div id="new-country-div">
+            <img class="country-image" height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[newCountry.FlagId]).png" />
             <br />
             <br />
-            <h2>@oldCountry.CountryName</h2>
-            <h3>Prime Minister: @oldPrimeMinister.Username</h3>
+            <h2>@newCountry.CountryName</h2>
+            <h3>Prime Minister: @newPrimeMinister.Username</h3>
         </div>
-    }
-    else
-    {
-        <div id="old-country-div">
-            <img class="country-image" height="200" src="~/images/flags/default.png" />
+        <div id="buttons-div">
+            <button onclick="accept(null)">Accept</button>
+            <button onclick="decline()">Decline</button>
             <br />
             <br />
-            <h2>No country</h2>
+            <button onclick="location.href = '/Game/Notifications'">Decide later</button>
         </div>
-    }
-    <img id="arrow-right-image" width="150" src="~/images/arrow right.svg" />
-    <div id="new-country-div">
-        <img class="country-image" height="200" src="~/images/flags/@(CountryGenerationHelper.flagNames[newCountry.FlagId]).png" />
+        @if (isPrimeMinister)
+        {
+            <div id="pm-ministry-choice-div">
+                <h2>Choose a minister to replace you as Prime Minister:</h2>
+                <ul id="pm-ministry-choice-ul" class="no-margin-ul">
+                    @foreach (MinistryHelper.MinistryCode ministryCodeLoop in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
+                    {
+                        @if (ministryCodeLoop == MinistryHelper.MinistryCode.PrimeMinister || ministryCodeLoop == MinistryHelper.MinistryCode.None) continue;
+                        @if (!database.Users.Any(u => u.CountryName == oldCountry.CountryName && u.Ministry == ministryCodeLoop)) continue;
+                        <li class="ministry-li">
+                            <img class="ministry-image" onclick="accept('@ministryCodeLoop.ToString("g")')" width="300" src="~/images/ministries/@MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCodeLoop)" />
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
         <br />
-        <br />
-        <h2>@newCountry.CountryName</h2>
-        <h3>Prime Minister: @newPrimeMinister.Username</h3>
+        <h4 id="please-wait-h4">Please wait...</h4>
     </div>
-    <div id="buttons-div">
-        <button onclick="accept(null)">Accept</button>
-        <button onclick="decline()">Decline</button>
-        <br />
-        <br />
-        <button onclick="location.href = '/Game/Notifications'">Decide later</button>
-    </div>
-    @if (isPrimeMinister)
-    {
-        <div id="pm-ministry-choice-div">
-            <h2>Choose a minister to replace you as Prime Minister:</h2>
-            <ul id="pm-ministry-choice-ul" class="no-margin-ul">
-                @foreach (MinistryHelper.MinistryCode ministryCodeLoop in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
-                {
-                    @if (ministryCodeLoop == MinistryHelper.MinistryCode.PrimeMinister || ministryCodeLoop == MinistryHelper.MinistryCode.None) continue;
-                    @if (oldCountry.GetMinisterIdByCode(ministryCodeLoop) == "none") continue;
-                    <li class="ministry-li">
-                        <img class="ministry-image" onclick="accept('@ministryCodeLoop.ToString("g")')" width="300" src="~/images/ministries/@MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCodeLoop)" />
-                    </li>
-                }
-            </ul>
-        </div>
-    }
-    <br />
-    <h4 id="please-wait-h4">Please wait...</h4>
-</div>
 
-<style>
-    .country-image {
-        margin-left: auto;
-        margin-right: auto;
-        border: 1px solid black;
-    }
+    <style>
+        .country-image {
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid black;
+        }
 
-    .ministry-li {
-        display: inline;
-        margin-right: 20px;
-    }
+        .ministry-li {
+            display: inline;
+            margin-right: 20px;
+        }
 
-    .ministry-image:hover {
-        cursor: pointer;
-    }
+        .ministry-image:hover {
+            cursor: pointer;
+        }
 
-    #grid {
-        display: grid;
-        grid-template-columns: auto auto auto;
-        grid-template-rows: auto 100px auto auto;
-        text-align: center;
-    }
+        #grid {
+            display: grid;
+            grid-template-columns: auto auto auto;
+            grid-template-rows: auto 100px auto auto;
+            text-align: center;
+        }
 
-    #old-country-div {
-        grid-column-start: 1;
-        grid-column-end: 2;
-        grid-row-start: 1;
-        grid-row-end: 2;
-    }
+        #old-country-div {
+            grid-column-start: 1;
+            grid-column-end: 2;
+            grid-row-start: 1;
+            grid-row-end: 2;
+        }
 
-    #arrow-right-image {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        grid-row-start: 1;
-        grid-row-end: 2;
-        margin: auto;
-    }
+        #arrow-right-image {
+            grid-column-start: 2;
+            grid-column-end: 3;
+            grid-row-start: 1;
+            grid-row-end: 2;
+            margin: auto;
+        }
 
-    #new-country-div {
-        grid-column-start: 3;
-        grid-column-end: 4;
-        grid-row-start: 1;
-        grid-row-end: 2;
-    }
+        #new-country-div {
+            grid-column-start: 3;
+            grid-column-end: 4;
+            grid-row-start: 1;
+            grid-row-end: 2;
+        }
 
-    #buttons-div {
-        grid-column-start: 1;
-        grid-column-end: 4;
-        grid-row-start: 2;
-        grid-row-end: 3;
-        text-align: center;
-        margin: auto;
-    }
+        #buttons-div {
+            grid-column-start: 1;
+            grid-column-end: 4;
+            grid-row-start: 2;
+            grid-row-end: 3;
+            text-align: center;
+            margin: auto;
+        }
 
-    #pm-ministry-choice-div {
-        grid-column-start: 1;
-        grid-column-end: 4;
-        grid-row-start: 3;
-        grid-row-end: 4;
-        display: none;
-    }
+        #pm-ministry-choice-div {
+            grid-column-start: 1;
+            grid-column-end: 4;
+            grid-row-start: 3;
+            grid-row-end: 4;
+            display: none;
+        }
 
-    #pm-ministry-choice-ul {
-        list-style: none;
-    }
+        #pm-ministry-choice-ul {
+            list-style: none;
+        }
 
-    #please-wait-h4 {
-        grid-column-start: 1;
-        grid-column-end: 4;
-        grid-row-start: 4;
-        grid-row-end: 5;
-        display: none;
-    }
-</style>
+        #please-wait-h4 {
+            grid-column-start: 1;
+            grid-column-end: 4;
+            grid-row-start: 4;
+            grid-row-end: 5;
+            display: none;
+        }
+    </style>
 
-@section Scripts {
-    <script>
+    @section Scripts {
+        <script>
         function accept(ministerToReplacePM) {
             if (@isPrimeMinister.ToString().ToLower() && !@noMinistersToReplace.ToString().ToLower()) {
                 if (ministerToReplacePM === null) {
@@ -168,7 +170,7 @@
 
                 document.getElementById("please-wait-h4").style.display = ""
 
-                $.post(`/Game/AcceptMinistryInvite?ministry=@ministryCode&newCountryId=@newCountry.CountryId&ministryToReplacePM=${ministerToReplacePM}`, function (data, status) {
+                $.post(`/Game/AcceptMinistryInvite?ministry=@ministryCode&newCountryName=@newCountry.CountryName&ministryToReplacePM=${ministerToReplacePM}`, function (data, status) {
                     if (data == "success") {
                         alert("Successfully accepted invite")
                         location.href = "/Game/CountryDashboard"
@@ -189,7 +191,7 @@
 
             document.getElementById("please-wait-h4").style.display = ""
 
-            $.post(`/Game/AcceptMinistryInvite?ministry=@ministryCode&newCountryId=@newCountry.CountryId`, function (data, status) {
+            $.post(`/Game/AcceptMinistryInvite?ministry=@ministryCode&newCountryName=@newCountry.CountryName`, function (data, status) {
                 if (data == "success") {
                     alert("Successfully accepted invite")
                     location.href = "/Game/CountryDashboard"
@@ -200,7 +202,7 @@
         function decline() {
             document.getElementById("please-wait-h4").style.display = ""
 
-            $.post(`/Game/DeclineMinistryInvite?ministry=@ministryCode&newCountryId=@newCountry.CountryId`, function (data, status) {
+            $.post(`/Game/DeclineMinistryInvite?ministry=@ministryCode&newCountryName=@newCountry.CountryName`, function (data, status) {
                 if (data == "success") {
                     alert("Successfully declined invite")
                     location.href = "/Game/CountryDashboard"
@@ -210,5 +212,6 @@
                 }
             })
         }
-    </script>
+        </script>
+    }
 }

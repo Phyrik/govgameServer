@@ -3,49 +3,49 @@
 
     Country country = (Country)ViewData["country"];
     MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)ViewData["ministryCode"];
-    string ministerId = country.GetMinisterIdByCode(ministryCode);
-    string invitedMinisterId = country.GetInvitedMinisterIdByCode(ministryCode);
 
     ViewData["Title"] = "View ministry";
     ViewData["PageName"] = "View ministry";
 }
 
-<img src="~/images/ministries/@MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode)" height="200" />
-<br />
-<br />
-@if (ministerId != "none")
+@using (DatabaseContext database = new DatabaseContext())
 {
-    <h2 id="minister">Minister: @MongoDBHelper.UsersDatabase.GetPublicUser(ministerId).Username</h2>
-    <button id="minister-button" onclick="dismissMinister('@ministryCode.ToString("g")')">Dismiss minister</button>
-}
-else
-{
-    if (invitedMinisterId != "none")
+    <img src="~/images/ministries/@MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode)" height="200" />
+    <br />
+    <br />
+    @if (database.Users.Any(u => u.CountryName == country.CountryName && u.Ministry == ministryCode))
     {
-        <h2 id="minister">Invitation sent to: @MongoDBHelper.UsersDatabase.GetPublicUser(invitedMinisterId).Username</h2>
-        <button id="minister-button" onclick="cancelMinistryInvite('@ministryCode.ToString("g")')">Cancel invite</button>
+        <h2 id="minister">Minister: @database.Users.Single(u => u.CountryName == country.CountryName && u.Ministry == ministryCode).Username</h2>
+        <button id="minister-button" onclick="dismissMinister('@ministryCode.ToString("g")')">Dismiss minister</button>
     }
     else
     {
-        <h2 id="minister">No minister</h2>
-        <button id="minister-button" onclick="location.href = '/Game/PrimeMinisterDashboard/InviteNewMinister?minister=@(ministryCode.ToString("g"))'">Invite new minister</button>
+        if (database.InvitedMinisters.Any(im => im.CountryName == country.CountryName && im.Ministry == ministryCode))
+        {
+            <h2 id="minister">Invitation sent to: @database.InvitedMinisters.Single(im => im.CountryName == country.CountryName && im.Ministry == ministryCode).Username</h2>
+            <button id="minister-button" onclick="cancelMinistryInvite('@ministryCode.ToString("g")')">Cancel invite</button>
+        }
+        else
+        {
+            <h2 id="minister">No minister</h2>
+            <button id="minister-button" onclick="location.href = '/Game/PrimeMinisterDashboard/InviteNewMinister?minister=@(ministryCode.ToString("g"))'">Invite new minister</button>
+        }
     }
-}
 
-<style>
-    #minister {
-        display: inline;
-    }
+    <style>
+        #minister {
+            display: inline;
+        }
 
-    #minister-button {
-        width: 200px;
-        vertical-align: super;
-        margin-left: 20px;
-    }
-</style>
+        #minister-button {
+            width: 200px;
+            vertical-align: super;
+            margin-left: 20px;
+        }
+    </style>
 
-@section Scripts {
-    <script>
+    @section Scripts {
+        <script>
         var ministerHeading = document.getElementById("minister")
         var ministerButton = document.getElementById("minister-button")
 
@@ -78,5 +78,6 @@ else
                 }
             })
         }
-    </script>
-} 
+        </script>
+    }
+}

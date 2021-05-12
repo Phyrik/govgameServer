@@ -39,5 +39,10 @@ namespace govgameWebApp.Controllers
 
             return View();
         }
+
+        public IActionResult Error500()
+        {
+            return Content("Error: Internal server error.");
+        }
     }
 }

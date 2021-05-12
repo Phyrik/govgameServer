@@ -1,4 +1,8 @@
-﻿namespace govgameSharedClasses.Helpers
+﻿using govgameSharedClasses.Helpers.MySQL;
+using govgameSharedClasses.Models.MySQL;
+using System.Linq;
+
+namespace govgameSharedClasses.Helpers
 {
     public class MinistryHelper
     {
@@ -91,6 +95,25 @@
                     return "ministry of defence.png";
                 default:
                     return null;
+            }
+        }
+
+        public static bool CanUserAccessMinistryDashboard(string username, string countryName, MinistryCode ministryDashboard)
+        {
+            using (DatabaseContext database = new DatabaseContext())
+            {
+                User user = database.Users.Single(u => u.Username == username);
+                Country country = database.Countries.Single(c => c.CountryName == countryName);
+
+                if (user.Admin) return true;
+
+                if (user.CountryName == countryName)
+                {
+                    if (user.Ministry == MinistryCode.PrimeMinister) return true;
+                    if (user.Ministry == ministryDashboard) return true;
+                }
+
+                return false;
             }
         }
     }

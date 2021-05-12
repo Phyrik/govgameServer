@@ -4,7 +4,7 @@
     ViewData["Title"] = "New email";
     ViewData["PageName"] = "New email";
 
-    PublicUser[] allPublicUsers = (PublicUser[])ViewData["allPublicUsers"];
+    User[] allUsers = (User[])ViewData["allUsers"];
 
     // window opens to be 1000x1000 pixels
 }
@@ -18,9 +18,9 @@
     <ul id="to-ul" class="no-margin-ul"></ul>
     <input id="to-input" type="text" list="users-datalist" />
     <datalist id="users-datalist">
-        @foreach (PublicUser publicUser in allPublicUsers)
+        @foreach (User user in allUsers)
         {
-            <option value="@publicUser.UserId">@publicUser.Username</option>
+            <option>@user.Username</option>
         }
     </datalist>
 
@@ -53,17 +53,6 @@
 @section Scripts
 {
     <script>
-        var users = {
-            @foreach (PublicUser publicUser in allPublicUsers)
-            {
-                <text>
-                "@publicUser.UserId": {
-                    "userId": "@publicUser.UserId",
-                    "username": "@publicUser.Username",
-                },
-                </text>
-            }
-        }
         var toUsers = []
 
         var toUl = document.getElementById("to-ul")
@@ -72,10 +61,9 @@
             toInputText = e.target.value
 
             if (toInputText in users && document.getElementById("to-li-" + toInputText) == null) {
-                var user = users[toInputText]
                 var newToLi = document.createElement("li")
-                newToLi.id = "to-li-" + user.userId
-                newToLi.innerHTML = `<h5 style="grid-column-start: 1; grid-column-end: 2;">${user.username}</h5><button onclick="removeToLi(this, '${user.userId}');" style="grid-column-start: 3; grid-column-end: 4; height: 20px; font-size: 10px; padding: 0;">X</button>`
+                newToLi.id = "to-li-" + toInputText
+                newToLi.innerHTML = `<h5 style="grid-column-start: 1; grid-column-end: 2;">${toInputText}</h5><button onclick="removeToLi(this, '${toInputText}');" style="grid-column-start: 3; grid-column-end: 4; height: 20px; font-size: 10px; padding: 0;">X</button>`
                 newToLi.style.display = "inline-grid"
                 newToLi.style.textAlign = "center"
                 newToLi.style.marginRight = "10px"
@@ -95,10 +83,10 @@
 
         document.getElementById("to-input").addEventListener("input", toInputValueChanged)
 
-        function removeToLi(ele, userId) {
+        function removeToLi(ele, username) {
             ele.parentElement.remove()
 
-            toUsersIndex = toUsers.indexOf(userId)
+            toUsersIndex = toUsers.indexOf(username)
             if (toUsersIndex > -1) {
                 toUsers.splice(toUsersIndex, 1)
             }

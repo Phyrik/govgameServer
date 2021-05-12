@@ -2,77 +2,76 @@
     Layout = "_GameLayout";
 
     Country country = (Country)ViewData["country"];
-    string ministerId;
-    string invitedMinisterId;
 
     ViewData["Title"] = "Ministry management";
     ViewData["PageName"] = "Ministry management";
 }
 
-<h1>Ministries</h1>
-<br />
-<hr />
-<ul id="ministry-list" class="no-margin-ul">
-    @foreach (MinistryHelper.MinistryCode ministryCode in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
-    {
-        @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister || ministryCode == MinistryHelper.MinistryCode.None) continue;
-        ministerId = country.GetMinisterIdByCode(ministryCode);
-        invitedMinisterId = country.GetInvitedMinisterIdByCode(ministryCode);
-        <li class="ministry-li" id="ministry-li-@ministryCode.ToString("g")" onclick="location.href = '/Game/PrimeMinisterDashboard/ViewMinistry?ministry=@ministryCode'">
-            <img class="ministry-image" src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="175" />
-            <div class="ministry-status-div">
-                <h3>
-                    @if (ministerId != "none")
-                    {
-                        <text>Minister: @MongoDBHelper.UsersDatabase.GetPublicUser(ministerId).Username</text>
-                    }
-                    else
-                    {
-                        if (invitedMinisterId != "none")
+@using (DatabaseContext database = new DatabaseContext())
+{
+    <h1>Ministries</h1>
+    <br />
+    <hr />
+    <ul id="ministry-list" class="no-margin-ul">
+        @foreach (MinistryHelper.MinistryCode ministryCode in Enum.GetValues(typeof(MinistryHelper.MinistryCode)))
+        {
+            @if (ministryCode == MinistryHelper.MinistryCode.PrimeMinister || ministryCode == MinistryHelper.MinistryCode.None) continue;
+            <li class="ministry-li" id="ministry-li-@ministryCode.ToString("g")" onclick="location.href = '/Game/PrimeMinisterDashboard/ViewMinistry?ministry=@ministryCode'">
+                <img class="ministry-image" src="~/images/ministries/@(MinistryHelper.MinistryCodeToMinistryImageFileName(ministryCode))" height="175" />
+                <div class="ministry-status-div">
+                    <h3>
+                        @if (database.Users.Any(u => u.CountryName == country.CountryName && u.Ministry == ministryCode))
                         {
-                            <text>Invitation sent to: @MongoDBHelper.UsersDatabase.GetPublicUser(invitedMinisterId).Username</text>
+                            <text>Minister: @database.Users.Single(u => u.CountryName == country.CountryName && u.Ministry == ministryCode).Username</text>
                         }
                         else
                         {
-                            <text>No minister</text>
+                            if (database.InvitedMinisters.Any(im => im.CountryName == country.CountryName && im.Ministry == ministryCode))
+                            {
+                                <text>Invitation sent to: @database.InvitedMinisters.Single(im => im.CountryName == country.CountryName && im.Ministry == ministryCode).Username</text>
+                            }
+                            else
+                            {
+                                <text>No minister</text>
+                            }
                         }
-                    }
-                </h3>
-                <p class="see-more-text">(Click to see more)</p>
-            </div>
-        </li>
-        <hr />
-    }
-</ul>
-<br />
+                    </h3>
+                    <p class="see-more-text">(Click to see more)</p>
+                </div>
+            </li>
+            <hr />
+        }
+    </ul>
+    <br />
 
-<style>
-    .ministry-li {
-        margin-bottom: 10px;
-        margin-right: 50px;
-        display: grid;
-        grid-template-columns: 350px auto;
-        margin-left: 20px;
-        cursor: pointer;
-    }
+    <style>
+        .ministry-li {
+            margin-bottom: 10px;
+            margin-right: 50px;
+            display: grid;
+            grid-template-columns: 350px auto;
+            margin-left: 20px;
+            cursor: pointer;
+        }
 
-    .ministry-image {
-        grid-column-start: 1;
-        grid-column-end: 2;
-    }
+        .ministry-image {
+            grid-column-start: 1;
+            grid-column-end: 2;
+        }
 
-    .ministry-status-div {
-        align-items: center;
-        margin-left: 20px;
-        position: relative;
-    }
+        .ministry-status-div {
+            align-items: center;
+            margin-left: 20px;
+            position: relative;
+        }
 
-    .see-more-text {
-        position: absolute;
-        bottom: 0;
-    }
+        .see-more-text {
+            position: absolute;
+            bottom: 0;
+        }
 
-    #ministry-list {
-        list-style: none;
-    }
-</style>
+        #ministry-list {
+            list-style: none;
+        }
+    </style>
+}

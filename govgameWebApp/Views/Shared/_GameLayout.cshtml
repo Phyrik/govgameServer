@@ -1,6 +1,6 @@
 ﻿@using govgameSharedClasses.Helpers;
 @{
-    PublicUser publicUser = (PublicUser)ViewData["publicUser"];
+    User user = (User)ViewData["user"];
 
     Country country = (Country)ViewData["country"];
 
@@ -68,7 +68,7 @@
                         {<text>(@unreadEmails)</text>}
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link">Logged in as: @publicUser.Username</a></li>
+                <li class="nav-item"><a class="nav-link">Logged in as: @user.Username</a></li>
                 <li class="nav-item"><a class="nav-link nav-a" href="/Auth/LogOut">Log out</a></li>
             </ul>
         </nav>

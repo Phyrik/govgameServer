@@ -3,14 +3,14 @@
 @{
     Layout = "_GameLayout";
 
-    PublicUser publicUser = (PublicUser)ViewData["publicUser"];
+    User user = (User)ViewData["user"];
 
     Country country = (Country)ViewData["country"];
 
     ViewData["Title"] = "Emails";
     ViewData["PageName"] = "Emails";
 
-    Email[] emails = (Email[])ViewData["emails"];
+    UserEmail[] userEmails = (UserEmail[])ViewData["userEmails"];
 
     string readOpenedColour = "darkgrey";
     string readNotOpenedColour = "lightgrey";
@@ -21,120 +21,115 @@
     HtmlSanitizer sanitiser = new HtmlSanitizer();
 }
 
-<div id="main-header">
-    <h1>Emails</h1>
-    <br />
-</div>
-<div id="email-system-container">
-    @if (emails.Length == 0)
-    {
-        <h3 id="no-emails-text">No emails</h3>
-    }
-    else
-    {
-        <ul class="no-margin-ul" id="emails-list">
-            @foreach (Email email in emails)
-            {
-                PublicUser sender = MongoDBHelper.UsersDatabase.GetPublicUser(email.SenderId);
-                <li id="email-li-@email.EmailId" class="email-li" onclick="openEmail('@email.EmailId');" style="background-color: @if (email.MarkedAsRead) { @readNotOpenedColour } else { @unreadNotOpenedColour };">
-                    <h4>@sender.Username</h4>
-                    <h5>@email.Subject</h5>
-                </li>
-            }
-        </ul>
-    }
-    <div id="actions">
-        <button class="action-button" onclick="window.open('/Game/Emails/NewEmail', 'New email', 'height=800,width=1000,location=no,toolbar=no,menubar=no')">New email</button>
-        <button class="action-button" id="block-button" onclick="blockCurrentEmailUser()" disabled>Block emails from this user</button>
+@using (DatabaseContext database = new DatabaseContext())
+{
+    <div id="main-header">
+        <h1>Emails</h1>
+        <br />
     </div>
-    <div id="email-viewer">
-        <p id="sent-datetime-line"></p>
-        <h2 id="from-line">Click on an email to view it here</h2>
-        <h4 id="country-line"></h4>
-        <h6 id="to-line"></h6>
-        <hr />
-        <h2 id="subject-line"></h2>
-        <p id="body-line"></p>
+    <div id="email-system-container">
+        @if (userEmails.Length == 0)
+        {
+            <h3 id="no-emails-text">No emails</h3>
+        }
+        else
+        {
+            <ul class="no-margin-ul" id="emails-list">
+                @foreach (UserEmail userEmail in userEmails)
+                {
+                    Email email = database.Emails.Single(e => e.EmailId == userEmail.EmailId);
+                    User sender = database.Users.Single(u => u.Username == userEmail.SendingUsername);
+                    <li id="email-li-@email.EmailId" class="email-li" onclick="openEmail('@email.EmailId');" style="background-color: @if (userEmail.MarkedAsRead) { @readNotOpenedColour } else { @unreadNotOpenedColour };">
+                        <h4>@sender.Username</h4>
+                        <h5>@email.Subject</h5>
+                    </li>
+                }
+            </ul>
+        }
+        <div id="actions">
+            <button class="action-button" onclick="window.open('/Game/Emails/NewEmail', 'New email', 'height=800,width=1000,location=no,toolbar=no,menubar=no')">New email</button>
+        </div>
+        <div id="email-viewer">
+            <h2 id="from-line">Click on an email to view it here</h2>
+            <h4 id="country-line"></h4>
+            <h6 id="to-line"></h6>
+            <hr />
+            <h2 id="subject-line"></h2>
+            <p id="body-line"></p>
+        </div>
     </div>
-</div>
 
-<style>
-    .email-li {
-        padding: 5px 0 5px 5px;
-    }
-
-        .email-li:hover {
-            cursor: pointer;
+    <style>
+        .email-li {
+            padding: 5px 0 5px 5px;
         }
 
-    .action-button {
-        height: inherit;
-    }
+            .email-li:hover {
+                cursor: pointer;
+            }
 
-    #email-system-container {
-        display: grid;
-        grid-template-columns: 300px auto;
-        column-gap: 20px;
-        grid-template-rows: 50px minmax(0, 100%);
-    }
+        .action-button {
+            height: inherit;
+        }
 
-    #no-emails-text {
-        grid-column-start: 1;
-        grid-column-end: 2;
-        text-align: center;
-    }
+        #email-system-container {
+            display: grid;
+            grid-template-columns: 300px auto;
+            column-gap: 20px;
+            grid-template-rows: 50px minmax(0, 100%);
+        }
 
-    #emails-list {
-        grid-column-start: 1;
-        grid-column-end: 2;
-        grid-row-start: 1;
-        grid-row-end: 3;
-        overflow-y: auto;
-        border-right: 1px solid black;
-    }
+        #no-emails-text {
+            grid-column-start: 1;
+            grid-column-end: 2;
+            text-align: center;
+        }
 
-    #actions {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        padding: 5px;
-    }
+        #emails-list {
+            grid-column-start: 1;
+            grid-column-end: 2;
+            grid-row-start: 1;
+            grid-row-end: 3;
+            overflow-y: auto;
+            border-right: 1px solid black;
+        }
 
-    #email-viewer {
-        grid-column-start: 2;
-        grid-column-end: 3;
-        background-color: lightgrey;
-        padding: 5px 10px 5px 10px;
-        overflow-y: auto;
-    }
+        #actions {
+            grid-column-start: 2;
+            grid-column-end: 3;
+            padding: 5px;
+        }
 
-    #sent-datetime-line {
-        font-size: small;
-        float: right;
-        margin-top: 10px;
-        margin-right: 10px;
-    }
+        #email-viewer {
+            grid-column-start: 2;
+            grid-column-end: 3;
+            background-color: lightgrey;
+            padding: 5px 10px 5px 10px;
+            overflow-y: auto;
+        }
 
-    #body-line {
-        white-space: pre-line;
-    }
-</style>
+        #body-line {
+            white-space: pre-line;
+        }
+    </style>
 
-@section Scripts
+    @section Scripts
 {
-    <script>
+        <script>
         var emails = {
-            @foreach (Email email in emails)
+            @foreach (UserEmail userEmail in userEmails)
             {
-                PublicUser sender = MongoDBHelper.UsersDatabase.GetPublicUser(email.SenderId);
+                Email email = database.Emails.Single(e => e.EmailId == userEmail.EmailId);
+                User sender = database.Users.Single(u => u.Username == userEmail.SendingUsername);
                 Country senderCountry = null;
-                if (sender.IsAMinister())
+                if (sender.CountryName != null)
                 {
-                    senderCountry = MongoDBHelper.CountriesDatabase.GetCountry(sender.CountryId);
+                    senderCountry = database.Countries.Single(c => c.CountryName == sender.CountryName);
                 }
                 <text>
                 "@email.EmailId": {
                 "fromUsername": "@sender.Username.Replace("`", "\\`")",
-                    @if (sender.IsAMinister())
+                    @if (sender.CountryName != null)
                     {
                         <text>"country": "@senderCountry.CountryName.Replace("`", "\\`")",</text>
                     }
@@ -142,18 +137,17 @@
                     {
                         <text>"country": false,</text>
                     }
-                    "userId": "@email.SenderId",
+                    "userId": "@userEmail.SendingUsername",
                     "subject": `@email.Subject.Replace("`", "\\`")`,
                     "body": `@Html.Raw(sanitiser.Sanitize(Markdown.ToHtml(email.Body)).Replace("`", "\\`").Replace("<p>", "").Replace("</p>", ""))`,
-                    "read": @email.MarkedAsRead.ToString().ToLower(),
+                    "read": @userEmail.MarkedAsRead.ToString().ToLower(),
                     "toList":
                     [
-                    @foreach (string toUserId in email.RecipientIds)
+                    @foreach (string receivingUsername in database.UserEmails.Where(ue => ue.EmailId == email.EmailId).Select(ue => ue.ReceivingUsername).ToArray())
                     {
-                        <text>"@MongoDBHelper.UsersDatabase.GetPublicUser(toUserId).Username",</text>
+                        <text>"@receivingUsername",</text>
                     }
-                    ],
-                    "sentDateTime": "@email.EmailId.CreationTime"
+                    ]
                 },
                 </text>
             }
@@ -167,7 +161,6 @@
         var countryLine = document.getElementById("country-line");
         var subjectLine = document.getElementById("subject-line");
         var bodyLine = document.getElementById("body-line");
-        var sentDateTimeLine = document.getElementById("sent-datetime-line");
 
         var currentlyOpenedEmailId
 
@@ -193,7 +186,6 @@
             countryLine.innerHTML = ""
             subjectLine.innerHTML = ""
             bodyLine.innerHTML = ""
-            sentDateTimeLine.innerHTML = ""
 
             var emailToOpen = emails[emailId]
 
@@ -212,7 +204,6 @@
             }
             subjectLine.innerHTML = emailToOpen.subject
             bodyLine.innerHTML = emailToOpen.body
-            sentDateTimeLine.innerHTML = "Sent on " + emailToOpen.sentDateTime
 
             var emailLi = document.getElementById("email-li-" + emailId)
 
@@ -232,20 +223,6 @@
             currentlyOpenedEmailId = emailId
             document.getElementById("block-button").disabled = false
         }
-
-        function blockCurrentEmailUser() {
-            if (!confirm("Are you sure you want to block " + emails[currentlyOpenedEmailId].fromUsername + "? This action is (currently) irreversible.")) {
-                return
-            }
-
-            $.post(`/Game/BlockEmailsFromUser?blockUserId=${emails[currentlyOpenedEmailId].userId}&readOrUnread=read`, function (data, status) {
-                if (data == "success") {
-                    location.reload()
-                }
-                else {
-                    alert(data)
-                }
-            })
-        }
-    </script>
+        </script>
+    }
 }

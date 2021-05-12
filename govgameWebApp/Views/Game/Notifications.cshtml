@@ -22,10 +22,9 @@
     @foreach (Notification notification in notifications)
     {
         <li id="notification-li-@notification.NotificationId" class="notification-li" style="background-color: @if (notification.MarkedAsRead) { @readNotOpenedColour } else { @unreadNotOpenedColour };">
-            <div class="notif-body-div" @if (notification.Link != null) { <text>onclick="markNotificationAsRead('@notification.NotificationId'); location.href = '@Html.Raw(notification.Link)'"</text> }>
+            <div class="notif-body-div" @if (notification.Link != null) { <text> onclick="markNotificationAsRead('@notification.NotificationId'); location.href = '@Html.Raw(notification.Link)'" </text> }>
                 <h2>@notification.Title</h2>
                 <p>@notification.Content</p>
-                <p class="received-on-text">Received on @notification.NotificationId.CreationTime</p>
             </div>
             <button class="mark-as-read-button" onclick="markNotificationAsRead('@notification.NotificationId');">Mark as read</button>
         </li>

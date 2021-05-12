@@ -204,7 +204,7 @@ namespace govgameWebApp.Controllers
                             ViewData["noMinistersToReplace"] = null;
                         }
 
-                        if (database.InvitedMinisters.Any(im => im.Username == user.Username && im.CountryName == newCountry.CountryName && im.Ministry == ministryCode))
+                        if (!database.InvitedMinisters.Any(im => im.Username == user.Username && im.CountryName == newCountry.CountryName && im.Ministry == ministryCode))
                         {
                             ViewData["errorMessage"] = "Invalid invite link. The person who invited you may have cancelled the invitation.";
                             return View("../Error/TextError");

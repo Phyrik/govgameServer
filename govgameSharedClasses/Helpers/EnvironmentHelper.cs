@@ -18,5 +18,10 @@ namespace govgameSharedClasses.Helpers
                     throw new Exception("You must include a command line argument for cookie security. Try running \"dotnet run {secure/insecure} --project govgameGameServer\".");
             }
         }
+
+        public static int PortToRunOn()
+        {
+            return int.Parse(Environment.GetCommandLineArgs()[2]);
+        }
     }
 }

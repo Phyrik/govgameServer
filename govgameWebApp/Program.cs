@@ -1,5 +1,6 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using govgameSharedClasses.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -30,7 +31,7 @@ namespace govgameWebApp
                 {
                     webBuilder.UseKestrel(options =>
                     {
-                        options.Listen(IPAddress.Any, 5001, listenOptions =>
+                        options.Listen(IPAddress.Any, EnvironmentHelper.PortToRunOn(), listenOptions =>
                         {
                             listenOptions.UseHttps("finalcert.pfx", "friends2021");
                         });

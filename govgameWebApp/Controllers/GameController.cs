@@ -120,34 +120,34 @@ namespace govgameWebApp.Controllers
             }
         }
 
-        public IActionResult Emails(string page, string authSessionCookie)
-        {
-            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-            string firebaseUid = firebaseToken.Uid;
+        //public IActionResult Emails(string page, string authSessionCookie)
+        //{
+        //    FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+        //    string firebaseUid = firebaseToken.Uid;
 
-            using (DatabaseContext database = new DatabaseContext())
-            {
-                User user = database.Users.Single(u => u.FirebaseUid == firebaseUid);
+        //    using (DatabaseContext database = new DatabaseContext())
+        //    {
+        //        User user = database.Users.Single(u => u.FirebaseUid == firebaseUid);
 
-                switch (page)
-                {
-                    case null:
-                        UserEmail[] userEmails = database.UserEmails.Where(ue => ue.ReceivingUsername == user.Username).ToArray();
-                        ViewData["userEmails"] = userEmails;
+        //        switch (page)
+        //        {
+        //            case null:
+        //                UserEmail[] userEmails = database.UserEmails.Where(ue => ue.ReceivingUsername == user.Username).ToArray();
+        //                ViewData["userEmails"] = userEmails;
 
-                        return View("./Emails/Index");
+        //                return View("./Emails/Index");
 
-                    case "NewEmail":
-                        User[] allUsers = database.Users.ToArray();
-                        ViewData["allUsers"] = allUsers;
+        //            case "NewEmail":
+        //                User[] allUsers = database.Users.ToArray();
+        //                ViewData["allUsers"] = allUsers;
 
-                        return View("./Emails/New");
+        //                return View("./Emails/New");
 
-                    default:
-                        return View("404");
-                }
-            }
-        }
+        //            default:
+        //                return View("404");
+        //        }
+        //    }
+        //}
 
         public IActionResult Invite(string page, string authSessionCookie, string countryName, string ministry)
         {

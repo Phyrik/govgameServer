@@ -1,3 +1,3 @@
 cd /home/pi/Documents/govgameServer
 git pull
-dotnet run secure --project govgameGameServer --configuration Release
+dotnet run secure 5001 --project govgameGameServer --configuration Release

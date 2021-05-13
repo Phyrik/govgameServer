@@ -84,43 +84,5 @@
     <script>
         var ministryCode = @ministryCode.ToString("g");
     </script>
-    <script>
-        function inviteMinister(username) {
-            $.post(`/Game/InviteMinister?ministry=@ministryCode.ToString("g")&invitedUsername=${username}`, function (data, status) {
-                if (data == "success") {
-                    location.href = "/Game/PrimeMinisterDashboard/ViewMinistry?ministry=@ministryCode.ToString("g")"
-                }
-                else {
-                    alert(data)
-                }
-            })
-        }
-
-        function searchUsers() {
-            var searchText = $("#search-input").val()
-
-            var lis = $("#user-ul")[0].getElementsByTagName("li")
-            var hrs = $("#user-ul")[0].getElementsByTagName("hr")
-
-            for (var i = 0; i < lis.length; i++) {
-                var name = lis[i].getElementsByTagName("h2")[0].innerHTML
-
-                if (name.toLowerCase().includes(searchText.toLowerCase())) {
-                    lis[i].style.display = "grid"
-                    hrs[i].style.display = ""
-                }
-                else {
-                    lis[i].style.display = "none"
-                    hrs[i].style.display = "none"
-                }
-            }
-        }
-
-        document.getElementById("search-input").addEventListener("keyup", function (event) {
-            if (event.keyCode === 13) {
-                event.preventDefault()
-                searchUsers()
-            }
-        })
-    </script>
+    <script src="~/js/Game/PrimeMinisterDashboard/InviteNewMinister.js"></script>
 }

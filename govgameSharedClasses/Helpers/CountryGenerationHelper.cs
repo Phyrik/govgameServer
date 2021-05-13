@@ -9,8 +9,6 @@ namespace govgameSharedClasses.Helpers
 
         public static int FlagNameToId(string flagName)
         {
-            Console.WriteLine(flagName);
-            Console.WriteLine(Array.IndexOf(flagNames, flagName));
             return Array.IndexOf(flagNames, flagName);
         }
     }

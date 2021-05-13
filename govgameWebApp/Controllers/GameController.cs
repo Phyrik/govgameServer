@@ -19,24 +19,35 @@ namespace govgameWebApp.Controllers
         {
             string authSessionCookie = context.HttpContext.Request.Cookies["authSession"];
 
-            bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
+            string firebaseUid = firebaseToken.Uid;
 
-            if (userLoggedIn)
+            using (DatabaseContext database = new DatabaseContext())
             {
-                FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
-                string firebaseUid = firebaseToken.Uid;
+                User user = database.Users.Single(u => u.FirebaseUid == firebaseUid);
 
-                using (DatabaseContext database = new DatabaseContext())
+                Controller controller = (Controller)context.Controller;
+
+                controller.ViewData["user"] = user;
+
+                bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+
+                if (user.Username == "No country test")
                 {
-                    Controller controller = (Controller)context.Controller;
+                    controller.ViewData["country"] = database.Countries.Single(c => c.CountryName == "dummycountry");
 
+                    controller.ViewData["ministryDashboard"] = MinistryHelper.MinistryCode.None;
+
+                    controller.ViewData["unreadEmails"] = 5;
+                    controller.ViewData["unreadNotifications"] = 0;
+
+                    controller.ViewData["noCountry"] = false;
+                }
+                else if (userLoggedIn)
+                {
                     controller.ViewData["userLoggedIn"] = userLoggedIn;
 
                     context.ActionArguments.Add("authSessionCookie", authSessionCookie);
-
-                    User user = database.Users.Single(u => u.FirebaseUid == firebaseUid);
-
-                    controller.ViewData["user"] = user;
 
                     try
                     {
@@ -64,14 +75,14 @@ namespace govgameWebApp.Controllers
 
                     base.OnActionExecuting(context);
                 }
-            }
-            else
-            {
-                Uri redirectUri = new Uri(context.HttpContext.Request.GetDisplayUrl());
+                else
+                {
+                    Uri redirectUri = new Uri(context.HttpContext.Request.GetDisplayUrl());
 
-                string redirectPath = HttpUtility.UrlEncode(redirectUri.PathAndQuery);
+                    string redirectPath = HttpUtility.UrlEncode(redirectUri.PathAndQuery);
 
-                context.Result = new RedirectResult($"/Auth/LogIn?redirect={redirectPath}");
+                    context.Result = new RedirectResult($"/Auth/LogIn?redirect={redirectPath}");
+                }
             }
         }
     }

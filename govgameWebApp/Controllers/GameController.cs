@@ -650,6 +650,7 @@ namespace govgameWebApp.Controllers
 
                         database.Countries.Add(country);
                         user.CountryName = country.CountryName;
+                        user.Ministry = MinistryHelper.MinistryCode.PrimeMinister;
                         database.SaveChanges();
 
                         return Redirect("/");

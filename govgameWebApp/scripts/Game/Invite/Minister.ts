@@ -10,15 +10,15 @@ function accept(ministerToReplacePM) {
             return;
         }
 
-        document.getElementById("please-wait-h4").style.display = ""
+        document.getElementById("please-wait-h4").style.display = "";
 
         $.post(`/Game/AcceptMinistryInvite?ministry=${ministryCode}&newCountryName=${newCountryName}&ministryToReplacePM=${ministerToReplacePM}`, function (data, status) {
             if (data == "success") {
-                alert("Successfully accepted invite")
-                location.href = "/Game/CountryDashboard"
+                alert("Successfully accepted invite");
+                location.href = "/Game/CountryDashboard";
             }
             else {
-                alert(data)
+                alert(data);
             }
         })
 
@@ -27,16 +27,16 @@ function accept(ministerToReplacePM) {
 
     if (noMinistersToReplace) {
         if (!confirm("Are you sure you want to leave your old country? It will be deleted if you choose to do so.")) {
-            return
+            return;
         }
     }
 
-    document.getElementById("please-wait-h4").style.display = ""
+    document.getElementById("please-wait-h4").style.display = "";
 
     $.post(`/Game/AcceptMinistryInvite?ministry=${ministryCode}&newCountryName=${newCountryName}`, function (data, status) {
         if (data == "success") {
-            alert("Successfully accepted invite")
-            location.href = "/Game/CountryDashboard"
+            alert("Successfully accepted invite");
+            location.href = "/Game/CountryDashboard";
         }
     })
 }
@@ -46,11 +46,11 @@ function decline() {
 
     $.post(`/Game/DeclineMinistryInvite?ministry=${ministryCode}&newCountryName=${newCountryName}`, function (data, status) {
         if (data == "success") {
-            alert("Successfully declined invite")
-            location.href = "/Game/CountryDashboard"
+            alert("Successfully declined invite");
+            location.href = "/Game/CountryDashboard";
         }
         else {
-            alert(data)
+            alert(data);
         }
     })
 }

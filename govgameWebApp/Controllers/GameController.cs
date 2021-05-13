@@ -606,7 +606,7 @@ namespace govgameWebApp.Controllers
             {
                 User user = database.Users.Single(u => u.FirebaseUid == firebaseUid);
 
-                if (user.CountryName != null)
+                if (user.CountryName == null)
                 {
                     return View();
                 }

@@ -82,6 +82,9 @@
 
 @section Scripts {
     <script>
+        var ministryCode = @ministryCode.ToString("g");
+    </script>
+    <script>
         function inviteMinister(username) {
             $.post(`/Game/InviteMinister?ministry=@ministryCode.ToString("g")&invitedUsername=${username}`, function (data, status) {
                 if (data == "success") {

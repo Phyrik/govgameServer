@@ -1,1 +1,1 @@
-{"version":3,"file":"CountryDashboard.js","sourceRoot":"","sources":["../../../scripts/Game/CountryDashboard.ts"],"names":[],"mappings":"AAAA,QAAQ,CAAC,cAAc,CAAC,iBAAiB,CAAC,CAAC,gBAAgB,CAAC,MAAM,EAAE;IAChE,QAAQ,CAAC,cAAc,CAAC,uBAAuB,CAAC,CAAC,MAAM,EAAE,CAAA;AAC7D,CAAC,CAAC,CAAA"}
+{"version":3,"file":"CountryDashboard.js","sourceRoot":"","sources":["../../../scripts/Game/CountryDashboard.ts"],"names":[],"mappings":"AAAA,QAAQ,CAAC,cAAc,CAAC,iBAAiB,CAAC,CAAC,gBAAgB,CAAC,MAAM,EAAE;IAChE,QAAQ,CAAC,cAAc,CAAC,uBAAuB,CAAC,CAAC,MAAM,EAAE,CAAC;AAC9D,CAAC,CAAC,CAAA"}

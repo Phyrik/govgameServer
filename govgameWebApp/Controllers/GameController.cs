@@ -34,6 +34,8 @@ namespace govgameWebApp.Controllers
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
 
+            context.ActionArguments.Add("authSessionCookie", authSessionCookie);
+
             using (DatabaseContext database = new DatabaseContext())
             {
                 User user = database.Users.Single(u => u.FirebaseUid == firebaseUid);
@@ -63,8 +65,6 @@ namespace govgameWebApp.Controllers
                 if (userLoggedIn)
                 {
                     controller.ViewData["userLoggedIn"] = userLoggedIn;
-
-                    context.ActionArguments.Add("authSessionCookie", authSessionCookie);
 
                     try
                     {

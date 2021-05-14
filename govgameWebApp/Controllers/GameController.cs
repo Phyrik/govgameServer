@@ -19,6 +19,18 @@ namespace govgameWebApp.Controllers
         {
             string authSessionCookie = context.HttpContext.Request.Cookies["authSession"];
 
+            bool userLoggedInAtAll = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+            if (!userLoggedInAtAll)
+            {
+                Uri redirectUri = new Uri(context.HttpContext.Request.GetDisplayUrl());
+
+                string redirectPath = HttpUtility.UrlEncode(redirectUri.PathAndQuery);
+
+                context.Result = new RedirectResult($"/Auth/LogIn?redirect={redirectPath}");
+
+                return;
+            }
+
             FirebaseToken firebaseToken = FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(authSessionCookie).Result;
             string firebaseUid = firebaseToken.Uid;
 
@@ -30,8 +42,7 @@ namespace govgameWebApp.Controllers
 
                 controller.ViewData["user"] = user;
 
-                bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
-
+                // TODO: a better admin account
                 if (user.Username == "No country test")
                 {
                     controller.ViewData["country"] = database.Countries.Single(c => c.CountryName == "dummycountry");
@@ -42,8 +53,14 @@ namespace govgameWebApp.Controllers
                     controller.ViewData["unreadNotifications"] = 0;
 
                     controller.ViewData["noCountry"] = false;
+
+                    base.OnActionExecuting(context);
+                    return;
                 }
-                else if (userLoggedIn)
+
+                bool userLoggedIn = FirebaseAuthHelper.IsUserLoggedIn(authSessionCookie);
+
+                if (userLoggedIn)
                 {
                     controller.ViewData["userLoggedIn"] = userLoggedIn;
 
@@ -74,14 +91,13 @@ namespace govgameWebApp.Controllers
                     controller.ViewData["noCountry"] = user.CountryName == null;
 
                     base.OnActionExecuting(context);
+                    return;
                 }
                 else
                 {
-                    Uri redirectUri = new Uri(context.HttpContext.Request.GetDisplayUrl());
+                    context.Result = new RedirectResult("/Auth/CheckVerificationEmail");
 
-                    string redirectPath = HttpUtility.UrlEncode(redirectUri.PathAndQuery);
-
-                    context.Result = new RedirectResult($"/Auth/LogIn?redirect={redirectPath}");
+                    return;
                 }
             }
         }

@@ -6,7 +6,7 @@ namespace govgameSharedClasses.Helpers.MySQL
 {
     public class DatabaseContext : DbContext
     {
-        static string connectionString = "server=localhost;user=root;database=govgame;port=3306;password='A`T7fYQ!tP6;N[K$';";
+        static string connectionString = $"server=localhost;user=root;database=govgame;port=3306;password='{PrivateKeyAndPasswordsHelper.GetMySQLPassword()}';";
 
         public DbSet<Country> Countries { get; set; }
         public DbSet<Email> Emails { get; set; }

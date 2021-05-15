@@ -8,7 +8,7 @@ namespace govgameSharedClasses.Helpers
 {
     public class FirebaseAuthHelper
     {
-        static string firebaseApiKey = "AIzaSyBgcaRD71YU9H8TEnj82iDnkeNuOSXrfcM";
+        static string firebaseApiKey = PrivateKeyAndPasswordsHelper.GetFirebaseAPIKey();
 
         public static bool IsUserLoggedIn(string authSessionCookie, bool dontCheckEmailVerified = false)
         {

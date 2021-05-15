@@ -15,7 +15,7 @@ namespace govgameWebApp
         {
             FirebaseApp.Create(new AppOptions()
             {
-                Credential = GoogleCredential.FromFile("government-game-firebase-adminsdk-8gpmw-d6a3303ab7.json")
+                Credential = GoogleCredential.FromFile(PrivateKeyAndPasswordsHelper.GetFirebasePrivateKeyPath())
             });
 
             Directory.SetCurrentDirectory("govgameWebApp");
@@ -33,7 +33,7 @@ namespace govgameWebApp
                     {
                         options.Listen(IPAddress.Any, EnvironmentHelper.PortToRunOn(), listenOptions =>
                         {
-                            listenOptions.UseHttps("finalcert.pfx", "friends2021");
+                            listenOptions.UseHttps(PrivateKeyAndPasswordsHelper.GetSSLCertificatePath(), PrivateKeyAndPasswordsHelper.GetSSLCertificatePassword());
                         });
                     });
                     webBuilder.UseStartup<Startup>();

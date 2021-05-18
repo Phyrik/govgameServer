@@ -2,9 +2,9 @@
     ViewData["Title"] = "Register";
 }
 
-<h1 style="text-align: center;">Register</h1>
+<h1>Register</h1>
 <br />
-<form id="register-form" style="text-align: center;" method="post" action="/Auth/RegisterPOST">
+<form id="register-form" method="post" action="/Auth/RegisterPOST">
     <label for="email">Email:</label>
     <input type="email" name="email" id="email" />
     <br />
@@ -23,6 +23,11 @@
     <br />
     <button type="button" onclick="registerFormSubmitted()">Register</button>
 </form>
+
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/Auth/Register.css" />
+}
 
 @section Scripts
 {

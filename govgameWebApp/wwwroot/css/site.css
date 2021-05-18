@@ -1,24 +1,25 @@
 ﻿header {
-    background-color: #708090;
+    background-color: #113044;
+    color: white;
 }
 
 a {
-    color: black;
+    color: white;
     text-decoration: underline;
 }
 
     a:hover {
-        color: black;
+        color: white;
         text-decoration: none;
     }
 
 .nav-a {
-    color: black;
+    color: white;
     text-decoration: none;
 }
 
     .nav-a:hover {
-        color: black;
+        color: white;
         text-decoration: none;
         background-color: lightslategrey;
     }

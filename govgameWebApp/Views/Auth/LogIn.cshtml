@@ -3,9 +3,9 @@
     ViewData["Title"] = "Log in";
 }
 
-<h1 style="text-align: center;">Log in</h1>
+<h1>Log in</h1>
 <br />
-<form id="login-form" style="text-align: center;" method="post" action="@HttpUtility.UrlEncode((string)ViewData["redirectPath"])">
+<form id="login-form" method="post" action="@HttpUtility.UrlEncode((string)ViewData["redirectPath"])">
     <label for="email">Email:</label>
     <input type="email" name="email" id="email" />
     <br />
@@ -18,6 +18,11 @@
     <br />
     <button type="button" onclick="loginFormSubmitted()">Log in</button>
 </form>
+
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/Auth/LogIn.css" />
+}
 
 @section Scripts
 {

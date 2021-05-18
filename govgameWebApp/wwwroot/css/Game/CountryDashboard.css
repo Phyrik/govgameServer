@@ -1,0 +1,11 @@
+﻿.ministry-li {
+    margin-bottom: 30px;
+}
+
+    .ministry-li > img:hover {
+        cursor: pointer;
+    }
+
+#ministry-list {
+    list-style: none;
+}

@@ -38,6 +38,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ministry-colour: @MinistryHelper.MinistryCodeToMinistryHexColour(ministryDashboard, true);
+            @if (country != null)
+            {
+                <text> --govsim-text-line-height: 110px; </text>
+            }
+            else
+            {
+                <text> --govsim-text-line-height: 50px; </text>
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="~/css/Shared/_GameLayout.css" />
     @RenderSection("Styles", required: false)
 </head>
 <body>
@@ -78,78 +92,6 @@
     <main @if (ViewData["PageName"].ToString() != "Emails") { <text> id="emails-main" </text> }>
         @RenderBody()
     </main>
-
-    <style>
-        body {
-            font-family: 'Roboto Slab', serif;
-        }
-
-        header {
-            overflow: hidden;
-            position: sticky;
-            top: 0;
-            border-bottom: 5px solid @MinistryHelper.MinistryCodeToMinistryHexColour(ministryDashboard, true);
-        }
-
-        .unread {
-            background-color: darkorange;
-        }
-
-        #govsim-text {
-            font-family: 'Arvo', serif;
-            float: left;
-            margin: 0;
-            @if (country != null)
-            {
-                <text>line-height: 110px;</text>
-            }
-            else
-            {
-                <text>line-height: 50px;</text>
-            }
-            margin-left: 10px;
-            border-right: 1px solid black;
-            padding-right: 10px;
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
-
-        #country-flag {
-            float: left;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 10px;
-        }
-
-        #other-header-text-div {
-            float: left;
-            display: grid;
-            grid-template-rows: 70px 50px;
-        }
-
-        #country-name-text {
-            margin-left: 10px;
-            margin-top: 10px;
-        }
-
-        #page-name-text {
-            margin-left: 10px;
-            color: #151515;
-        }
-
-        #no-country-page-name {
-            margin-top: 10px;
-            margin-left: 10px;
-            margin-bottom: 10px;
-            color: #151515;
-            float: left;
-        }
-
-        #emails-main {
-            margin-left: 50px;
-            margin-right: 50px;
-        }
-    </style>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

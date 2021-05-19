@@ -1,0 +1,62 @@
+﻿body {
+    font-family: 'Roboto Slab', serif;
+}
+
+header {
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    border-bottom: 5px solid var(--ministry-colour);
+}
+
+.unread {
+    background-color: darkorange;
+}
+
+#govsim-text {
+    font-family: 'Arvo', serif;
+    float: left;
+    margin: 0;
+    line-height: var(--govsim-text-line-height);
+    margin-left: 10px;
+    border-right: 1px solid black;
+    padding-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#country-flag {
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+#other-header-text-div {
+    float: left;
+    display: grid;
+    grid-template-rows: 70px 50px;
+}
+
+#country-name-text {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+#page-name-text {
+    margin-left: 10px;
+    color: #151515;
+}
+
+#no-country-page-name {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    color: #151515;
+    float: left;
+}
+
+#emails-main {
+    margin-left: 50px;
+    margin-right: 50px;
+}

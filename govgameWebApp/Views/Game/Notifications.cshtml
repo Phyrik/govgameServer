@@ -32,41 +32,10 @@
     }
 </ul>
 
-<style>
-    .notification-li {
-        list-style: none;
-        margin-left: 50px;
-        margin-right: 50px;
-        padding: 10px;
-        display: grid;
-        grid-template-columns: auto 120px;
-    }
-
-        .notification-li:hover {
-            cursor: pointer;
-        }
-
-    .notif-body-div {
-        grid-row-start: 1;
-        grid-row-end: 3;
-        grid-column-start: 1;
-        grid-column-end: 2;
-    }
-
-    .received-on-text {
-        font-size: small;
-    }
-
-    .mark-as-read-button {
-        grid-row-start: 1;
-        grid-row-end: 3;
-        grid-column-start: 2;
-        grid-column-end: 3;
-        height: 75px;
-        width: 100px;
-        margin: auto;
-    }
-</style>
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/Game/Notifications.css" />
+}
 
 @section Scripts {
     <script>

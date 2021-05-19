@@ -140,7 +140,7 @@ namespace govgameWebApp.Controllers
             {
                 User user = database.Users.Single(u => u.FirebaseUid == firebaseUid);
 
-                Notification[] notifications = database.Notifications.Where(n => n.Username == user.Username).OrderByDescending(n => n.NotificationId).ToArray();
+                Notification[] notifications = database.Notifications.Where(n => n.Username == user.Username).OrderBy(n => n.NotificationId).ToArray();
                 ViewData["notifications"] = notifications;
 
                 return View();

@@ -1,0 +1,9 @@
+﻿#minister {
+    display: inline;
+}
+
+#minister-button {
+    width: 200px;
+    vertical-align: super;
+    margin-left: 20px;
+}

@@ -1,0 +1,72 @@
+﻿.country-image {
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid black;
+}
+
+.ministry-li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.ministry-image:hover {
+    cursor: pointer;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto 100px auto auto;
+    text-align: center;
+}
+
+#old-country-div {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+#arrow-right-image {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    margin: auto;
+}
+
+#new-country-div {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+#buttons-div {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    text-align: center;
+    margin: auto;
+}
+
+#pm-ministry-choice-div {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    display: none;
+}
+
+#pm-ministry-choice-ul {
+    list-style: none;
+}
+
+#please-wait-h4 {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 4;
+    grid-row-end: 5;
+    display: none;
+}

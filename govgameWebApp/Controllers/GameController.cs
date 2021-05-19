@@ -198,6 +198,15 @@ namespace govgameWebApp.Controllers
                 switch (page)
                 {
                     case "Minister":
+                        MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
+                        ViewData["ministryCode"] = ministryCode;
+
+                        if (!database.InvitedMinisters.Any(im => im.Username == user.Username && im.CountryName == countryName && im.Ministry == ministryCode))
+                        {
+                            ViewData["errorMessage"] = "Invalid invite link. The person who invited you may have cancelled the invitation.";
+                            return View("../Error/TextError");
+                        }
+
                         try
                         {
                             User oldPrimeMinister = database.Users.Single(u => u.CountryName == oldCountry.CountryName && u.Ministry == MinistryHelper.MinistryCode.PrimeMinister);
@@ -214,9 +223,6 @@ namespace govgameWebApp.Controllers
                         User newPrimeMinisterUser = database.Users.Single(u => u.CountryName == newCountry.CountryName && u.Ministry == MinistryHelper.MinistryCode.PrimeMinister);
                         ViewData["newPrimeMinister"] = newPrimeMinisterUser;
 
-                        MinistryHelper.MinistryCode ministryCode = (MinistryHelper.MinistryCode)Enum.Parse(typeof(MinistryHelper.MinistryCode), ministry);
-                        ViewData["ministryCode"] = ministryCode;
-
                         bool isPrimeMinister = user.Ministry == MinistryHelper.MinistryCode.PrimeMinister;
                         ViewData["isPrimeMinister"] = isPrimeMinister;
 
@@ -229,12 +235,6 @@ namespace govgameWebApp.Controllers
                         else
                         {
                             ViewData["noMinistersToReplace"] = null;
-                        }
-
-                        if (!database.InvitedMinisters.Any(im => im.Username == user.Username && im.CountryName == newCountry.CountryName && im.Ministry == ministryCode))
-                        {
-                            ViewData["errorMessage"] = "Invalid invite link. The person who invited you may have cancelled the invitation.";
-                            return View("../Error/TextError");
                         }
 
                         return View("./Invite/Minister");

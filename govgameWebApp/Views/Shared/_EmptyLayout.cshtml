@@ -15,25 +15,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
         @ViewData["Title"] @if (!(bool)ViewData["noCountry"])
-    {<text>- @country.CountryName</text>} - GovSim
+        {<text>- @country.CountryName</text>} - GovSim
     </title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/Shared/_EmptyLayout.css" />
     @RenderSection("Styles", required: false)
 </head>
 <body>
     <main>
         @RenderBody()
     </main>
-
-    <style>
-        body {
-            font-family: 'Roboto Slab', serif;
-        }
-    </style>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

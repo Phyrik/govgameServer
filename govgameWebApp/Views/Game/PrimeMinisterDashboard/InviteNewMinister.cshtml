@@ -45,40 +45,15 @@
     }
 </ul>
 
-<style>
-    .user-li {
-        list-style: none;
-        display: grid;
-        grid-template-columns: auto auto;
-        margin-left: 50px;
-        margin-right: 50px;
+@section Styles
+{
+    <style>
+    :root {
+        --ministry-colour: @ministryColour;
     }
-
-    .username-text {
-        grid-column-start: 1;
-        grid-column-end: 2;
-    }
-
-    .invite-user-button {
-        justify-self: end;
-        grid-row-start: 1;
-        grid-row-end: 3;
-        grid-column-start: 2;
-        grid-column-end: 3;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-
-    #ministry-name-text {
-        text-decoration: underline;
-        text-decoration-color: @ministryColour;
-    }
-
-    #country-note {
-        color: orangered;
-    }
-</style>
-
+    </style>
+    <link rel="stylesheet" href="~/css/Game/PrimeMinisterDashboard/InviteNewMinister.css" />
+}
 
 @section Scripts {
     <script>

@@ -40,3 +40,5 @@ namespace govgameWebApp
                 });
     }
 }
+
+// TODO: GLOBAL: change all hrefs in a tags to asp-controller and asp-action

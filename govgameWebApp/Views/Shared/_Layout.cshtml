@@ -23,7 +23,7 @@
     <header>
         <nav>
             <ul class="nav justify-content-end">
-                <li class="nav-item"><a class="nav-link nav-a" href="/Home/PrivacyPolicy">Privacy policy</a></li>
+                <li class="nav-item"><a class="nav-link nav-a" asp-controller="Home" asp-action="PrivacyPolicy">Privacy policy</a></li>
                 @if ((bool)ViewData["userLoggedIn"])
                 {
                     <li class="nav-item"><a class="nav-link nav-a" href="/">Go to game</a></li>

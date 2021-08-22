@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
 using System.Net;
+using ElectronNET.API;
 
 namespace govgameWebApp
 {
@@ -29,6 +30,7 @@ namespace govgameWebApp
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseElectron(args);
                     webBuilder.UseKestrel(options =>
                     {
                         options.Listen(IPAddress.Any, EnvironmentHelper.PortToRunOn(), listenOptions =>

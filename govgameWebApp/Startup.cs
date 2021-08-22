@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using ElectronNET.API;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -65,6 +67,8 @@ namespace govgameWebApp
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}");
             });
+
+            Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
         }
     }
 }
